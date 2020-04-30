@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/current_pick"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="#666666"
+        android:gravity="center"
+        android:text="Pick"
+        android:textColor="#ffffff" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewRed"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#ff0000"
+            android:text="Red"
+            android:textColor="#660000" />
+
+        <TextView
+            android:id="@+id/textViewGreen"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#00ff00"
+            android:text="Green"
+            android:textColor="#006600" />
+
+        <TextView
+            android:id="@+id/textViewBlue"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="#0000ff"
+            android:text="Blue"
+            android:textColor="#000066" />
+
+        <TextView
+            android:id="@+id/textViewGray"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Gray" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#333333"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/radio_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/radio_green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1" />
+
+        <RadioButton
+            android:id="@+id/radio_gray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_weight="1"
+            android:checked="true" />
+    </RadioGroup>
+
+</LinearLayout>
