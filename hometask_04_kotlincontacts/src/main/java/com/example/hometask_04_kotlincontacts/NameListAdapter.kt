@@ -1,18 +1,24 @@
 package com.example.hometask_04_kotlincontacts
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class NameListAdapter : RecyclerView.Adapter<NameListAdapter.ItemViewHolder>() {
+class NameListAdapter(context: Context, contacts: ArrayList<ContactClass>) : RecyclerView.Adapter<NameListAdapter.ItemViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    var contactsFull : ArrayList<ContactClass>
+
+    init {
+        contactsFull = ArrayList<ContactClass>(contacts)
     }
 
-    override fun getItemCount(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
+            = ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.contact_element, parent, false))
+
+
+    override fun getItemCount() = contactsFull.size
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
