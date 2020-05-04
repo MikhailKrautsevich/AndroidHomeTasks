@@ -1,17 +1,20 @@
 package com.example.hometask_02_view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
+
 import java.util.Random;
 
 
 public class Custom extends View {
     public Custom(Context context) {
         super(context);
+        this.listener = null;
     }
 
     private Paint paint = new Paint();
@@ -26,7 +29,7 @@ public class Custom extends View {
     private RectF oval = new RectF();
     private Random rnd = new Random();
     private int[][] colors = new int[5][3];
-
+    private CustomListener listener ;
 
 
     @Override
@@ -66,10 +69,18 @@ public class Custom extends View {
         }
     }
 
+    public void setListener(CustomListener listener) {
+        this.listener = listener ;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         clickedX = (int) event.getX() ;
         clickedY = (int) event.getY() ;
+        if (listener !=null) {
+            listener.viewClicked(clickedX, clickedY);
+        }
         modX = Math.abs(centerX-clickedX) ;
         modY = Math.abs(centerY-clickedY);
         cube = (int) Math.pow((modX*modX + modY*modY), 0.5) ;
@@ -89,5 +100,9 @@ public class Custom extends View {
         {getNewColor(2);
             invalidate();}
         return super.onTouchEvent(event);
+    }
+
+    public interface CustomListener {
+        void viewClicked (int x, int y);
     }
 }
