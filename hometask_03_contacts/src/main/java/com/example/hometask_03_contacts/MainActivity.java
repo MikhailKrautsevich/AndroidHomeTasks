@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
         class ItemViewHolder extends RecyclerView.ViewHolder{
             private TextView nameText;
-            private TextView emailText;
+            private TextView infoText;
             private ImageView phNumberPic, emailPic ;
 
             ItemViewHolder(@NonNull View itemView) {
@@ -240,12 +240,12 @@ public class MainActivity extends AppCompatActivity {
                 phNumberPic = itemView.findViewById(R.id.phNumberPic) ;
                 emailPic = itemView.findViewById(R.id.emailPic) ;
                 nameText = itemView.findViewById(R.id.nameText);
-                emailText = itemView.findViewById(R.id.emailText);
+                infoText = itemView.findViewById(R.id.emailText);
             }
 
             void bindData(ContactClass contact) {
                 nameText.setText(contact.getName());
-                emailText.setText(contact.getNumberOrEmail());
+                infoText.setText(contact.getNumberOrEmail());
                 if (contact.isEmail) {phNumberPic.setVisibility(View.INVISIBLE);
                                         emailPic.setVisibility(View.VISIBLE);
                                         nameText.setTextColor(Color.GREEN);}

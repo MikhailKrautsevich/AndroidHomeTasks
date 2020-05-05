@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">homeTask_03_contacts</string>
+    <string name="app_name">homeTask_04_contacts</string>
     <string name="title_activity_example">example</string>
     <string name="add_contact">Add contact</string>
     <string name="phonenumber">PhoneNumber</string>
