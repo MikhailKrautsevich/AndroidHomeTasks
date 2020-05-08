@@ -1,6 +1,6 @@
 package com.example.hometask_04_kotlincontacts
 
-class ContactClass {
+class ContactClass private constructor() {
 
     lateinit var name : String
     lateinit var numberOrEmail : String

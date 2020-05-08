@@ -51,7 +51,5 @@ class Activity_edit : Activity() {
             answerIntent.putExtra(EXTRAS.EXTRA_FOR_CON_REMOVE, positionToRemove)
             finish()
         }
-
-
     }
 }
