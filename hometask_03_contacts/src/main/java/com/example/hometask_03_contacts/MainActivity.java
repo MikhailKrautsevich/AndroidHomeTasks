@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {recyclerContacts.setLayoutManager(gridLayoutManager) ;}
         recyclerContacts.setVisibility(View.INVISIBLE);
-        if (adapter1==null)
-        adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+        if (adapter1==null) {
+            adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+        }
 
         SearchView searchView = findViewById(R.id.search) ;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
