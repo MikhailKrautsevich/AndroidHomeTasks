@@ -32,9 +32,11 @@ class Activity_add : Activity() {
         val backFromAdd : ImageView = findViewById(R.id.backFromAdd)
         backFromAdd.setOnClickListener{
             setResult(RESULT_CANCELED, answerIntent)
+            Toast.makeText(applicationContext, "oooo", Toast.LENGTH_LONG).show()
             finish()
         }
-        val addCorfirm : ImageView = findViewById(R.id.backFromAdd)
+
+        val addCorfirm : ImageView = findViewById(R.id.addConfirm)
         addCorfirm.setOnClickListener {
             val name = nameAddText.text.toString().trim()
             val email = emailAdd.text.toString().trim()
@@ -74,6 +76,20 @@ class Activity_add : Activity() {
             if ( phoneNumberRadButton.isChecked && emailRadButton.isChecked) {
                 Toast.makeText(applicationContext, R.string.youhavetochoose, Toast.LENGTH_SHORT)
                         .show()
+            }
+        }
+    }
+
+    fun onRadioClick(view : View) {
+        val rb : RadioButton = view as RadioButton
+        when (rb.id) {
+            R.id.phoneNumberRadButton -> {
+                phoneNumberAdd.visibility = View.VISIBLE
+                emailAdd.visibility = View.INVISIBLE
+            }
+            R.id.emailRadButton -> {
+                phoneNumberAdd.visibility = View.INVISIBLE
+                emailAdd.visibility = View.VISIBLE
             }
         }
     }
