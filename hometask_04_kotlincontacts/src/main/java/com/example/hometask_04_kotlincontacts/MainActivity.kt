@@ -2,11 +2,13 @@ package com.example.hometask_04_kotlincontacts
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,32 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        noContacts = findViewById(R.id.noContacts)
+
+        val addNewContact : ImageButton = findViewById(R.id.addNewContact)
+        addNewContact.setOnClickListener{
+            val intent : Intent = Intent(this, Activity_add::class.java)
+            startActivityForResult(intent, ADD_NEW_CONTACT)
+        }
+
+        if (linearLayoutManager == null) {
+            linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        }
+        if (gridLayoutManager == null) {
+            gridLayoutManager = GridLayoutManager(this, 2)
+        }
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            recyclerContacts.layoutManager = linearLayoutManager
+        }
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            recyclerContacts.layoutManager = gridLayoutManager
+        }
+        recyclerContacts.visibility = View.INVISIBLE
+        if (adapter1 == null) {
+            adapter1 = recyclerContacts.adapter as NameListAdapter
+        }
+
     }
 
     inner class NameListAdapter(context: Context) : RecyclerView.Adapter<NameListAdapter.ItemViewHolder>() {
