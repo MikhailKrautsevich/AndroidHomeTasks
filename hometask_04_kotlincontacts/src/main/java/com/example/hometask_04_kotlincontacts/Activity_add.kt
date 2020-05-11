@@ -32,7 +32,6 @@ class Activity_add : Activity() {
         val backFromAdd : ImageView = findViewById(R.id.backFromAdd)
         backFromAdd.setOnClickListener{
             setResult(RESULT_CANCELED, answerIntent)
-            Toast.makeText(applicationContext, "oooo", Toast.LENGTH_LONG).show()
             finish()
         }
 

@@ -1,7 +1,6 @@
 package com.example.hometask_04_kotlincontacts
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
@@ -24,10 +23,12 @@ class MainActivity : AppCompatActivity() {
     private val gridLayoutManager: GridLayoutManager = GridLayoutManager(this, 2)
     lateinit var adapter1: NameListAdapter
     private lateinit var noContacts : TextView
-    val contacts: ArrayList<ContactClass> = ArrayList()
 
-    private val ADD_NEW_CONTACT = 900
-    private val EDIT_CONTACT = 901
+    companion object {
+        val contacts: ArrayList<ContactClass> = ArrayList()
+        private const val ADD_NEW_CONTACT = 900
+        private const val EDIT_CONTACT = 901
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,15 +43,18 @@ class MainActivity : AppCompatActivity() {
  //       linearLayoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
  //       gridLayoutManager = GridLayoutManager(this, 2)
         recyclerContacts = findViewById(R.id.recyclerContacts)
-        if (recyclerContacts.adapter == null) {
-        recyclerContacts.adapter = NameListAdapter(this) }
-        adapter1 = recyclerContacts.adapter as NameListAdapter
-
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerContacts.layoutManager = linearLayoutManager
         }
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             recyclerContacts.layoutManager = gridLayoutManager
+        }
+        if (this::adapter1.isInitialized) {
+            recyclerContacts.adapter = adapter1
+        }
+        else if (!this::adapter1.isInitialized) {
+        recyclerContacts.adapter = NameListAdapter()
+        adapter1 = recyclerContacts.adapter as NameListAdapter
         }
         recyclerContacts.visibility = View.INVISIBLE
 
@@ -59,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                adapter1.filter.filter(newText)
+                adapter1.run { filter.filter(newText) }
                 return false
             }
         })
@@ -70,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         if (adapter1.isListOfContactsEmpty()) {
             recyclerContacts.visibility = View.INVISIBLE
             noContacts.visibility = View.VISIBLE
+
         } else {
             recyclerContacts.visibility = View.VISIBLE
             noContacts.visibility = View.INVISIBLE
@@ -78,8 +83,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (adapter1 == null)
-        {adapter1 = recyclerContacts.adapter as NameListAdapter}
         if (data != null)
         {when (requestCode) {
         ADD_NEW_CONTACT -> {
@@ -114,20 +117,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    inner class NameListAdapter(context: Context) : RecyclerView.Adapter<NameListAdapter.ItemViewHolder>() , Filterable {
+    inner class NameListAdapter : RecyclerView.Adapter<NameListAdapter.ItemViewHolder>() , Filterable {
 
-        private var contactsFull : ArrayList<ContactClass> = ArrayList(contacts)
+        private var contactsFull : ArrayList<ContactClass> = ArrayList(com.example.hometask_04_kotlincontacts.MainActivity.Companion.contacts)
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 = ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.contact_element, parent, false))
 
 
-        override fun getItemCount(): Int {
-            var result : Int = 0
-            if (contacts != null)
-            {result =  contacts.size}
-            return result
-        }
+        override fun getItemCount(): Int = contacts.size
 
         override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
             holder.bindData(contacts[position])
@@ -154,10 +152,10 @@ class MainActivity : AppCompatActivity() {
         inner class ContactFilter : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val filtered : MutableList<ContactClass> = ArrayList<ContactClass>()
-                if (constraint == null || constraint.length == 0) {
+                if (constraint == null || constraint.isBlank()) {
                     filtered.addAll(contactsFull)
                 } else {
-                    var pattern : String = constraint.toString().toLowerCase().trim()
+                    val pattern : String = constraint.toString().toLowerCase().trim()
                     for (con in contactsFull) {
                         if ((con.name).toLowerCase().startsWith(pattern))
                         {filtered.add(con)}
@@ -170,10 +168,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                 contacts.clear()
-                if (results != null) {
-                    contacts.addAll(results.values as List<ContactClass>)
-                    notifyDataSetChanged()
-                }
+                contacts.addAll(results?.values as List<ContactClass>)
+                notifyDataSetChanged()
             }
         }
 
@@ -187,7 +183,7 @@ class MainActivity : AppCompatActivity() {
             private val emailPic = itemView.findViewById<ImageView>(R.id.emailPic)
 
             fun bindData (contact: ContactClass) {
-                itemView.setOnClickListener(View.OnClickListener {
+                itemView.setOnClickListener {
                     val position = this.adapterPosition
                     val contactTo = contacts[position]
                     val remIntent = Intent(this@MainActivity, Activity_edit::class.java)
@@ -196,9 +192,8 @@ class MainActivity : AppCompatActivity() {
                     remIntent.putExtra(EXTRAS.EXTRA_FOR_CONTACT_IS, contactTo.isEmail)
                     remIntent.putExtra(EXTRAS.EXTRA_FOR_CON_REMOVE, position)
                     startActivityForResult(remIntent , EDIT_CONTACT)
-                })
+                }
 
-                val position = this.adapterPosition
                 nameText?.text = contact.name
                 infoText?.text = (contact.numberOrEmail)
                 if (contact.isEmail) {
