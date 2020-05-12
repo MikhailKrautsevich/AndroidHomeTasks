@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {recyclerContacts.setLayoutManager(gridLayoutManager) ;}
         recyclerContacts.setVisibility(View.INVISIBLE);
-        if (adapter1==null)
-        adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+        if (adapter1==null) {
+            adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+        }
 
         SearchView searchView = findViewById(R.id.search) ;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         class ItemViewHolder extends RecyclerView.ViewHolder{
             private TextView nameText;
-            private TextView emailText;
+            private TextView infoText;
             private ImageView phNumberPic, emailPic ;
 
             ItemViewHolder(@NonNull View itemView) {
@@ -240,12 +241,12 @@ public class MainActivity extends AppCompatActivity {
                 phNumberPic = itemView.findViewById(R.id.phNumberPic) ;
                 emailPic = itemView.findViewById(R.id.emailPic) ;
                 nameText = itemView.findViewById(R.id.nameText);
-                emailText = itemView.findViewById(R.id.emailText);
+                infoText = itemView.findViewById(R.id.emailText);
             }
 
             void bindData(ContactClass contact) {
                 nameText.setText(contact.getName());
-                emailText.setText(contact.getNumberOrEmail());
+                infoText.setText(contact.getNumberOrEmail());
                 if (contact.isEmail) {phNumberPic.setVisibility(View.INVISIBLE);
                                         emailPic.setVisibility(View.VISIBLE);
                                         nameText.setTextColor(Color.GREEN);}

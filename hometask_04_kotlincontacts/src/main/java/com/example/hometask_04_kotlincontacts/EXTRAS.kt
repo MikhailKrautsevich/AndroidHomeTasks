@@ -1,0 +1,8 @@
+package com.example.hometask_04_kotlincontacts
+
+object EXTRAS {
+    val EXTRA_FOR_CONTACT_NAME = "EXTRA_FOR_CONTACT_NAME"
+    val EXTRA_FOR_CONTACT_INFO = "EXTRA_FOR_CONTACT_INFO"
+    val EXTRA_FOR_CONTACT_IS = "EXTRA_FOR_CONTACT_IS"
+    val EXTRA_FOR_CON_REMOVE = "EXTRA_FOR_CON_REMOVE"
+}

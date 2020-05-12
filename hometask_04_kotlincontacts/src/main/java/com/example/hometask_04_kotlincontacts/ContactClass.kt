@@ -1,31 +1,40 @@
 package com.example.hometask_04_kotlincontacts
 
-class ContactClass {
+class ContactClass (private val config: Builder) {
 
     lateinit var name : String
     lateinit var numberOrEmail : String
     var isEmail : Boolean = false
 
-    inner class Builder {
-        private lateinit var contact :  ContactClass
+    init {
+        this.name = Builder.name
+        this.numberOrEmail = Builder.numberOrEmail
+        this.isEmail = Builder.isEmail
+    }
+
+    companion object Builder {
+        lateinit var name : String
+        lateinit var numberOrEmail : String
+        var isEmail : Boolean = false
 
         fun setName(name : String) : Builder {
-            contact.name = name
+            this.name = name
             return this
         }
 
         fun setNumberOrEmail (info : String) : Builder {
-            contact.numberOrEmail = info
+            this.numberOrEmail = info
             return this
         }
 
         fun itIsEmail() : Builder {
-            contact.isEmail = true
+            this.isEmail = true
             return this
         }
 
         fun build() : ContactClass {
-            return contact
+            val newContact = ContactClass(this)
+            return newContact
         }
     }
 }
