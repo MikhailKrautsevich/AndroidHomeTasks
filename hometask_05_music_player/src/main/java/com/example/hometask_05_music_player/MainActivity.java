@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
             bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE) ;
             Log.d(LOG_TAG, "MainActivity OnResume : I tried to bind service");
         }
+
+        // Вот тут проблемный кусок кода
+
         int sizeOfHoldersArray = adapter.getHoldersSize();
         Log.d(LOG_TAG, "MainActivity OnResume : size " + sizeOfHoldersArray);
         if (sizeOfHoldersArray != 0) {
