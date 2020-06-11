@@ -23,7 +23,6 @@ public class PlayerService extends Service {
 
     private static String SONGTITLE = "songTitle" ;
     private static String SONGPATH = "songPath" ;
-    private static String SONGPOSITION = "songPosition" ;
     private final String LOG_TAG = "myLogs";
     ArrayList<HashMap<String, String>> playList = null ;
     MediaPlayer mediaPlayer = null ;
@@ -46,6 +45,7 @@ public class PlayerService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand " + startId);
+        String SONGPOSITION = "songPosition";
         if (intent.hasExtra(SONGPOSITION)) {
             if (mediaPlayer != null) releaseResourses();
             mediaPlayer = new MediaPlayer();
