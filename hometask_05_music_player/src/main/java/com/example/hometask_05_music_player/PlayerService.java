@@ -27,7 +27,7 @@ public class PlayerService extends Service {
     private final String LOG_TAG = "myLogs";
     ArrayList<HashMap<String, String>> playList = null ;
     MediaPlayer mediaPlayer = null ;
-    int playListSize = 0 ;
+    private int playListSize = 0 ;
     private int playlistPosition = 0 ;
     private CustomListener listener = null ;
     private boolean isBinded = false ;
