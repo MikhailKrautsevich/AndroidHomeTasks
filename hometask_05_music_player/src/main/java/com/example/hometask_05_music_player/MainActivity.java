@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     static final String CHANNEL_ID = "Channel_ID" ;
     static ArrayList<HashMap<String, String>> playListMain ;
     private final int REQUEST_FOR_PERM = 123;
-    final String LOG_TAG = "myLogs";
+    final private String LOG_TAG = "myLogs";
     static PlayerService playerService ;
     private Intent serviceIntent ;
     private SongsManager manager ;

@@ -91,7 +91,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
                     Intent startIntent = new Intent(v.getContext() , PlayerService.class) ;
                     Log.d(LOG_TAG, "onClick , position " + position) ;
                     if (position != -1) {
-                        startIntent.putExtra(PlayerService.SONGPOSITION, position);
+                        startIntent.putExtra("songPosition", position);
                         v.getContext().getApplicationContext().startService(startIntent);
                         playing.setVisibility(View.VISIBLE);
                         Log.d(LOG_TAG, "onClick , start playing " + position) ;

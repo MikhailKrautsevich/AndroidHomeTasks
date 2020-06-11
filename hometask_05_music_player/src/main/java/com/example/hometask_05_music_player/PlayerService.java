@@ -21,10 +21,10 @@ import java.util.HashMap;
 
 public class PlayerService extends Service {
 
-    static String SONGTITLE = "songTitle" ;
-    static String SONGPATH = "songPath" ;
-    static String SONGPOSITION = "songPosition" ;
-    final String LOG_TAG = "myLogs";
+    private static String SONGTITLE = "songTitle" ;
+    private static String SONGPATH = "songPath" ;
+    private static String SONGPOSITION = "songPosition" ;
+    private final String LOG_TAG = "myLogs";
     ArrayList<HashMap<String, String>> playList = null ;
     MediaPlayer mediaPlayer = null ;
     int playListSize = 0 ;
