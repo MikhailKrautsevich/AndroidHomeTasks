@@ -8,9 +8,7 @@ import java.util.HashMap;
 
 class SongsManager {
 
-    final String MEDIA_PATH = Environment.getExternalStorageDirectory() + "/";
- //   final String MEDIA_PATH2 = "/storage/emulated/0/Music/Faun/2013 - Von den Elben/";
-
+    private final String MEDIA_PATH = Environment.getExternalStorageDirectory() + "/";
     private ArrayList<HashMap<String, String>> songsList = new ArrayList<>();
 
     SongsManager() {
@@ -57,9 +55,12 @@ class SongsManager {
         String mp3Pattern = ".mp3";
         if (song.getName().endsWith(mp3Pattern)) {
             HashMap<String, String> songMap = new HashMap<>();
-            songMap.put(MainActivity.SONGTITLE,
+            //   final String MEDIA_PATH2 = "/storage/emulated/0/Music/Faun/2013 - Von den Elben/";
+            String SONGTITLE = "songTitle";
+            songMap.put(SONGTITLE,
                     song.getName().substring(0, (song.getName().length() - 4)));
-            songMap.put(MainActivity.SONGPATH, song.getPath());
+            String SONGPATH = "songPath";
+            songMap.put(SONGPATH, song.getPath());
 
             // Adding each song to SongList
             songsList.add(songMap);
