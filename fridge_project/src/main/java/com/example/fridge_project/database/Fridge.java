@@ -4,7 +4,11 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "fridge", foreignKeys = @ForeignKey(entity = Food.class, parentColumns = "id", childColumns = "food_id"))
+@Entity(tableName = "fridge", foreignKeys = @ForeignKey
+        (entity = Food.class,
+        parentColumns = "id",
+        childColumns = "food_id" ,
+        onDelete = ForeignKey.CASCADE))
 public class Fridge {
     @PrimaryKey(autoGenerate = true)
     private int id ;
