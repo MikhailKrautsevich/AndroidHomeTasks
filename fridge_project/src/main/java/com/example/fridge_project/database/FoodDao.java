@@ -11,14 +11,14 @@ import java.util.List;
 public interface FoodDao {
 
     @Query("SELECT * from food")
-    List<Food> getAllFood() ;
+    List<Food> getAllFood();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addNewFood(Food food) ;
+    void addNewFood(Food food);
 
     @Update
-    void changeFood(Food food) ;
+    void changeFood(Food food);
 
     @Delete
-    void deleteFood(Food food) ;
+    void deleteFood(Food food);
 }

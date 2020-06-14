@@ -4,14 +4,14 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 
-@Entity (tableName = "food")
+@Entity(tableName = "food")
 public class Food {
-    @PrimaryKey (autoGenerate = true)
-    private int id ;
-    private String name ;
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+    private String name;
 
     public Food(String name) {
-        this.name = name ;
+        this.name = name;
     }
 
     public int getId() {

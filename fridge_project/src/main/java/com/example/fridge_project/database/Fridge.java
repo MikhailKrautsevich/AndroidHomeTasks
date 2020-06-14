@@ -6,14 +6,14 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "fridge", foreignKeys = @ForeignKey
         (entity = Food.class,
-        parentColumns = "id",
-        childColumns = "food_id" ,
-        onDelete = ForeignKey.CASCADE))
+                parentColumns = "id",
+                childColumns = "food_id",
+                onDelete = ForeignKey.CASCADE))
 public class Fridge {
     @PrimaryKey(autoGenerate = true)
-    private int id ;
-    private double amount ;
-    private int food_id ;
+    private int id;
+    private double amount;
+    private int food_id;
 
     public Fridge(double amount, int food_id) {
         this.amount = amount;

@@ -11,21 +11,17 @@ import java.util.List;
 public interface IngredientDao {
 
     @Query("SELECT * from recipe_ingredients WHERE recipe_id = :recipe_id")
-    List<Ingredients> getAllNeededIngredientsByRecipeId(int recipe_id) ;
+    List<Ingredients> getAllNeededIngredientsByRecipeId(int recipe_id);
 
     @Query("SELECT * from recipe_ingredients WHERE id = :id")
-    Ingredients getIngeredientById(int id) ;
+    Ingredients getIngeredientById(int id);
 
     @Update
-    void updateIngredient(Ingredients ingredient) ;
+    void updateIngredient(Ingredients ingredient);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addIngredient(Ingredients ingredient) ;
+    void addIngredient(Ingredients ingredient);
 
     @Delete
     void deleteIngredient(Ingredients ingredient);
-
-
-
-
 }
