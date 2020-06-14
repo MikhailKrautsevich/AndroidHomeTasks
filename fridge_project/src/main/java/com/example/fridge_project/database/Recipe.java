@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "recipe")
 public class Recipe {
     @PrimaryKey(autoGenerate = true)
-    private int id ;
-    private String title ;
-    private String description ;
+    private int id;
+    private String title;
+    private String description;
 
     public Recipe(String title, String description) {
         this.title = title;

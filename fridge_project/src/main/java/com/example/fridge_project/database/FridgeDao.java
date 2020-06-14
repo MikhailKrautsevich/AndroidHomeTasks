@@ -9,11 +9,11 @@ import androidx.room.Update;
 public interface FridgeDao {
 
     @Query("SELECT * from fridge WHERE food_id = :food_id ")
-    int getCurrentAmountById(int food_id) ;
+    int getCurrentAmountById(int food_id);
 
     @Update
-    void updateCurrentAmountById(Food food) ;
+    void updateCurrentAmountById(Food food);
 
     @Delete
-    void deleteNote(Food food) ;
+    void deleteNote(Food food);
 }
