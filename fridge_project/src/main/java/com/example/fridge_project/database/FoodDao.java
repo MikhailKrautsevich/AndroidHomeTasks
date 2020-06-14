@@ -1,5 +1,6 @@
 package com.example.fridge_project.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -11,7 +12,7 @@ import java.util.List;
 public interface FoodDao {
 
     @Query("SELECT * from food")
-    List<Food> getAllFood();
+    LiveData<List<Food>> getAllFood();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addNewFood(Food food);
