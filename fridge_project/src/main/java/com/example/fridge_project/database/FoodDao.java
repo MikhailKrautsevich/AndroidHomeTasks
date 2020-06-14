@@ -14,6 +14,9 @@ public interface FoodDao {
     @Query("SELECT * from food")
     LiveData<List<Food>> getAllFood();
 
+    @Query("SELECT id from food WHERE name = :name ")
+    int getFoodIdByName(String name) ;
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addNewFood(Food food);
 

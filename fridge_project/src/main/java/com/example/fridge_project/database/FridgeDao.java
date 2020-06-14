@@ -3,18 +3,26 @@ package com.example.fridge_project.database;
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
+import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
 @Dao
 public interface FridgeDao {
 
-    @Query("SELECT * from fridge WHERE food_id = :food_id ")
-    LiveData<Integer> getCurrentAmountById(int food_id);
+    @Query("SELECT amount from fridge WHERE food_id = :food_id ")
+    LiveData<Double> getCurrentAmountById(int food_id);
 
-    @Update
-    void updateCurrentAmountById(Food food);
+    @Query("SELECT * from fridge WHERE food_id = :food_id ")
+    Fridge getFridgeNoteById(int food_id);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addNewFood(Fridge fridge);
 
     @Delete
-    void deleteNote(Food food);
+    void deleteNote(Fridge fridge);
+
+    @Update
+    void updateAmount(Fridge fridge);
 }
