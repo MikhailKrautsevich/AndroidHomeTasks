@@ -19,6 +19,10 @@ public abstract class FridgeDataBase extends RoomDatabase {
 
     private ExecutorService executorService = Executors.newFixedThreadPool(CORE_NUMBER);
 
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
     public abstract FoodDao getFoodDao();
 
     public abstract FridgeDao getFridgeDao();

@@ -1,5 +1,6 @@
 package com.example.fridge_project.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -13,7 +14,7 @@ import java.util.List;
 public interface RecipeDao {
 
     @Query("SELECT * from recipe")
-    List<Recipe> getAllRecipes();
+    LiveData<List<Recipe>> getAllRecipes();
 
     @Query("SELECT * from recipe WHERE id = :id")
     Recipe getRecipeById(int id);

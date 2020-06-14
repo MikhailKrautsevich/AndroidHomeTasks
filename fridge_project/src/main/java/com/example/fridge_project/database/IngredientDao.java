@@ -1,5 +1,6 @@
 package com.example.fridge_project.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -11,10 +12,10 @@ import java.util.List;
 public interface IngredientDao {
 
     @Query("SELECT * from recipe_ingredients WHERE recipe_id = :recipe_id")
-    List<Ingredients> getAllNeededIngredientsByRecipeId(int recipe_id);
+    LiveData<List<Ingredients>> getAllNeededIngredientsByRecipeId(int recipe_id);
 
     @Query("SELECT * from recipe_ingredients WHERE id = :id")
-    Ingredients getIngeredientById(int id);
+    LiveData<Ingredients> getIngeredientById(int id);
 
     @Update
     void updateIngredient(Ingredients ingredient);
