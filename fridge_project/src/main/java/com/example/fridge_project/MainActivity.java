@@ -14,8 +14,8 @@ import com.example.fridge_project.repo.FridgeRepository;
 public class MainActivity extends AppCompatActivity {
 
     private FridgeRepository fridgeRepository ;
-    Button goToProducts ;
-    Button goToRecipes ;
+    private Button goToProducts ;
+    private Button goToRecipes ;
 
 
     @Override

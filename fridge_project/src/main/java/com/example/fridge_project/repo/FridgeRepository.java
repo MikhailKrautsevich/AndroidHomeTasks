@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import com.example.fridge_project.database.Food;
@@ -44,11 +45,11 @@ public class FridgeRepository {
         recipeDao = fridgeDataBase.getRecipeDao() ;
     }
 
-    public LiveData<List<FoodData>> getFoodDataList() {
+    public MutableLiveData<List<FoodData>> getFoodDataList() {
         if (livedataOfAllFood == null) {
             livedataOfAllFood = foodDao.getAllFood();
         }
-        LiveData<List<FoodData>> results = Transformations.map(livedataOfAllFood, new Function<List<Food>, List<FoodData>>() {
+        MutableLiveData<List<FoodData>> results = (MutableLiveData<List<FoodData>>) Transformations.map(livedataOfAllFood, new Function<List<Food>, List<FoodData>>() {
             @Override
             public List<FoodData> apply(List<Food> input) {
                 return input.stream().map(new java.util.function.Function<Food, FoodData>() {
@@ -62,7 +63,8 @@ public class FridgeRepository {
                     }
                 }).collect(Collectors.<FoodData>toList());                   // Хоспади, сколько я намучился с этой строчкой, пока нашед куда каст вставить
             }
-        }) ;
+        });
+        results.getValue() ;
         return results ;
     }
 
