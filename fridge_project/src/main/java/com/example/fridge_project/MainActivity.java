@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
         goToProducts = findViewById(R.id.goToProducts) ;
         goToProducts.setOnClickListener( new goToProductsListener());
         goToRecipes = findViewById(R.id.goToRecipes) ;
-
-        fridgeRepository.getFoodDataList() ;
     }
 
     @Override
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this , ProductsActivity.class) ;
-            fridgeRepository.getFoodDataList() ;
             startActivity(intent);
         }
     }

@@ -1,56 +1,70 @@
-    package com.example.fridge_project;
+package com.example.fridge_project;
 
-    import android.content.Context;
-    import android.os.Bundle;
-    import android.view.LayoutInflater;
-    import android.view.View;
-    import android.view.ViewGroup;
-    import android.widget.ImageButton;
-    import android.widget.TextView;
+import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
-    import androidx.annotation.NonNull;
-    import androidx.annotation.Nullable;
-    import androidx.appcompat.app.AppCompatActivity;
-    import androidx.lifecycle.LiveData;
-    import androidx.lifecycle.MutableLiveData;
-    import androidx.recyclerview.widget.LinearLayoutManager;
-    import androidx.recyclerview.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-    import com.example.fridge_project.repo.FridgeRepository;
-    import com.example.fridge_project.repoData.FoodData;
+import com.example.fridge_project.repo.FridgeRepository;
+import com.example.fridge_project.repoData.FoodData;
 
-    import java.util.ArrayList;
-    import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-    public class ProductsActivity extends AppCompatActivity {
+public class ProductsActivity extends AppCompatActivity {
 
     private RecyclerView productsRecycler ;
     private ImageButton addProduct ;
     private FridgeRepository fridgeRepository;
-    private MutableLiveData<List<FoodData>> foodList ;
+    private MutableLiveData<List<FoodData>> foodListData ;
     private ArrayList<FoodData> testList ;
-    private ProductsAdapter productsAdapter ;
+
+    private static String MY_LOG = "123q";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products);
 
+        Log.d(MY_LOG, "ProductsActivity - OnCreate") ;
+
         initTestList();
+
+        fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
 
         addProduct = findViewById(R.id.addProduct);
         productsRecycler = findViewById(R.id.recyclerProducts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
-        productsRecycler.setAdapter(new ProductsAdapter(testList));
         productsRecycler.setLayoutManager(linearLayoutManager);
+        productsRecycler.setAdapter(new ProductsAdapter(testList));
 
-        initRepo(this);
 
-    //        foodList = new MutableLiveData<>();
-    //        ArrayList<FoodData> m = new ArrayList<>();
-    //        foodList.setValue(m);
-    //        ArrayList<FoodData> n = (ArrayList<FoodData>) foodList.getValue();
-    //        productsRecycler.setAdapter(new ProductsAdapter(n));
+        foodListData = fridgeRepository.getFoodDataList() ;
+        foodListData.observe(this, new Observer<List<FoodData>>() {
+            @Override
+            public void onChanged(List<FoodData> newList) {
+                 if (newList != null) {
+                 Log.d(MY_LOG, "ProductsActivity - foodListData: Observe " + newList.size()) ;
+                    productsRecycler.setAdapter(new ProductsAdapter(newList));}
+            }
+        });
+
+
+//        fillFridge();
+ //       exampleLiveDataMethod(this);
     }
 
     @Override
@@ -59,26 +73,45 @@
         closeRepo();
     }
 
-    private void initRepo(final Context context) {
-        Thread thread = new Thread(new Runnable() {
+    private void fillFridge() {
+        final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
-                foodList = fridgeRepository.getFoodDataList();
-
-                List<FoodData> foodData = new ArrayList<>() ;
-                MutableLiveData<List<FoodData>> k = new MutableLiveData<>();
-                k.postValue(foodData);
-                ArrayList<FoodData> foodData1 = (ArrayList<FoodData>) k.getValue() ;
-                productsAdapter = new ProductsAdapter(foodData1) ;
-                productsRecycler.setAdapter(productsAdapter);
+                Log.d(MY_LOG, "ProductActivity - Put products in fridge") ;
+                fridgeRepository.AddNewFood(new FoodData("Хлеб" , 1.0));
+                fridgeRepository.AddNewFood(new FoodData("Мясо" , 1.0));
             }
         });
         thread.start();
     }
 
+    private void exampleLiveDataMethod(Context context) {
+        final Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<FoodData> foodList = new ArrayList<>() ;
+                foodList.add(new FoodData("qwe" , 2.1)) ;
+                try {
+                   Thread.currentThread().sleep(2000);
+                } catch (InterruptedException e) {
+                   e.printStackTrace();
+                }
+                foodListData.postValue(foodList);
+            }
+        }) ;
+        thread.start();
+    }
+
     private void closeRepo() {
         fridgeRepository = null ;
+    }
+
+    class AddPrListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+
+        }
     }
 
     private void initTestList() {
@@ -134,8 +167,12 @@
 
             void bindData(FoodData foodData) {
                 productName.setText(foodData.getName());
-                productAmount.setText(foodData.getAmount().toString());
+                if (foodData.getAmount() != null)
+                {productAmount.setText(foodData.getAmount().toString());}
+                else {
+                    productAmount.setText("11.0") ;
+                }
             }
         }
     }
-    }
+}
