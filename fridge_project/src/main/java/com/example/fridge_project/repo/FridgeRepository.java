@@ -135,7 +135,7 @@ public class FridgeRepository {
         });
     }
 
-    public void AddNewFood(final FoodData foodData) {
+    public void addNewFood(final FoodData foodData) {
         final Food food = new Food(foodData.getName()) ;
         executorService.execute(new Runnable() {
             @Override
