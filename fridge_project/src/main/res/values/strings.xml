@@ -2,4 +2,7 @@
     <string name="app_name">Fridge_manager</string>
     <string name="products_list">Список продуктов</string>
     <string name="recipes_list">Список рецептов</string>
+    <string name="change">Change</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
 </resources>
