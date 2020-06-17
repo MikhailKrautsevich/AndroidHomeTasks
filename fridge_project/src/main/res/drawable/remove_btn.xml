@@ -5,13 +5,13 @@
     android:insetLeft= "4dp"
     android:insetRight= "4dp"
     android:insetTop= "6dp">
-    <ripple android:color="@color/blue_for_cancel"
-        tools:targetApi="lollipop">
+    <ripple android:color="@color/pink_for_remove"
+        tools:targetApi="lollipop">@color/pink_for_remove
         <item>
             <shape android:shape="rectangle"
-                android:tint="@color/blue_for_cancel">
+                android:tint="@color/pink_for_remove">
                 <corners android:radius="50dp"/>
-                <solid android:color="@color/blue_for_cancel"/>
+                <solid android:color="@color/pink_for_remove"/>
                 <padding android:bottom="6dp"/>
             </shape>
         </item>

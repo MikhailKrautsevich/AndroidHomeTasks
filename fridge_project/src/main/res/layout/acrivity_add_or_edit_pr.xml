@@ -29,13 +29,15 @@
         android:textSize="36sp"
         android:gravity="center"
         android:hint="Product's amount"
-        android:layout_margin="4dp"/>
+        android:layout_margin="4dp" />
 
     <Button
         android:id="@+id/save_btn"
         android:layout_width="180dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
+        android:text="Save"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/add_product_button"
@@ -51,6 +53,19 @@
         android:background="@drawable/cancel_btn"
         app:layout_constraintTop_toBottomOf="@id/save_btn"
         android:text="Cancel"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="28sp"/>
+
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/remove_btn"
+        app:layout_constraintTop_toBottomOf="@id/cancel"
+        android:text="Remove"
         android:gravity="center_horizontal|center_vertical"
         android:textSize="28sp"/>
 

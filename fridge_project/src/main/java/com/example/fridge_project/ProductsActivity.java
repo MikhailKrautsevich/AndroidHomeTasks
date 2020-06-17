@@ -1,6 +1,7 @@
 package com.example.fridge_project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ public class ProductsActivity extends AppCompatActivity {
         fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
 
         addProduct = findViewById(R.id.addProduct);
+        addProduct.setOnClickListener(new AddPrListener());
         productsRecycler = findViewById(R.id.recyclerProducts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         productsRecycler.setLayoutManager(linearLayoutManager);
@@ -109,7 +111,7 @@ public class ProductsActivity extends AppCompatActivity {
     class AddPrListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(ProductsActivity.this, ProductAddOrEdit.class) ;
         }
     }
 
