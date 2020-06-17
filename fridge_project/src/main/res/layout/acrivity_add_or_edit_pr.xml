@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/productName"
+        android:layout_width="360dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="36sp"
+        android:hint="Product's title"
+        android:gravity="center"
+        android:layout_margin="4dp"/>
+
+    <EditText
+        android:id="@+id/productAmount"
+        android:layout_width="360dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/productName"
+        android:textSize="36sp"
+        android:gravity="center"
+        android:hint="Product's amount"
+        android:layout_margin="4dp"/>
+
+    <Button
+        android:id="@+id/save_btn"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/add_product_button"
+        app:layout_constraintTop_toBottomOf="@id/productAmount" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/cancel_btn"
+        app:layout_constraintTop_toBottomOf="@id/save_btn"
+        android:text="Cancel"
+        android:gravity="center_horizontal|center_vertical"
+        android:textSize="28sp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

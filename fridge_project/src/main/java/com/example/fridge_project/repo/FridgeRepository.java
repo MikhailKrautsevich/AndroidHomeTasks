@@ -148,6 +148,10 @@ public class FridgeRepository {
         });
     }
 
+    public LiveData<List<FoodData>> getAllFoodDataInList() {
+        return foodDao.getAllFoodDataInList() ;
+    }
+
     public List<Food> getFoodList() {
         final ArrayList<Food> foods = new ArrayList<>() ;
         executorService.execute(new Runnable() {

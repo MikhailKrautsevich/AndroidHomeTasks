@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +28,7 @@ public class ProductsActivity extends AppCompatActivity {
     private RecyclerView productsRecycler ;
     private ImageButton addProduct ;
     private FridgeRepository fridgeRepository;
-    private MutableLiveData<List<FoodData>> foodListData ;
+    private LiveData<List<FoodData>> foodListData ;
     private ArrayList<FoodData> testList ;
 
     private static String MY_LOG = "123q";
@@ -52,7 +51,7 @@ public class ProductsActivity extends AppCompatActivity {
         productsRecycler.setAdapter(new ProductsAdapter(testList));
 
 
-        foodListData = fridgeRepository.getFoodDataList() ;
+        foodListData = fridgeRepository.getAllFoodDataInList() ;
         foodListData.observe(this, new Observer<List<FoodData>>() {
             @Override
             public void onChanged(List<FoodData> newList) {
@@ -97,7 +96,7 @@ public class ProductsActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                    e.printStackTrace();
                 }
-                foodListData.postValue(foodList);
+//                foodListData.postValue(foodList);
             }
         }) ;
         thread.start();
