@@ -80,8 +80,8 @@ public class ProductsActivity extends AppCompatActivity {
             public void run() {
                 fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
                 Log.d(MY_LOG, "ProductActivity - Put products in fridge") ;
-                fridgeRepository.AddNewFood(new FoodData("Хлеб" , 1.0));
-                fridgeRepository.AddNewFood(new FoodData("Мясо" , 1.0));
+                fridgeRepository.addNewFood(new FoodData("Хлеб" , 1.0));
+                fridgeRepository.addNewFood(new FoodData("Мясо" , 1.0));
             }
         });
         thread.start();
@@ -112,6 +112,7 @@ public class ProductsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(ProductsActivity.this, ProductAddOrEdit.class) ;
+            startActivity(intent);
         }
     }
 

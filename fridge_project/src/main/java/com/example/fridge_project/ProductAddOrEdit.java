@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,13 +43,22 @@ public class ProductAddOrEdit extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nameProductStr = name.getText().toString().trim();
-                Double amountProductDouble  = Double.parseDouble(amount.getText().toString().trim()) ;
-                if (nameProductStr != null && !nameProductStr.isEmpty()
-                        && amountProductDouble != null ) {
-                    FoodData newFood = new FoodData(nameProductStr, amountProductDouble) ;
-                    FridgeRepository fridgeRepository = new FridgeRepository(ProductAddOrEdit.this) ;
-                    fridgeRepository.addNewFood(newFood);
+                if (amount.getText().toString().matches("[0-9]+?[\\.\\,]?[0-9]*")) {
+                    String nameProductStr = name.getText().toString().trim();
+                    String toDouble = amount.getText().toString().trim().replace(',' , '.');
+                    Double amountProductDouble = Double.parseDouble(toDouble);
+                    if (nameProductStr != null && !nameProductStr.isEmpty()
+                            && amountProductDouble != null) {
+                        FoodData newFood = new FoodData(nameProductStr, amountProductDouble);
+                        FridgeRepository fridgeRepository = new FridgeRepository(ProductAddOrEdit.this);
+                        fridgeRepository.addNewFood(newFood);
+                        String saveMessage = String.format("Product %s in amount %.1f was saved", nameProductStr, amountProductDouble) ;
+                        Toast.makeText(ProductAddOrEdit.this, saveMessage, Toast.LENGTH_LONG).show();
+                        name.setText("");
+                        amount.setText("");
+                    }
+                } else {
+                    Toast.makeText(ProductAddOrEdit.this, "Введите корректное количество", Toast.LENGTH_LONG).show();
                 }
             }
         });
