@@ -22,6 +22,7 @@ import com.example.fridge_project.repo.FridgeRepository;
 import com.example.fridge_project.repoData.FoodData;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class ProductsActivity extends AppCompatActivity {
@@ -59,10 +60,15 @@ public class ProductsActivity extends AppCompatActivity {
             public void onChanged(List<FoodData> newList) {
                  if (newList != null) {
                  Log.d(MY_LOG, "ProductsActivity - foodListData: Observe " + newList.size()) ;
-                    productsRecycler.setAdapter(new ProductsAdapter(newList));}
+                 newList.sort(new Comparator<FoodData>() {
+                     @Override
+                     public int compare(FoodData o1, FoodData o2) {
+                         return o1.getName().compareTo(o2.getName());
+                     }
+                 });
+                 productsRecycler.setAdapter(new ProductsAdapter(newList));}
             }
         });
-
 
 //        fillFridge();
  //       exampleLiveDataMethod(this);

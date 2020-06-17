@@ -52,7 +52,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/cancel_btn"
         app:layout_constraintTop_toBottomOf="@id/save_btn"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:gravity="center_horizontal|center_vertical"
         android:textSize="28sp"/>
 
@@ -65,7 +65,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:background="@drawable/remove_btn"
         app:layout_constraintTop_toBottomOf="@id/cancel"
-        android:text="Remove"
+        android:text="@string/remove"
         android:gravity="center_horizontal|center_vertical"
         android:textSize="28sp"/>
 
