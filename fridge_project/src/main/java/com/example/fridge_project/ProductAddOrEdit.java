@@ -51,7 +51,8 @@ public class ProductAddOrEdit extends AppCompatActivity {
             name.setText(nameCur);
             amount.setText(amountCur);
             save.setText(R.string.change);
-            FoodData foodToWorkWith = new FoodData(nameCur, dAmountCur);
+            if (dAmountCur !=null)
+            {FoodData foodToWorkWith = new FoodData(nameCur, dAmountCur);}
         } else {
             remove.setVisibility(View.GONE);
             save.setOnClickListener(new SaveListener());
