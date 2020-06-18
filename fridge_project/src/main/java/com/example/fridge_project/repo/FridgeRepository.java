@@ -18,6 +18,7 @@ import com.example.fridge_project.database.IngredientDao;
 import com.example.fridge_project.database.Recipe;
 import com.example.fridge_project.database.RecipeDao;
 import com.example.fridge_project.repoData.FoodData;
+import com.example.fridge_project.repoData.RecipeShortD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,6 +190,10 @@ public class FridgeRepository {
                 }
             }
         });
+    }
+
+    public LiveData<List<RecipeShortD>> getAllRecipes() {
+        return recipeDao.getAllRecipes() ;
     }
 
     public List<Fridge> getAllFrN() {

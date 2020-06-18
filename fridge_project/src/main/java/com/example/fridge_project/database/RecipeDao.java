@@ -8,13 +8,15 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.fridge_project.repoData.RecipeShortD;
+
 import java.util.List;
 
 @Dao
 public interface RecipeDao {
 
     @Query("SELECT * from recipe")
-    LiveData<List<Recipe>> getAllRecipes();
+    LiveData<List<RecipeShortD>> getAllRecipes();
 
     @Query("SELECT * from recipe WHERE id = :id")
     Recipe getRecipeById(int id);

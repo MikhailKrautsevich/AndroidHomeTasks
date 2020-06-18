@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         goToProducts = findViewById(R.id.goToProducts) ;
         goToProducts.setOnClickListener( new goToProductsListener());
         goToRecipes = findViewById(R.id.goToRecipes) ;
+        goToRecipes.setOnClickListener(new goToRecipesListener());
     }
 
     @Override
@@ -55,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(MainActivity.this , ProductsActivity.class) ;
+            startActivity(intent);
+        }
+    }
+
+    class goToRecipesListener implements OnClickListener {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(MainActivity.this , RecipesActivity.class) ;
             startActivity(intent);
         }
     }

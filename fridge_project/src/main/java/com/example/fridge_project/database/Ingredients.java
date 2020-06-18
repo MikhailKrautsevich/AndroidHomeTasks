@@ -10,21 +10,16 @@ import androidx.room.PrimaryKey;
                 parentColumns = "id",
                 childColumns = "recipe_id",
                 onDelete = ForeignKey.CASCADE,
-                deferred = true),
-                @ForeignKey(entity = Food.class ,
-                parentColumns = "id",
-                childColumns = "food_id" ,
-                onDelete = ForeignKey.CASCADE,
-                deferred = true) } )
+                deferred = true)} )
 public class Ingredients {
     @PrimaryKey(autoGenerate = true)
     private int id ;
-    private int food_id ;
+    private String ingredient_name ;
     private int recipe_id ;
     private double amount ;
 
-    public Ingredients(int food_id, int recipe_id, double amount) {
-        this.food_id = food_id;
+    public Ingredients(String ingredient_name, int recipe_id, double amount) {
+        this.ingredient_name = ingredient_name;
         this.recipe_id = recipe_id;
         this.amount = amount;
     }
@@ -33,8 +28,8 @@ public class Ingredients {
         return id;
     }
 
-    public int getFood_id() {
-        return food_id;
+    public String getIngredient_name() {
+        return ingredient_name;
     }
 
     public int getRecipe_id() {
@@ -45,19 +40,19 @@ public class Ingredients {
         return amount;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setFood_id(int food_id) {
-        this.food_id = food_id;
+    public void setIngredient_name(String ingredient_name) {
+        this.ingredient_name = ingredient_name;
     }
 
     public void setRecipe_id(int recipe_id) {
         this.recipe_id = recipe_id;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 }
