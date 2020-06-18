@@ -33,4 +33,7 @@ public interface FridgeDao {
 
     @Update
     void updateAmount(Fridge fridge);
+
+    @Update
+    void updateFridgeByFridge(Fridge fridge);
 }

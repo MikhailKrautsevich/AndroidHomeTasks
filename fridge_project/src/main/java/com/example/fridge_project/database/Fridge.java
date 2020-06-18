@@ -40,7 +40,4 @@ public class Fridge {
         this.amount = amount;
     }
 
-    public void setFood_id(int food_id) {
-        this.food_id = food_id;
-    }
 }

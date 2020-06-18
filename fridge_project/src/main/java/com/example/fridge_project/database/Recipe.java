@@ -1,9 +1,10 @@
 package com.example.fridge_project.database;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "recipe")
+@Entity(tableName = "recipe", indices = {@Index(value = {"name"}, unique = true)})
 public class Recipe {
     @PrimaryKey(autoGenerate = true)
     private int id;

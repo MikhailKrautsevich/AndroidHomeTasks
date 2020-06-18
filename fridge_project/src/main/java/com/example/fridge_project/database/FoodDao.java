@@ -2,7 +2,6 @@ package com.example.fridge_project.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -24,15 +23,21 @@ public interface FoodDao {
     @Query("SELECT id from food WHERE name = :name ")
     int getFoodIdByName(String name) ;
 
+    @Query("SELECT * from food WHERE name = :name ")
+    Food getFoodByName(String name) ;
+
     @Query("SELECT food.name, fridge.amount from food, fridge WHERE fridge.food_id == food.id")
     LiveData<List<FoodData>> getAllFoodDataInList() ;
+
+    @Query("DELETE from food where name = :name")
+    void deleteFoodByName(String name) ;
+
+    @Query("DELETE from food where id = :id")
+    void deleteFoodById(int id) ;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void addNewFood(Food food);
 
     @Update
-    void changeFood(Food food);
-
-    @Delete
-    void deleteFood(Food food);
+    void updateFoodByFood(Food food);
 }

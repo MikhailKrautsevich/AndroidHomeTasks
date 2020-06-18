@@ -120,21 +120,6 @@ public class FridgeRepository {
 //        return resultLiveData ;
 //    }
 
-    public void changeAmount(FoodData foodData) {
-        final String name  = foodData.getName() ;
-        final Double amount = foodData.getAmount() ;
-        Log.d(LOG_TAG, "Repo - Обновляю количество еды " + name + " на " + amount) ;
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                int food_id  = foodDao.getFoodIdByName(name) ;
-                Fridge frNote = fridgeDao.getFridgeNoteById(food_id) ;
-                frNote.setAmount(amount);
-                fridgeDao.updateAmount(frNote);
-            }
-        });
-    }
-
     public void addNewFood(final FoodData foodData) {
         final Food food = new Food(foodData.getName()) ;
         executorService.execute(new Runnable() {
@@ -162,6 +147,48 @@ public class FridgeRepository {
             }
         });
         return foods ;
+    }
+
+    public void deleteFoodByName(final String name){
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                int foodIdToDelete = foodDao.getFoodIdByName(name) ;
+                Fridge fridgeNoteToDelete = fridgeDao.getFridgeNoteById(foodIdToDelete) ;
+                fridgeDao.deleteNote(fridgeNoteToDelete);
+                foodDao.deleteFoodById(foodIdToDelete);
+            }
+        });
+    }
+
+    public void changeNote(final FoodData f , final String nameWanted, final Double amountWanted) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                String nameToChange = f.getName() ;
+                Double amountToChange = f.getAmount() ;
+                if (nameToChange.equals(nameWanted) && amountToChange==amountWanted) {}
+                else if ((!nameToChange.equals(nameWanted) && amountToChange != amountWanted)) {
+                    int foodId = foodDao.getFoodIdByName(nameToChange) ;
+                    Food food = foodDao.getFoodByName(nameToChange) ;
+                    food.setName(nameWanted) ;
+                    foodDao.updateFoodByFood(food) ;
+                    Fridge fridge = fridgeDao.getFridgeNoteById(foodId) ;
+                    fridge.setAmount(amountWanted);
+                    fridgeDao.updateFridgeByFridge(fridge) ;
+                }
+                else if ((nameToChange.equals(nameWanted) && amountToChange != amountWanted)) {
+                    int foodId = foodDao.getFoodIdByName(nameToChange) ;
+                    Fridge fridge = fridgeDao.getFridgeNoteById(foodId) ;
+                    fridge.setAmount(amountWanted);
+                    fridgeDao.updateFridgeByFridge(fridge) ;
+                }        else if ((!nameToChange.equals(nameWanted) && amountToChange == amountWanted)) {
+                    Food food = foodDao.getFoodByName(nameToChange) ;
+                    food.setName(nameWanted) ;
+                    foodDao.updateFoodByFood(food) ;
+                }
+            }
+        });
     }
 
     public List<Fridge> getAllFrN() {

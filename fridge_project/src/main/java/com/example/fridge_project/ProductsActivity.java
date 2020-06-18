@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,8 +54,8 @@ public class ProductsActivity extends AppCompatActivity {
         productsRecycler = findViewById(R.id.recyclerProducts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         productsRecycler.setLayoutManager(linearLayoutManager);
+        productsRecycler.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
         productsRecycler.setAdapter(new ProductsAdapter(testList));
-
 
         foodListData = fridgeRepository.getAllFoodDataInList() ;
         foodListData.observe(this, new Observer<List<FoodData>>() {
@@ -168,13 +169,22 @@ public class ProductsActivity extends AppCompatActivity {
 
             private TextView productName ;
             private TextView productAmount ;
-            private View.OnClickListener listener ;
 
             public ProductsViewHolder(@NonNull View itemView) {
                 super(itemView);
                 productName = itemView.findViewById(R.id.productName) ;
                 productAmount = itemView.findViewById(R.id.productAmount) ;
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ProductsActivity.this , ProductAddOrEdit.class) ;
+                        intent.putExtra(TITLE_KEY , productName.getText()) ;
+                        intent.putExtra(AMOUNT_KEY , productAmount.getText()) ;
+                        startActivity(intent);
+                    }
+                });
             }
+
             void bindData(FoodData foodData) {
                 final String name = foodData.getName() ;
                 productName.setText(name);
@@ -183,15 +193,6 @@ public class ProductsActivity extends AppCompatActivity {
                 else {
                     productAmount.setText("0.0") ;
                 }
-                listener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(ProductsActivity.this , ProductAddOrEdit.class) ;
-                        intent.putExtra(TITLE_KEY , name) ;
-                        intent.putExtra(AMOUNT_KEY , productAmount.getText()) ;
-                        startActivity(intent);
-                    }
-                } ;
             }
         }
     }
