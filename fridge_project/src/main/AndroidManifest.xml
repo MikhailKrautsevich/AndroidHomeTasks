@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".ProductsActivity"/>
         <activity android:name=".ProductAddOrEdit"/>
+        <activity android:name=".RecipesActivity"/>
     </application>
 
 </manifest>
