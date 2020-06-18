@@ -20,9 +20,10 @@ public class ProductAddOrEdit extends AppCompatActivity {
     private Button save ;
     private Button cancel ;
     private Button remove ;
-
+    private FoodData foodToWorkWith ;
     private static String TITLE_KEY = "TITLE_KEY" ;
     private static String AMOUNT_KEY = "AMOUNT_KEY" ;
+    private FridgeRepository fridgeRepository ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +53,12 @@ public class ProductAddOrEdit extends AppCompatActivity {
             amount.setText(amountCur);
             save.setText(R.string.change);
             if (dAmountCur !=null)
-            {FoodData foodToWorkWith = new FoodData(nameCur, dAmountCur);}
+            {foodToWorkWith = new FoodData(nameCur, dAmountCur);}
+            if (fridgeRepository == null) {
+            fridgeRepository = new FridgeRepository(this) ; }
+
+
+
         } else {
             remove.setVisibility(View.GONE);
             save.setOnClickListener(new SaveListener());

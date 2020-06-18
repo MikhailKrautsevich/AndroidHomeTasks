@@ -34,6 +34,8 @@ public class ProductsActivity extends AppCompatActivity {
     private ArrayList<FoodData> testList ;
 
     private static String MY_LOG = "123q";
+    private static String TITLE_KEY = "TITLE_KEY" ;
+    private static String AMOUNT_KEY = "AMOUNT_KEY" ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -166,20 +168,30 @@ public class ProductsActivity extends AppCompatActivity {
 
             private TextView productName ;
             private TextView productAmount ;
+            private View.OnClickListener listener ;
 
             public ProductsViewHolder(@NonNull View itemView) {
                 super(itemView);
                 productName = itemView.findViewById(R.id.productName) ;
                 productAmount = itemView.findViewById(R.id.productAmount) ;
             }
-
             void bindData(FoodData foodData) {
-                productName.setText(foodData.getName());
+                final String name = foodData.getName() ;
+                productName.setText(name);
                 if (foodData.getAmount() != null)
                 {productAmount.setText(foodData.getAmount().toString());}
                 else {
-                    productAmount.setText("11.0") ;
+                    productAmount.setText("0.0") ;
                 }
+                listener = new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ProductsActivity.this , ProductAddOrEdit.class) ;
+                        intent.putExtra(TITLE_KEY , name) ;
+                        intent.putExtra(AMOUNT_KEY , productAmount.getText()) ;
+                        startActivity(intent);
+                    }
+                } ;
             }
         }
     }
