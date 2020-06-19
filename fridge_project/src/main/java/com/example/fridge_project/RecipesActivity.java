@@ -1,5 +1,6 @@
 package com.example.fridge_project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ public class RecipesActivity extends AppCompatActivity {
     private RecyclerView recipeRecycler ;
     private ImageButton addRecipe ;
     private FridgeRepository fridgeRepository;
-    private LiveData recipesList;
+    private LiveData<List<RecipeShortD>> recipesList;
 
     private static String MY_LOG = "123q";
 
@@ -44,7 +45,14 @@ public class RecipesActivity extends AppCompatActivity {
 
         fridgeRepository = new FridgeRepository(RecipesActivity.this) ;
 
-        addRecipe = findViewById(R.id.addProduct);
+        addRecipe = findViewById(R.id.addRecipe);
+        addRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecipesActivity.this, RecipesAddActivity.class) ;
+                startActivity(intent);
+            }
+        });
         recipeRecycler = findViewById(R.id.recyclerRecipes);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) ;
         recipeRecycler.setLayoutManager(linearLayoutManager);
@@ -60,7 +68,7 @@ public class RecipesActivity extends AppCompatActivity {
                     newList.sort(new Comparator<RecipeShortD>() {
                         @Override
                         public int compare(RecipeShortD o1, RecipeShortD o2) {
-                            return o1.getName().compareTo(o2.getName());
+                            return (o1.getName().toLowerCase()).compareTo(o2.getName().toLowerCase());
                         }
                     });
                     recipeRecycler.setAdapter(new RecipesAdapter(newList));}
@@ -112,8 +120,7 @@ public class RecipesActivity extends AppCompatActivity {
 
             public RecipesViewHolder(@NonNull View itemView) {
                 super(itemView);
-                recipeName = itemView.findViewById(R.id.productName) ;
-                possibilityPic = itemView.findViewById(R.id.productAmount) ;
+                recipeName = itemView.findViewById(R.id.recipeName) ;
 //                itemView.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View v) {
@@ -125,8 +132,8 @@ public class RecipesActivity extends AppCompatActivity {
 //                });
             }
 
-            void bindData(RecipeShortD recipeFullD) {
-                final String name = recipeFullD.getName() ;
+            void bindData(RecipeShortD shortD) {
+                final String name = shortD.getName() ;
                 recipeName.setText(name);
             }
         }

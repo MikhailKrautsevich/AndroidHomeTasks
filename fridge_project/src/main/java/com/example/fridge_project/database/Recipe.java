@@ -4,15 +4,15 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "recipe", indices = {@Index(value = {"title"}, unique = true)})
+@Entity(tableName = "recipe", indices = {@Index(value = {"name"}, unique = true)})
 public class Recipe {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private String title;
+    private String name;
     private String description;
 
-    public Recipe(String title, String description) {
-        this.title = title;
+    public Recipe(String name, String description) {
+        this.name = name;
         this.description = description;
     }
 
@@ -20,8 +20,8 @@ public class Recipe {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public String getDescription() {
@@ -33,7 +33,7 @@ public class Recipe {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.name = title;
     }
 
     public void setDescription(String description) {
