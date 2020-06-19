@@ -1,6 +1,5 @@
 package com.example.fridge_project;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -23,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initRepo(this);
+        initRepo();
         fridgeRepository = new FridgeRepository(this);
 
         goToProducts = findViewById(R.id.goToProducts) ;
@@ -35,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        closeRepo(); ;
+        closeRepo();
     }
 
-    private void initRepo(final Context context) {
+    private void initRepo() {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

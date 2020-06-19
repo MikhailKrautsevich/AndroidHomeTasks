@@ -31,7 +31,7 @@ public abstract class FridgeDataBase extends RoomDatabase {
 
     public abstract RecipeDao getRecipeDao();
 
-    public static FridgeDataBase getFridgedataBase(@NonNull final Context context) {
+    public static FridgeDataBase getFridgeDataBase(@NonNull final Context context) {
         if (INSTANCE == null) {
             synchronized (FridgeDataBase.class) {
                 if (INSTANCE == null) {
