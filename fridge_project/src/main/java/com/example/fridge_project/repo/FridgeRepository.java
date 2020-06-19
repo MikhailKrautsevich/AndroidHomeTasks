@@ -41,7 +41,7 @@ public class FridgeRepository {
     private static String MY_LOG = "123q";
 
     public FridgeRepository(@NonNull final Context context){
-        FridgeDataBase fridgeDataBase = FridgeDataBase.getFridgedataBase(context) ;
+        FridgeDataBase fridgeDataBase = FridgeDataBase.getFridgeDataBase(context) ;
         executorService = fridgeDataBase.getExecutorService();
         foodDao = fridgeDataBase.getFoodDao() ;
         fridgeDao = fridgeDataBase.getFridgeDao() ;
@@ -53,7 +53,7 @@ public class FridgeRepository {
         if (livedataOfAllFood == null) {
             livedataOfAllFood = foodDao.getAllFood();
         }
-        MutableLiveData<List<FoodData>> results = (MutableLiveData<List<FoodData>>) Transformations
+        return (MutableLiveData<List<FoodData>>) Transformations
                 .map(livedataOfAllFood, new Function<List<Food>, List<FoodData>>() {
             @Override
             public List<FoodData> apply(List<Food> input) {
@@ -73,7 +73,6 @@ public class FridgeRepository {
                 }).collect(Collectors.<FoodData>toList());                   // Хоспади, сколько я намучился с этой строчкой, пока нашед куда каст вставить
             }
         });
-        return results ;
     }
 
 //    public MutableLiveData<List<FoodData>> getFoodDataList123() {
@@ -169,7 +168,7 @@ public class FridgeRepository {
             public void run() {
                 String nameToChange = f.getName() ;
                 Double amountToChange = f.getAmount() ;
-                if (nameToChange.equals(nameWanted) && amountToChange==amountWanted) {}
+                if (nameToChange.equals(nameWanted) && amountToChange == amountWanted) {}
                 else if ((!nameToChange.equals(nameWanted) && amountToChange != amountWanted)) {
                     int foodId = foodDao.getFoodIdByName(nameToChange) ;
                     Food food = foodDao.getFoodByName(nameToChange) ;
@@ -179,12 +178,12 @@ public class FridgeRepository {
                     fridge.setAmount(amountWanted);
                     fridgeDao.updateFridgeByFridge(fridge) ;
                 }
-                else if ((nameToChange.equals(nameWanted) && amountToChange != amountWanted)) {
+                else if ((nameToChange.equals(nameWanted) && !amountToChange.equals(amountWanted))) {
                     int foodId = foodDao.getFoodIdByName(nameToChange) ;
                     Fridge fridge = fridgeDao.getFridgeNoteById(foodId) ;
                     fridge.setAmount(amountWanted);
                     fridgeDao.updateFridgeByFridge(fridge) ;
-                }        else if ((!nameToChange.equals(nameWanted) && amountToChange == amountWanted)) {
+                }        else if ((!nameToChange.equals(nameWanted) && (amountToChange == amountWanted))) {
                     Food food = foodDao.getFoodByName(nameToChange) ;
                     food.setName(nameWanted) ;
                     foodDao.updateFoodByFood(food) ;

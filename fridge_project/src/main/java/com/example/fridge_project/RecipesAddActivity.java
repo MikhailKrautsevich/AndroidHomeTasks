@@ -1,5 +1,6 @@
 package com.example.fridge_project;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.example.fridge_project.repoData.FoodData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class RecipesAddActivity extends AppCompatActivity {
 
@@ -104,7 +106,7 @@ public class RecipesAddActivity extends AppCompatActivity {
     private void saveIngredientToList(String name, Double amount) {
         ingredientsList.add(new FoodData(name , amount)) ;
         ingredientsNames.add(name) ;
-        String saveMessage = String.format("Product %s in amount %.1f was saved", name, amount) ;
+        String saveMessage = String.format(Locale.getDefault() ,"Product %s in amount %.1f was saved", name, amount) ;
         showToast(saveMessage);
         ingredientName.setText("");
         ingredientAmount.setText("");
@@ -147,6 +149,7 @@ public class RecipesAddActivity extends AppCompatActivity {
                 productAmount = itemView.findViewById(R.id.productAmount) ;
             }
 
+            @SuppressLint("SetTextI18n")
             void bindData(FoodData foodData) {
                 final String name = foodData.getName() ;
                 productName.setText(name);

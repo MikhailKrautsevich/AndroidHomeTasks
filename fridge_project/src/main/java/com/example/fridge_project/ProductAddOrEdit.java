@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.fridge_project.repo.FridgeRepository;
 import com.example.fridge_project.repoData.FoodData;
 
+import java.util.Locale;
+
 public class ProductAddOrEdit extends AppCompatActivity {
 
     private EditText name ;
@@ -48,17 +50,20 @@ public class ProductAddOrEdit extends AppCompatActivity {
         if (intent.getStringExtra(TITLE_KEY) != null) {
             final String nameCur = intent.getStringExtra(TITLE_KEY) ;
             String amountCur = intent.getStringExtra(AMOUNT_KEY) ;
-            Double dAmountCur = Double.parseDouble(amountCur) ;
+            Double dAmountCur = 0.0 ;
+            if (amountCur!=null) {
+                dAmountCur = Double.parseDouble(amountCur) ;
+            }
             name.setText(nameCur);
             amount.setText(amountCur);
-            if (dAmountCur !=null)
+            if (dAmountCur != null)
             {foodToWorkWith = new FoodData(nameCur, dAmountCur);}
             if (fridgeRepository == null) {
             fridgeRepository = new FridgeRepository(this) ; }
             remove.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fridgeRepository.deleteFoodByName(nameCur);;
+                    fridgeRepository.deleteFoodByName(nameCur);
                     showToast("I removed this note");
                     remove.setVisibility(View.GONE);
                     save.setText(R.string.save);
@@ -97,7 +102,8 @@ public class ProductAddOrEdit extends AppCompatActivity {
                 if (fridgeRepository == null) {
                     fridgeRepository = new FridgeRepository(this) ; }
                 fridgeRepository.addNewFood(newFood);
-                String saveMessage = String.format("Product %s in amount %.1f was saved", nameProductStr, amountProductDouble) ;
+                String saveMessage = String
+                        .format(Locale.getDefault() , "Product %s in amount %.1f was saved", nameProductStr, amountProductDouble) ;
                 showToast(saveMessage);
                 name.setText("");
                 amount.setText("");

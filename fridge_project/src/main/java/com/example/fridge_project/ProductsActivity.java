@@ -1,6 +1,6 @@
 package com.example.fridge_project;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,9 +71,6 @@ public class ProductsActivity extends AppCompatActivity {
                  productsRecycler.setAdapter(new ProductsAdapter(newList));}
             }
         });
-
-//        fillFridge();
- //       exampleLiveDataMethod(this);
     }
 
     @Override
@@ -82,35 +79,18 @@ public class ProductsActivity extends AppCompatActivity {
         closeRepo();
     }
 
-    private void fillFridge() {
-        final Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
-                Log.d(MY_LOG, "ProductActivity - Put products in fridge") ;
-                fridgeRepository.addNewFood(new FoodData("Хлеб" , 1.0));
-                fridgeRepository.addNewFood(new FoodData("Мясо" , 1.0));
-            }
-        });
-        thread.start();
-    }
-
-    private void exampleLiveDataMethod(Context context) {
-        final Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<FoodData> foodList = new ArrayList<>() ;
-                foodList.add(new FoodData("qwe" , 2.1)) ;
-                try {
-                   Thread.currentThread().sleep(2000);
-                } catch (InterruptedException e) {
-                   e.printStackTrace();
-                }
-//                foodListData.postValue(foodList);
-            }
-        }) ;
-        thread.start();
-    }
+//    private void fillFridge() {
+//        final Thread thread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                fridgeRepository = new FridgeRepository(ProductsActivity.this) ;
+//                Log.d(MY_LOG, "ProductActivity - Put products in fridge") ;
+//                fridgeRepository.addNewFood(new FoodData("Хлеб" , 1.0));
+//                fridgeRepository.addNewFood(new FoodData("Мясо" , 1.0));
+//            }
+//        });
+//        thread.start();
+//    }
 
     private void closeRepo() {
         fridgeRepository = null ;
@@ -180,6 +160,7 @@ public class ProductsActivity extends AppCompatActivity {
                 });
             }
 
+            @SuppressLint("SetTextI18n")
             void bindData(FoodData foodData) {
                 final String name = foodData.getName() ;
                 productName.setText(name);
