@@ -88,7 +88,7 @@ public class ProductAddOrEdit extends AppCompatActivity {
     }
 
     private void saveFoodData(){
-        if (amount.getText().toString().matches("[0-9]+?[\\.\\,]?[0-9]*")) {
+        if (amount.getText().toString().matches("[0-9]+?[\\.\\,]?[0-9]*") && !getNameFromEdit().isEmpty()) {
             String nameProductStr = getNameFromEdit() ;
             Double amountProductDouble = getAmountFromEdit() ;
             if (nameProductStr != null && !nameProductStr.isEmpty()
@@ -98,12 +98,12 @@ public class ProductAddOrEdit extends AppCompatActivity {
                     fridgeRepository = new FridgeRepository(this) ; }
                 fridgeRepository.addNewFood(newFood);
                 String saveMessage = String.format("Product %s in amount %.1f was saved", nameProductStr, amountProductDouble) ;
-                Toast.makeText(ProductAddOrEdit.this, saveMessage, Toast.LENGTH_LONG).show();
+                showToast(saveMessage);
                 name.setText("");
                 amount.setText("");
             }
         } else {
-            Toast.makeText(ProductAddOrEdit.this, "Введите корректное количество", Toast.LENGTH_LONG).show();
+            showToast("Введите корректное количество");
         }
     }
 

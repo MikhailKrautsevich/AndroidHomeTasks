@@ -14,12 +14,12 @@ import androidx.room.PrimaryKey;
 public class Ingredients {
     @PrimaryKey(autoGenerate = true)
     private int id ;
-    private String ingredient_name ;
+    private String name ;
     private int recipe_id ;
     private double amount ;
 
-    public Ingredients(String ingredient_name, int recipe_id, double amount) {
-        this.ingredient_name = ingredient_name;
+    public Ingredients(String name, int recipe_id, double amount) {
+        this.name = name;
         this.recipe_id = recipe_id;
         this.amount = amount;
     }
@@ -28,8 +28,8 @@ public class Ingredients {
         return id;
     }
 
-    public String getIngredient_name() {
-        return ingredient_name;
+    public String getName() {
+        return name;
     }
 
     public int getRecipe_id() {
@@ -45,7 +45,7 @@ public class Ingredients {
     }
 
     public void setIngredient_name(String ingredient_name) {
-        this.ingredient_name = ingredient_name;
+        this.name = ingredient_name;
     }
 
     public void setRecipe_id(int recipe_id) {

@@ -15,6 +15,7 @@ import com.example.fridge_project.database.Fridge;
 import com.example.fridge_project.database.FridgeDao;
 import com.example.fridge_project.database.FridgeDataBase;
 import com.example.fridge_project.database.IngredientDao;
+import com.example.fridge_project.database.Ingredients;
 import com.example.fridge_project.database.Recipe;
 import com.example.fridge_project.database.RecipeDao;
 import com.example.fridge_project.repoData.FoodData;
@@ -205,5 +206,18 @@ public class FridgeRepository {
             }
         });
         return fr ;
+    }
+
+    public void addRecipe(final String recipeNameFromEdit, final String descriptionFromEdit, final ArrayList<FoodData> ingredientsList) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                int rep_id = (int) recipeDao.addRecipe(new Recipe(recipeNameFromEdit , descriptionFromEdit)) ;
+                for (FoodData f : ingredientsList) {
+                    Ingredients ingr = new Ingredients(f.getName(), rep_id, f.getAmount() ) ;
+                    ingredientDao.addIngredient(ingr);
+                }
+            }
+        });
     }
 }

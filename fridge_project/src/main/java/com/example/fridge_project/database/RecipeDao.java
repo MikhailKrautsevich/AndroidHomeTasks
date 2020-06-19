@@ -22,7 +22,7 @@ public interface RecipeDao {
     Recipe getRecipeById(int id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addRecipe(Recipe recipe) ;
+    long addRecipe(Recipe recipe) ;
 
     @Update
     void updateRecipe(Recipe recipe) ;
