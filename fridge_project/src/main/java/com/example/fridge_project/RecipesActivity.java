@@ -34,6 +34,7 @@ public class RecipesActivity extends AppCompatActivity {
     private LiveData<List<RecipeShortD>> recipesList;
 
     private static String MY_LOG = "123q";
+    private static String TITLE_KEY = "TITLE_KEY" ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,15 +122,14 @@ public class RecipesActivity extends AppCompatActivity {
             public RecipesViewHolder(@NonNull View itemView) {
                 super(itemView);
                 recipeName = itemView.findViewById(R.id.recipeName) ;
-//                itemView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent intent = new Intent(ProductsActivity.this , ProductAddOrEdit.class) ;
-//                        intent.putExtra(TITLE_KEY , productName.getText()) ;
-//                        intent.putExtra(AMOUNT_KEY , productAmount.getText()) ;
-//                        startActivity(intent);
-//                    }
-//                });
+                itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RecipesActivity.this , RecipeDetailActivity.class) ;
+                        intent.putExtra(TITLE_KEY , recipeName.getText()) ;
+                        startActivity(intent);
+                    }
+                });
             }
 
             void bindData(RecipeShortD shortD) {

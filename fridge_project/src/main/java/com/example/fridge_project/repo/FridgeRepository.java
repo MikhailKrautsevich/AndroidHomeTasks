@@ -19,6 +19,7 @@ import com.example.fridge_project.database.Ingredients;
 import com.example.fridge_project.database.Recipe;
 import com.example.fridge_project.database.RecipeDao;
 import com.example.fridge_project.repoData.FoodData;
+import com.example.fridge_project.repoData.IngrData;
 import com.example.fridge_project.repoData.RecipeShortD;
 
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public class FridgeRepository {
     private LiveData<List<Food>> livedataOfAllFood ;
     private LiveData<List<Recipe>> listLiveDataRecipes;
 
-    private static final String LOG_TAG = "MY_LOG_TAG" ;
     private static String MY_LOG = "123q";
 
     public FridgeRepository(@NonNull final Context context){
@@ -212,11 +212,35 @@ public class FridgeRepository {
             @Override
             public void run() {
                 int rep_id = (int) recipeDao.addRecipe(new Recipe(recipeNameFromEdit , descriptionFromEdit)) ;
+                Log.d(MY_LOG, "FridgeRepository - addRecipe - save Recipe id = " + rep_id + " list.size " + ingredientsList.size() ) ;
                 for (FoodData f : ingredientsList) {
                     Ingredients ingr = new Ingredients(f.getName(), rep_id, f.getAmount() ) ;
                     ingredientDao.addIngredient(ingr);
+                    Log.d(MY_LOG, "FridgeRepository - addRecipe - save ingredient name = " + f.getName() + " id = " + rep_id + "amount = " + f.getAmount() ) ;
                 }
             }
         });
+    }
+
+    public void deleteRecipe(final String repTitle) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                recipeDao.deleteRecipeByName(repTitle);
+            }
+        });
+    }
+
+    public LiveData<String> getDescrRecByName(String repTitle) {
+        return recipeDao.getDescrByName(repTitle) ;
+    }
+
+    public LiveData<Integer> getRecipeIdByName(String repTitle) {
+        return recipeDao.getIdRecipeByName(repTitle) ;
+    }
+
+    public LiveData<List<IngrData>> getAllIngrsByRecipeId(Integer integer) {
+        int id = integer ;
+        return ingredientDao.getAllNeededIngredientsByRecipeId(id) ;
     }
 }

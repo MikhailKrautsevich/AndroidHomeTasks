@@ -29,4 +29,17 @@ public interface RecipeDao {
 
     @Delete
     void deleteRecipe(Recipe recipe) ;
+
+    @Query("DELETE from recipe WHERE name = :repTitle")
+    void deleteRecipeByName(String repTitle);
+
+    @Query("SELECT * from recipe WHERE name = :name")
+    LiveData<RecipeShortD> getRecipeByName(String name);
+
+    @Query("SELECT description from recipe WHERE name = :name")
+    LiveData<String> getDescrByName(String name);
+
+    @Query("SELECT id from recipe WHERE name = :name")
+    LiveData<Integer> getIdRecipeByName(String name);
+
 }

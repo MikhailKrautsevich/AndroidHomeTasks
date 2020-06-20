@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,7 +54,7 @@ public class ProductsActivity extends AppCompatActivity {
         productsRecycler = findViewById(R.id.recyclerProducts);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
         productsRecycler.setLayoutManager(linearLayoutManager);
-  //      productsRecycler.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
+        productsRecycler.addItemDecoration(new DividerItemDecoration(this, linearLayoutManager.getOrientation()));
         productsRecycler.setAdapter(new ProductsAdapter(testList));
 
         foodListData = fridgeRepository.getAllFoodDataInList() ;
