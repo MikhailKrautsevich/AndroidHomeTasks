@@ -85,8 +85,9 @@ public class RecipesAddActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (ingredientsList != null && ingredientsList.size() != 0 && !getRecipeNameFromEdit().isEmpty()) {
                     FridgeRepository fridgeRepository = new FridgeRepository(RecipesAddActivity.this) ;
-                    fridgeRepository.addRecipe(getRecipeNameFromEdit() , getDescriptionFromEdit(), ingredientsList) ;
-                    ingredientsList.clear();
+                    ArrayList<FoodData> toSave = ingredientsList;
+                    fridgeRepository.addRecipe(getRecipeNameFromEdit() , getDescriptionFromEdit(), toSave) ;
+                    ingredientsList = new ArrayList<>() ;
                     ingredientsNames.clear();
                     repTitle.setText("");
                     ingredientRec.setAdapter(new IngredientsAdapter(ingredientsList));
