@@ -40,4 +40,7 @@ public interface FoodDao {
 
     @Update
     void updateFoodByFood(Food food);
+
+    @Query("SELECT food.name, fridge.amount from food, fridge WHERE food.name = :name")
+    LiveData<FoodData> getFoodLDByName(String name);
 }
