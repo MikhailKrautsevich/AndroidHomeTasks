@@ -243,4 +243,8 @@ public class FridgeRepository {
         int id = integer ;
         return ingredientDao.getAllNeededIngredientsByRecipeId(id) ;
     }
+
+    public LiveData<FoodData> getProductLDByName(String name) {
+        return foodDao.getFoodLDByName(name) ;
+    }
 }
