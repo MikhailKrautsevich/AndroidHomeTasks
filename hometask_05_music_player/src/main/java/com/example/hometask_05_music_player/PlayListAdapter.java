@@ -57,13 +57,13 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
 
         void bind(final int position) {
             allGone();
+            this.position = position ;
             title.setText(playlist.get(position).getTitle());
             if (playlist.get(position).getPlaying()) {
                 showPlaying();}
             if (playlist.get(position).getPaused()) {
                 showPaused();
             }
-            this.position = position ;
             itemView.setOnClickListener(new StartListener());
         }
 

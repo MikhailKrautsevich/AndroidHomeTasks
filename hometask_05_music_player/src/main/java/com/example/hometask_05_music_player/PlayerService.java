@@ -76,12 +76,10 @@ public class PlayerService extends Service {
                     } else {
                         Log.d(LOG_TAG, "Service onStartCommand : Media is just playing");
                     }
-
                     if (isBinded) {
                         MainActivity.setPlaylist(playList);
                         MainActivity.notifyChanges();
                     }
-
                 } else if (curPosition == playlistPosition) {
                     if (mediaPlayer.isPlaying()) {
                         mediaPlayer.pause();
@@ -93,6 +91,7 @@ public class PlayerService extends Service {
                         playList.get(playlistPosition).setIsPlaying(true) ;
                     }
                     if (isBinded) {
+
                         MainActivity.setPlaylist(playList);
                         MainActivity.notifyChanges();
                     }
@@ -141,7 +140,6 @@ public class PlayerService extends Service {
             }
             playlistPosition++;
             setAllSongBooleanFalse();
-
             if (playlistPosition > playListSize - 1) {
                 Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - конец плейлиста");
                 playlistPosition = -1;
@@ -174,8 +172,8 @@ public class PlayerService extends Service {
                     MainActivity.setPlaylist(playList);
                     MainActivity.notifyChanges();
                 }
-
-                if (!isBinded && mediaPlayer.isPlaying()) showNotification(curPath);
+                if (!isBinded && mediaPlayer.isPlaying())
+                    showNotification(currentTitle);
                 Log.d(LOG_TAG, "Service is playing " + curPath);
             }
         }
@@ -215,10 +213,6 @@ public class PlayerService extends Service {
     }
 
     ArrayList<Song> getPlayList() { return playList ;}
-
-    void setPlayList(ArrayList<Song> playList) {
-        this.playList = playList ;
-    }
 
     void setAllSongBooleanFalse() {
         for (Song song : playList) {
