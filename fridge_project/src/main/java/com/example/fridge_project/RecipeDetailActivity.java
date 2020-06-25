@@ -17,6 +17,7 @@ import com.example.fridge_project.repo.FridgeRepository;
 import com.example.fridge_project.repoData.FoodData;
 import com.example.fridge_project.repoData.IngrData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +40,9 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private static final String DOT = ".";
     private static final String ADD_EXAMPLE_FORMAT = " %s - %s ,";
     private static final String MY_LOG = "123q";
+
+    private ArrayList<IngrData> ingredients  = new ArrayList<>();
+    private ArrayList<FoodData> actualFoodAmounts = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +114,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                                             .append(TIRE).
                                             append((ingredient.getAmount() + "")) ;
                                     delimeter = " , " ;
+                                    ingredients.add(ingredient) ;
                                     LiveData<FoodData> actualProduct = fridgeRepository.getProductLDByName(ingredient.getName()) ;
                                     actualProduct.observe(RecipeDetailActivity.this, new Observer<FoodData>() {
                                         @Override
@@ -118,6 +123,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                                                 if ((downTextMessage.charAt(downTextMessage.length() - 1)) == '.' ) {
                                                     downTextMessage.deleteCharAt(downTextMessage.length() -1) ;
                                                     downTextMessage.append(", ");
+                                                    actualFoodAmounts.add(foodData) ;
                                                 }
                                                 String toAppend = String
                                                         .format(Locale.getDefault() , ADD_EXAMPLE_FORMAT, foodData.getName() , foodData.getAmount().toString()) ;
@@ -141,6 +147,19 @@ public class RecipeDetailActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        useProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showToast("Sorry, this don't work");
+//                ArrayList<IngrData> ingredients_1  = ingredients ;
+//                ArrayList<FoodData> actualFoodAmounts_1 = actualFoodAmounts ;
+//                ArrayList<IngrData> ingredients  = new ArrayList<>();
+//                ArrayList<FoodData> actualFoodAmounts = new ArrayList<>();
+//
+//                if (ingredients_1.size() != actualFoodAmounts_1.size() && )
             }
         });
     }
