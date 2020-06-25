@@ -11,77 +11,92 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.IBinder;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PlayerService extends Service {
 
-    private static String SONGTITLE = "songTitle" ;
-    private static String SONGPATH = "songPath" ;
     private final String LOG_TAG = "myLogs";
-    ArrayList<HashMap<String, String>> playList = null ;
-    MediaPlayer mediaPlayer = null ;
+    private ArrayList<Song> playList ;
+    private MediaPlayer mediaPlayer ;
     private int playListSize = 0 ;
     private int playlistPosition = 0 ;
-    private CustomListener listener = null ;
     private boolean isBinded = false ;
-    private String currentTitle = null ;
+    private String currentTitle ;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(LOG_TAG, "Service OnCreate") ;
-        playList = MainActivity.playListMain ;
-        playListSize = playList.size() ;
-        Log.d(LOG_TAG, "Service OnCreate : Playlist size = " + playListSize) ;
-
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand " + startId);
-        String SONGPOSITION = "songPosition";
-        if (intent.hasExtra(SONGPOSITION)) {
-            if (mediaPlayer != null) releaseResourses();
-            mediaPlayer = new MediaPlayer();
-            playlistPosition = intent.getIntExtra(SONGPOSITION, 8);
-            Log.d(LOG_TAG, "Service onStartCommand : Позиция в плейлисте при старте плеера = " + playlistPosition);
-            String startPath = playList.get(playlistPosition).get(SONGPATH);
-            String startTitle = playList.get(playlistPosition).get(SONGTITLE);
-            currentTitle = startTitle ;
-            Log.d(LOG_TAG, "Service onStartCommand : Service create mediaplayer, playlistPosition = " + playlistPosition);
-            if (listener != null) {
-                listener.refreshIcons(playlistPosition);
-                Log.d(LOG_TAG, "listener - Метод refreshIcons");
-            }
+        playList = MainActivity.sharePlaylist();
+        playListSize = playList.size() ;
+        final String songPosition = "songPosition";
+        if (intent.hasExtra(songPosition)) {
+            int curPosition = intent.getIntExtra(songPosition, -2) ;
+            if (curPosition >= 0 ) {
+                if (curPosition != playlistPosition) {
+                    playlistPosition = curPosition ;
+                    setAllSongBooleanFalse();
+                    Song song = playList.get(playlistPosition) ;
+                    String startPath = song.getPath();
+                    String startTitle = song.getTitle();
+                    song.setIsPlaying(true);
+                    currentTitle = startTitle ;
+                    if (mediaPlayer != null) {
+                        releaseResourses();
+                    }
+                    mediaPlayer = new MediaPlayer() ;
+                    if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+                        try {
+                            mediaPlayer.setDataSource(startPath);
+                            mediaPlayer.setLooping(false);
+                            mediaPlayer.setOnCompletionListener(new MyOnCompletionListener());
+                            Log.d(LOG_TAG, "Service onStartCommand : Service trying to set " + startPath + " _ " + startId);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d(LOG_TAG, "Service onStartCommand : Service crashed trying to set  " + startPath);
+                        }
+                        try {
+                            mediaPlayer.prepare();
+                            Log.d(LOG_TAG, "Service onStartCommand : Service trying to prepare " + startPath + " _ " + startId);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d(LOG_TAG, "Service onStartCommand : Service crashed trying to prepare " + startPath);
+                        }
+                        mediaPlayer.start();
+                        Log.d(LOG_TAG, "Service onStartCommand : Service is playing " + startPath);
+                        if (!isBinded && mediaPlayer.isPlaying()) showNotification(startTitle);
+                    } else {
+                        Log.d(LOG_TAG, "Service onStartCommand : Media is just playing");
+                    }
 
-            if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-                try {
-                    mediaPlayer.setDataSource(startPath);
-                    mediaPlayer.setLooping(false);
-                    mediaPlayer.setOnCompletionListener(new MyOnCompletionListener());
-                    Log.d(LOG_TAG, "Service onStartCommand : Service trying to set " + startPath + " _ " + startId);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d(LOG_TAG, "Service onStartCommand : Service crashed trying to set  " + startPath);
+                    if (isBinded) {
+                        MainActivity.setPlaylist(playList);
+                        MainActivity.notifyChanges();
+                    }
+
+                } else if (curPosition == playlistPosition) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        setAllSongBooleanFalse();
+                        playList.get(playlistPosition).setIsPaused(true);
+                    } else if (!mediaPlayer.isPlaying()) {
+                        mediaPlayer.start();
+                        setAllSongBooleanFalse();
+                        playList.get(playlistPosition).setIsPlaying(true) ;
+                    }
+                    if (isBinded) {
+                        MainActivity.setPlaylist(playList);
+                        MainActivity.notifyChanges();
+                    }
                 }
-                try {
-                    mediaPlayer.prepare();
-                    Log.d(LOG_TAG, "Service onStartCommand : Service trying to prepare " + startPath + " _ " + startId);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d(LOG_TAG, "Service onStartCommand : Service crashed trying to prepare " + startPath);
-                }
-                mediaPlayer.start();
-                Log.d(LOG_TAG, "Service onStartCommand : Service is playing " + startPath);
-                if (!isBinded && mediaPlayer.isPlaying()) showNotification(startTitle);
-            } else {
-                Log.d(LOG_TAG, "Service onStartCommand : Media is just playing");
             }
         }
         return START_NOT_STICKY;
@@ -99,6 +114,7 @@ public class PlayerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(LOG_TAG, "Service : Метод onBind") ;
+        isBinded = true ;
         return new PlayerBinder();
     }
 
@@ -112,15 +128,8 @@ public class PlayerService extends Service {
     class PlayerBinder extends Binder {
         PlayerService getPlayerService() {
             Log.d(LOG_TAG, "Service : Создали новый PlayerBinder") ;
-            if (listener != null) {setRightIcons();}
             return PlayerService.this ;
         }
-    }
-
-    void releaseResourses() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null ;
     }
 
     private class MyOnCompletionListener implements MediaPlayer.OnCompletionListener {
@@ -131,40 +140,43 @@ public class PlayerService extends Service {
                 Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - releaseResourses()");
             }
             playlistPosition++;
+            setAllSongBooleanFalse();
+
             if (playlistPosition > playListSize - 1) {
                 Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - конец плейлиста");
                 playlistPosition = -1;
-                if (listener != null) {
-                    listener.refreshIcons(playlistPosition);
-                    Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - refreshIcons (конец плейлиста)");
-                }
+                MainActivity.setPlaylist(playList);
+                MainActivity.notifyChanges();
             } else {
                 mp = new MediaPlayer();
                 mediaPlayer = mp;
-                String pathCurrent = playList.get(playlistPosition).get(SONGPATH);
-                String titleCurrent = playList.get(playlistPosition).get(SONGTITLE);
-                currentTitle = titleCurrent ;
-                if (listener != null) {
-                    listener.refreshIcons(playlistPosition);
-                    Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - refreshIcons");
-                }
+                Song curSong = playList.get(playlistPosition) ;
+                String curPath = curSong.getPath();
+                String startTitle = curSong.getTitle();
+                currentTitle = startTitle ;
+                curSong.setIsPlaying(true);
                 mp.setOnCompletionListener(this);
                 try {
-                    mp.setDataSource(pathCurrent);
+                    mp.setDataSource(curPath);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 mp.setLooping(false);
                 try {
                     mp.prepare();
-                    Log.d(LOG_TAG, "Service trying to prepare " + pathCurrent);
+                    Log.d(LOG_TAG, "Service trying to prepare " + curPath);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Log.d(LOG_TAG, "Service crashed trying to prepare " + pathCurrent);
+                    Log.d(LOG_TAG, "Service crashed trying to prepare " + curPath);
                 }
                 mp.start();
-                if (!isBinded && mediaPlayer.isPlaying()) showNotification(titleCurrent);
-                Log.d(LOG_TAG, "Service is playing " + pathCurrent);
+                if (isBinded) {
+                    MainActivity.setPlaylist(playList);
+                    MainActivity.notifyChanges();
+                }
+
+                if (!isBinded && mediaPlayer.isPlaying()) showNotification(curPath);
+                Log.d(LOG_TAG, "Service is playing " + curPath);
             }
         }
     }
@@ -184,24 +196,14 @@ public class PlayerService extends Service {
         }
     }
 
-    public interface CustomListener{
-        void refreshIcons (int playingPosition) ;
+    void releaseResourses() {
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer = null ;
     }
-
-    public void setListener(CustomListener listener) {
-        this.listener = listener ;
-    }
-
-     int getCurrentPosition() {
-        return playlistPosition ;
-     }
 
     public void setIsBinded() {
         isBinded = true ;
-    }
-
-    public void setRightIcons() {
-        listener.refreshIcons(playlistPosition);
     }
 
     public String getTitle() {
@@ -210,5 +212,18 @@ public class PlayerService extends Service {
 
     boolean playerIsPlaying() {
         return mediaPlayer != null && mediaPlayer.isPlaying();
+    }
+
+    ArrayList<Song> getPlayList() { return playList ;}
+
+    void setPlayList(ArrayList<Song> playList) {
+        this.playList = playList ;
+    }
+
+    void setAllSongBooleanFalse() {
+        for (Song song : playList) {
+            song.setIsPlaying(false);
+            song.setIsPaused(false);
+        }
     }
 }

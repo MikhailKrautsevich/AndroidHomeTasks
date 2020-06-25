@@ -27,18 +27,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
     static final String CHANNEL_ID = "Channel_ID" ;
-    static ArrayList<HashMap<String, String>> playListMain ;
+    private static final String LOG_TAG = "myLogs";
+    private static ArrayList<Song> playListMain ;
+    private static RecyclerView recyclerView ;
     private final int REQUEST_FOR_PERM = 123;
-    final private String LOG_TAG = "myLogs";
-    static PlayerService playerService ;
+    private PlayerService playerService ;
     private Intent serviceIntent ;
     private SongsManager manager ;
-    private RecyclerView recyclerView ;
     private PlayListAdapter adapter ;
 
     final ServiceConnection serviceConnection = new ServiceConnection() {
@@ -81,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         getPlaylist();       // если сервис создан, получаем плейлист оттуда
 
         if (playListMain != null) {
-            adapter = new PlayListAdapter(playListMain.size());
+            adapter = new PlayListAdapter(playListMain);
             recyclerView.setAdapter(adapter);
             sorryText.setVisibility(View.GONE);
         }
@@ -95,23 +94,9 @@ public class MainActivity extends AppCompatActivity {
             bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE) ;
             Log.d(LOG_TAG, "MainActivity OnResume : I tried to bind service");
         }
-
-        // Вот тут проблемный кусок кода
-
-        int sizeOfHoldersArray = adapter.getHoldersSize();
-        Log.d(LOG_TAG, "MainActivity OnResume : size " + sizeOfHoldersArray);
-        if (sizeOfHoldersArray != 0) {
-            final int current = playerService.getCurrentPosition() ;
-            if (playerService.playerIsPlaying()) {
-                playerService.setListener(new PlayerService.CustomListener() {
-                    @Override
-                    public void refreshIcons(int playingPosition) {
-                        adapter.refreshIcons(playingPosition);
-                    }
-                });
-                adapter.refreshIcons(current);
-                recyclerView.refreshDrawableState();
-            }
+        if (playerService != null) {
+            playListMain = playerService.getPlayList() ;
+            notifyChanges();
         }
     }
 
@@ -126,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d(LOG_TAG, "MainActivity OnStop") ;
         String text = "Player is playing " + playerService.getTitle() ;
-        if (playerService != null && playerService.mediaPlayer.isPlaying()) {
+        if (playerService != null && playerService.playerIsPlaying()) {
             playerService.startForeground(1 , buildNotification(text));
             Log.d(LOG_TAG, "MainActivity OnStop : player is playing");
         }
@@ -136,10 +121,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         Log.d(LOG_TAG, "MainActivity OnDestroy") ;
         if (playerService != null ) {
-            if (!playerService.mediaPlayer.isPlaying()) {
-                playerService.mediaPlayer.stop();
-                playerService.mediaPlayer.release();
-                playerService.mediaPlayer = null ;
+            if (!playerService.playerIsPlaying()) {
+                playerService.releaseResourses();
                 Log.d(LOG_TAG, "MainActivity OnDestroy : Освободили ресурсы плеера");
             }
             unbindService(serviceConnection);
@@ -152,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = VERSION_CODES.M)
     private void getPlaylist() {
-        if (playerService == null || playerService.playList == null ) {
+        if (playerService == null || playerService.getPlayList() == null ) {
             manager = new SongsManager();
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED) {
@@ -163,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE}, REQUEST_FOR_PERM);
             }
             manager = null ;
-        } else if (playerService!= null && playerService.playList != null) {
-            playListMain = playerService.playList ;
+        } else if (playerService!= null && playerService.getPlayList() != null) {
+            playListMain = playerService.getPlayList() ;
             Log.d(LOG_TAG, "OnCreate - I get playlist from service") ;
         }
     }
@@ -209,5 +192,21 @@ public class MainActivity extends AppCompatActivity {
             playerChannel.setDescription(description);
             }
         return playerChannel ;
+    }
+
+    static void setPlaylist(ArrayList<Song> playList) {
+        playListMain = playList ;
+        Log.d(LOG_TAG, "Main Activity - Метод setPlaylist (Получил Playlist от сервиса)");
+    }
+
+    static ArrayList<Song> sharePlaylist() { return playListMain ;}
+
+    static void notifyChanges() {
+        if (recyclerView != null) {
+            if (recyclerView.getAdapter() != null) {
+                (recyclerView.getAdapter()).notifyDataSetChanged();
+                Log.d(LOG_TAG, "Main Activity - Метод notifyChanges (обновил данные)");
+            }
+        }
     }
 }
