@@ -91,7 +91,6 @@ public class PlayerService extends Service {
                         playList.get(playlistPosition).setIsPlaying(true) ;
                     }
                     if (isBinded) {
-
                         MainActivity.setPlaylist(playList);
                         MainActivity.notifyChanges();
                     }
