@@ -21,13 +21,12 @@ import java.util.HashMap;
 
 public class PlayerService extends Service {
 
-    static String SONGTITLE = "songTitle" ;
-    static String SONGPATH = "songPath" ;
-    static String SONGPOSITION = "songPosition" ;
-    final String LOG_TAG = "myLogs";
+    private static String SONGTITLE = "songTitle" ;
+    private static String SONGPATH = "songPath" ;
+    private final String LOG_TAG = "myLogs";
     ArrayList<HashMap<String, String>> playList = null ;
     MediaPlayer mediaPlayer = null ;
-    int playListSize = 0 ;
+    private int playListSize = 0 ;
     private int playlistPosition = 0 ;
     private CustomListener listener = null ;
     private boolean isBinded = false ;
@@ -46,6 +45,7 @@ public class PlayerService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand " + startId);
+        String SONGPOSITION = "songPosition";
         if (intent.hasExtra(SONGPOSITION)) {
             if (mediaPlayer != null) releaseResourses();
             mediaPlayer = new MediaPlayer();

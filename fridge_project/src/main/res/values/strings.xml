@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Fridge_manager</string>
+    <string name="products_list">Список продуктов</string>
+    <string name="recipes_list">Список рецептов</string>
+    <string name="change">Change</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
+    <string name="save">Save</string>
+    <string name="add_ingredient">Add ingredient</string>
+    <string name="recipes_description">Recipes description</string>
+    <string name="recipe_title">Recipe title</string>
+    <string name="amount">Amount</string>
+    <string name="you_need_this_too">You need this too</string>
+    <string name="you_have_this">You have this</string>
+</resources>
