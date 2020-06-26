@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "MainActivity OnResume : startPlayerService() ");
         }
         if (playerService != null) {
+            playerService.setIsBinded();                                  // теперь перестает менять нотификацию в развернутом состоянии
             playListMain = playerService.getPlayList() ;
             notifyChanges();
         }
@@ -115,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "MainActivity OnStop") ;
         String text = "Player is playing " + playerService.getTitle() ;
         if (playerService != null && playerService.playerIsPlaying()) {
+            playerService.setIsUnBinded();                                          // чтобы меняло нотификацию в свернутом состоянии
             playerService.startForeground(1 , buildNotification(text));
             Log.d(LOG_TAG, "MainActivity OnStop : player is playing");
         }

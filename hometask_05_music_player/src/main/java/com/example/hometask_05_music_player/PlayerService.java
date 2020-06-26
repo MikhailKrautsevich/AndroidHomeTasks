@@ -143,8 +143,11 @@ public class PlayerService extends Service {
             if (playlistPosition > playListSize - 1) {
                 Log.d(LOG_TAG, "Service : Отработал блок кода в MediaPlayer.OnCompletionListener() - конец плейлиста");
                 playlistPosition = -1;
-                MainActivity.setPlaylist(playList);
-                MainActivity.notifyChanges();
+                if (isBinded) {
+                    MainActivity.setPlaylist(playList);
+                    MainActivity.notifyChanges();
+                }
+                stopSelf();
             } else {
                 mp = new MediaPlayer();
                 mediaPlayer = mp;
@@ -171,8 +174,8 @@ public class PlayerService extends Service {
                     MainActivity.setPlaylist(playList);
                     MainActivity.notifyChanges();
                 }
-                if (!isBinded && mediaPlayer.isPlaying())
-                    showNotification(currentTitle);
+                if (!isBinded && mediaPlayer.isPlaying()) {
+                    showNotification(currentTitle);}
                 Log.d(LOG_TAG, "Service is playing " + curPath);
             }
         }
@@ -194,13 +197,20 @@ public class PlayerService extends Service {
     }
 
     void releaseResourses() {
-        mediaPlayer.stop();
-        mediaPlayer.release();
-        mediaPlayer = null ;
+        if (mediaPlayer != null)
+        {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null ;
+        }
     }
 
     public void setIsBinded() {
         isBinded = true ;
+    }
+
+    public void setIsUnBinded() {
+        isBinded = false ;
     }
 
     public String getTitle() {
