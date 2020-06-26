@@ -14,7 +14,7 @@
         android:id="@+id/sorry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sorry_i_can_t_find_any_music"
+        android:text="@string/sorry"
         android:textSize="28sp"
         android:layout_gravity="center"/>
 

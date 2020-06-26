@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">homeTask_05_music_player</string>
-    <string name="sorry_i_can_t_find_any_music">Sorry, I can\'t find any music</string>
+    <string name="sorry">Sorry, I can\'t find any music</string>
 </resources>

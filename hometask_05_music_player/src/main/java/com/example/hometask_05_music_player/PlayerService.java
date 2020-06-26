@@ -30,13 +30,14 @@ public class PlayerService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(LOG_TAG, "Service OnCreate") ;
+        SongsManager songsManager = new SongsManager() ;
+        playList = songsManager.getPlayList() ;
+        playListSize = playList.size() ;
     }
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         Log.d(LOG_TAG, "Service onStartCommand " + startId);
-        playList = MainActivity.sharePlaylist();
-        playListSize = playList.size() ;
         final String songPosition = "songPosition";
         if (intent.hasExtra(songPosition)) {
             int curPosition = intent.getIntExtra(songPosition, -2) ;
@@ -149,8 +150,7 @@ public class PlayerService extends Service {
                 mediaPlayer = mp;
                 Song curSong = playList.get(playlistPosition) ;
                 String curPath = curSong.getPath();
-                String startTitle = curSong.getTitle();
-                currentTitle = startTitle ;
+                currentTitle = curSong.getTitle();
                 curSong.setIsPlaying(true);
                 mp.setOnCompletionListener(this);
                 try {

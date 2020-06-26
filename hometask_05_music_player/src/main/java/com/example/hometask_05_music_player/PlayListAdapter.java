@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayListHolder> {
 
-    final private String LOG_TAG = "myLogs";
     private ArrayList<Song> playlist ;
 
     PlayListAdapter(ArrayList<Song> playlist) {
@@ -71,6 +70,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
             @Override
             public void onClick(View v) {
                 Intent startIntent = new Intent(v.getContext() , PlayerService.class) ;
+                String LOG_TAG = "myLogs";
                 Log.d(LOG_TAG, "onClick , position = " + position) ;
                 if (position != -1) {
                     startIntent.putExtra("songPosition", position);

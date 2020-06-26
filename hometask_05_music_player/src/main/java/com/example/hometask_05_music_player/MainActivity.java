@@ -34,11 +34,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "myLogs";
     private static ArrayList<Song> playListMain ;
     private static RecyclerView recyclerView ;
+    private TextView sorryText ;
     private final int REQUEST_FOR_PERM = 123;
     private PlayerService playerService ;
-    private Intent serviceIntent ;
-    private SongsManager manager ;
-    private PlayListAdapter adapter ;
 
     final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -46,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
             PlayerService.PlayerBinder playerBinder = (PlayerService.PlayerBinder) serviceIBinder ;
             playerService = playerBinder.getPlayerService() ;
             playerService.setIsBinded();
+            playListMain = playerService.getPlayList() ;
+            recyclerView.setAdapter(new PlayListAdapter(playListMain));
+            notifyChanges();
+            if (playListMain.size() > 0) {
+                sorryText.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
             Log.d(LOG_TAG, "MainActivity : onServiceConnected") ;
         }
 
@@ -65,34 +70,32 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "MainActivity OnCreate started") ;
         setContentView(R.layout.activity_main);
 
-        serviceIntent = new Intent(this , PlayerService.class);
-        Log.d(LOG_TAG, "MainActivity : I create intent");
-        bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE) ;
-        Log.d(LOG_TAG, "OnCreate - I tried to bind service");
-
-        TextView sorryText = findViewById(R.id.sorry);
+        sorryText = findViewById(R.id.sorry);
         recyclerView = findViewById(R.id.recyclerPlaylist);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this) ;
         recyclerView.setLayoutManager(linearLayoutManager) ;
         recyclerView.addItemDecoration(new DividerItemDecoration(getBaseContext(), DividerItemDecoration.VERTICAL));
-
-        getPlaylist();       // если сервис создан, получаем плейлист оттуда
+        playListMain = new ArrayList<>();
 
         if (playListMain != null) {
-            adapter = new PlayListAdapter(playListMain);
+            PlayListAdapter adapter = new PlayListAdapter(playListMain);
             recyclerView.setAdapter(adapter);
-            sorryText.setVisibility(View.GONE);
+            if (playListMain.size() == 0) {
+                sorryText.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
         }
     }
 
+    @RequiresApi(api = VERSION_CODES.M)
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(LOG_TAG, "MainActivity OnResume") ;
         if (playerService == null) {
-            bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE) ;
-            Log.d(LOG_TAG, "MainActivity OnResume : I tried to bind service");
+            startPlayerService();
+            Log.d(LOG_TAG, "MainActivity OnResume : startPlayerService() ");
         }
         if (playerService != null) {
             playListMain = playerService.getPlayList() ;
@@ -134,21 +137,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = VERSION_CODES.M)
-    private void getPlaylist() {
-        if (playerService == null || playerService.getPlayList() == null ) {
-            manager = new SongsManager();
+    private void startPlayerService() {
+        if (playerService == null) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                     && checkSelfPermission(Manifest.permission.FOREGROUND_SERVICE) == PackageManager.PERMISSION_GRANTED) {
-                playListMain = manager.getPlayList();
-                Log.d(LOG_TAG, "OnCreate - I get new playlist without problems") ;
+                Intent serviceIntent = new Intent(this , PlayerService.class);
+                Log.d(LOG_TAG, "MainActivity : StartPlayerService() I create intent");
+                bindService(serviceIntent, serviceConnection, BIND_AUTO_CREATE) ;
             } else {
                 requestPermissions(new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE}, REQUEST_FOR_PERM);
             }
-            manager = null ;
-        } else if (playerService!= null && playerService.getPlayList() != null) {
-            playListMain = playerService.getPlayList() ;
-            Log.d(LOG_TAG, "OnCreate - I get playlist from service") ;
         }
     }
 
@@ -159,9 +158,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                manager = new SongsManager();
-                playListMain = manager.getPlayList();
-                manager = null;
+                startPlayerService();
             } else {
                 Toast.makeText(getApplicationContext(), "I need permissions", Toast.LENGTH_LONG).show();
             }
@@ -196,15 +193,13 @@ public class MainActivity extends AppCompatActivity {
 
     static void setPlaylist(ArrayList<Song> playList) {
         playListMain = playList ;
-        Log.d(LOG_TAG, "Main Activity - Метод setPlaylist (Получил Playlist от сервиса)");
+        Log.d(LOG_TAG, "Main Activity - Метод setPlaylist (Получил Playlist от сервиса, size = " + playList.size() + ")");
     }
-
-    static ArrayList<Song> sharePlaylist() { return playListMain ;}
 
     static void notifyChanges() {
         if (recyclerView != null) {
             if (recyclerView.getAdapter() != null) {
-                (recyclerView.getAdapter()).notifyDataSetChanged();
+                recyclerView.getAdapter().notifyDataSetChanged();
                 Log.d(LOG_TAG, "Main Activity - Метод notifyChanges (обновил данные)");
             }
         }
