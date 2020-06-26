@@ -82,14 +82,16 @@ public class PlayerService extends Service {
                         MainActivity.notifyChanges();
                     }
                 } else if (curPosition == playlistPosition) {
-                    if (mediaPlayer.isPlaying()) {
-                        mediaPlayer.pause();
-                        setAllSongBooleanFalse();
-                        playList.get(playlistPosition).setIsPaused(true);
-                    } else if (!mediaPlayer.isPlaying()) {
-                        mediaPlayer.start();
-                        setAllSongBooleanFalse();
-                        playList.get(playlistPosition).setIsPlaying(true) ;
+                    if (mediaPlayer != null) {
+                        if (mediaPlayer.isPlaying()) {
+                            mediaPlayer.pause();
+                            setAllSongBooleanFalse();
+                            playList.get(playlistPosition).setIsPaused(true);
+                        } else if (!mediaPlayer.isPlaying()) {
+                                mediaPlayer.start();
+                                setAllSongBooleanFalse();
+                                playList.get(playlistPosition).setIsPlaying(true) ;
+                        }
                     }
                     if (isBinded) {
                         MainActivity.setPlaylist(playList);
@@ -218,7 +220,8 @@ public class PlayerService extends Service {
     }
 
     boolean playerIsPlaying() {
-        return mediaPlayer != null && mediaPlayer.isPlaying();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) return true;
+        else return false ;
     }
 
     ArrayList<Song> getPlayList() { return playList ;}

@@ -128,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         if (playerService != null ) {
             if (!playerService.playerIsPlaying()) {
                 playerService.releaseResourses();
+                playerService.stopSelf();
                 Log.d(LOG_TAG, "MainActivity OnDestroy : Освободили ресурсы плеера");
             }
             unbindService(serviceConnection);
