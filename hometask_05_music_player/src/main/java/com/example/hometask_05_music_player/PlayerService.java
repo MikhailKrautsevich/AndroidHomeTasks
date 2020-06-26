@@ -77,10 +77,6 @@ public class PlayerService extends Service {
                     } else {
                         Log.d(LOG_TAG, "Service onStartCommand : Media is just playing");
                     }
-                    if (isBinded) {
-                        MainActivity.setPlaylist(playList);
-                        MainActivity.notifyChanges();
-                    }
                 } else if (curPosition == playlistPosition) {
                     if (mediaPlayer != null) {
                         if (mediaPlayer.isPlaying()) {
@@ -93,10 +89,10 @@ public class PlayerService extends Service {
                                 playList.get(playlistPosition).setIsPlaying(true) ;
                         }
                     }
-                    if (isBinded) {
-                        MainActivity.setPlaylist(playList);
-                        MainActivity.notifyChanges();
-                    }
+                }
+                if (isBinded) {
+                    MainActivity.setPlaylist(playList);
+                    MainActivity.notifyChanges();
                 }
             }
         }
