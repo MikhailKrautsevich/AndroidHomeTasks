@@ -11,11 +11,14 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-public class Activity_add extends Activity {
+public class ActivityAdd extends Activity {
 
-    private EditText nameAddText, phoneNumberAdd, emailAdd ;
-    private RadioButton phoneNumberRadButton, emailRadButton ;
-    Intent answerIntent ;
+    private EditText nameAddText ;
+    private EditText phoneNumberAdd ;
+    private EditText emailAdd ;
+    private RadioButton phoneNumberRadButton ;
+    private RadioButton emailRadButton ;
+    private Intent answerIntent ;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

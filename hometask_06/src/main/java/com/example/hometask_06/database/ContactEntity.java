@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 @Entity(indices ={@Index(value = {"name"})} )
 public class ContactEntity {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id ;
     private String name ;
     private String numberOrEmail;
@@ -17,6 +17,10 @@ public class ContactEntity {
         this.name = name;
         this.numberOrEmail = numberOrEmail;
         this.isEmail = isEmail;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -33,6 +37,10 @@ public class ContactEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setNumberOrEmail(String numberOrEmail) {

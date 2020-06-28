@@ -1,33 +1,44 @@
 package com.example.hometask_06;
 
+import com.example.hometask_06.database.ContactEntity;
 
 public class ContactClass {
     private String name;
     private String numberOrEmail;
-    boolean isEmail = false ;
+    boolean isEmail ;
 
-    ContactClass(String name, boolean is, String info)
-    {
-        setName(name);
-        itIsEmail(is);
-        setNumberOrEmail(info);
+    public ContactClass(String name, String numberOrEmail, boolean isEmail) {
+        this.name = name;
+        this.numberOrEmail = numberOrEmail;
+        this.isEmail = isEmail;
     }
 
-    String getName() {
-        return this.name;
+    public String getName() {
+        return name;
     }
 
-    String getNumberOrEmail() {
+    public String getNumberOrEmail() {
         return numberOrEmail;
     }
 
-    private void setNumberOrEmail(String numberOrEmail) {
-        this.numberOrEmail = numberOrEmail;
+    public boolean isEmail() {
+        return isEmail;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    private void itIsEmail(boolean is) {this.isEmail = is;}
+    public void setNumberOrEmail(String numberOrEmail) {
+        this.numberOrEmail = numberOrEmail;
+    }
+
+    public void setEmail(boolean email) {
+        isEmail = email;
+    }
+
+    static ContactEntity createEntity(ContactClass contact) {
+        ContactEntity entity = new ContactEntity(contact.getName(), contact.getNumberOrEmail() , contact.isEmail()) ;
+        return entity ;
+    }
 }

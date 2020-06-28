@@ -14,8 +14,8 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-        <activity android:name=".Activity_add"
+        <activity android:name=".ActivityAdd"
             android:screenOrientation="fullSensor"/>
-        <activity android:name=".Activity_edit"/></application>
+        <activity android:name=".ActivityEdit"/></application>
 
 </manifest>

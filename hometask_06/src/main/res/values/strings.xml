@@ -14,5 +14,8 @@
     <string name="wilsavephnumber">Будем сохранять номер телефона</string>
     <string name="willsaveemail">Будем сохранять емайл</string>
     <string name="youhavetochoose">Ты определись</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove_contact">Remove contact?</string>
 
 </resources>

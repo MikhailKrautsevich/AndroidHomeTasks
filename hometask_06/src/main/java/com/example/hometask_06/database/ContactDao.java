@@ -14,15 +14,18 @@ import java.util.List;
 @Dao
 public interface ContactDao {
 
-    @Query("SELECT * from ContactEntity")
+    @Query("SELECT name, numberOrEmail, isEmail from ContactEntity")
     List<ContactClass> getAllContacts() ;
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addContact(ContactEntity contactEntity) ;
 
     @Delete
     void deleteContact(ContactEntity contactEntity);
 
     @Update
     void updateContact(ContactEntity contactEntity);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void addContact(ContactEntity contactEntity);
+
+    @Query("SELECT * from ContactEntity where name = :name and numberOrEmail =:text")
+    ContactEntity getByNameAndText(String name, String text) ;
 }

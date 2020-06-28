@@ -1,6 +1,5 @@
 package com.example.hometask_06;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -22,6 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
+
+import com.example.hometask_06.database.ConDataBase;
+import com.example.hometask_06.database.ContactDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,27 +34,33 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity {
 
-    RecyclerView recyclerContacts;
+    private RecyclerView recyclerContacts;
     private TextView noContacts;
-    static final int ADD_NEW_CONTACT = 900 ;
-    static final int EDIT_CONTACT = 901 ;
-    static ArrayList<ContactClass> contacts = new ArrayList<>();
-    NameListAdapter adapter1;
-    LinearLayoutManager linearLayoutManager ;
-    GridLayoutManager gridLayoutManager ;
+    private static final int ADD_NEW_CONTACT = 900 ;
+    private static final int EDIT_CONTACT = 901 ;
+    private static ArrayList<ContactClass> contacts = new ArrayList<>();
+    private NameListAdapter adapter1;
+    private LinearLayoutManager linearLayoutManager ;
+    private GridLayoutManager gridLayoutManager ;
+    private ConDataBase dataBase ;
+    private ContactDao contactDao ;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        noContacts = findViewById(R.id.noContacts) ;
 
+        dataBase = Room.databaseBuilder(this, ConDataBase.class, "database")
+                .allowMainThreadQueries().build() ;
+        contactDao = dataBase.getConDao() ;
+
+        noContacts = findViewById(R.id.noContacts) ;
         ImageButton addNewContact = findViewById(R.id.addNewContact) ;
         addNewContact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Activity_add.class) ;
+                Intent intent = new Intent(MainActivity.this, ActivityAdd.class) ;
                 startActivityForResult(intent, ADD_NEW_CONTACT);
             }
         });
@@ -62,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         gridLayoutManager = new GridLayoutManager(this, 2);}
 
         recyclerContacts = findViewById(R.id.recyclerContacts);
-        recyclerContacts.setAdapter(new NameListAdapter(this));
+        recyclerContacts.setAdapter(new NameListAdapter());
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
         {recyclerContacts.setLayoutManager(linearLayoutManager);}
@@ -91,12 +100,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (adapter1 != null && adapter1.isListOfContactsEmpty()) {
-            recyclerContacts.setVisibility(View.INVISIBLE);
-            noContacts.setVisibility(View.VISIBLE);
-        } else {
+        noContacts.setVisibility(View.VISIBLE);
+        recyclerContacts.setVisibility(View.INVISIBLE);
+        contacts = (ArrayList<ContactClass>) contactDao.getAllContacts();
+        if (adapter1 != null) {
+            adapter1.update();
+        }
+        if (adapter1 != null && !adapter1.isListOfContactsEmpty()) {
+            noContacts.setVisibility(View.GONE);
             recyclerContacts.setVisibility(View.VISIBLE);
-            noContacts.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -113,11 +125,12 @@ public class MainActivity extends AppCompatActivity {
                     String conInfo = data.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_INFO).trim();
 
                     if (!conInfo.isEmpty() && !conName.isEmpty()) {
-                    ContactClass newContact = new ContactClass(conName, is, conInfo);
+                    ContactClass newContact = new ContactClass(conName, conInfo, is);
+                    contactDao.addContact(ContactClass.createEntity(newContact));
 
                     if (!conInfo.isEmpty() && !conName.isEmpty()) {
                         assert adapter1 != null;
-                        adapter1.addItem(newContact);
+                        adapter1.update();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.somethingwrongwithc, LENGTH_SHORT)
                                 .show();
@@ -127,10 +140,8 @@ public class MainActivity extends AppCompatActivity {
             }
             case (EDIT_CONTACT): {
                 if (resultCode == RESULT_OK) {
-//                    Toast.makeText(this, "Try to remove", LENGTH_SHORT).show();
-                    int position = data.getIntExtra(EXTRAS.EXTRA_FOR_CON_REMOVE, 9);
                     assert adapter1 != null;
-                    adapter1.removeItem(position);
+                    adapter1.update();
                 }
                 break;
             }
@@ -139,12 +150,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        contactDao = null ;
+        dataBase.close();
+        dataBase = null ;
+    }
+
     class NameListAdapter extends RecyclerView.Adapter<NameListAdapter.ItemViewHolder> implements Filterable {
 
-        ArrayList<ContactClass> contactsFull ;
+        List<ContactClass> contactsFull ;
 
-        NameListAdapter(Context context) {
-            contactsFull = new ArrayList<>(contacts);
+        NameListAdapter() {
+            contactsFull = contactDao.getAllContacts();
         }
 
         @NonNull
@@ -157,34 +176,28 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull NameListAdapter.ItemViewHolder holder, int position) {
-            holder.bindData(contacts.get(position));
+            holder.bindData(contactsFull.get(position));
         }
 
         private boolean isListOfContactsEmpty(){
-            return contacts.isEmpty();
+            return contactsFull.isEmpty();
         }
 
-        private void addItem(ContactClass newContact) {
-            contacts.add(newContact);
+        private void update() {
+            contactsFull = contactDao.getAllContacts();
 //            notifyItemChanged(items.indexOf(name)); // for item
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 ContactsComparator comparator = new ContactsComparator() ;
-                contacts.sort(comparator);
+                contactsFull.sort(comparator);
             }
             notifyDataSetChanged(); // for all items
         }
 
         @Override
         public int getItemCount() {if (contacts != null)
-            return contacts.size();
+            return contactsFull.size();
         else {
             return 0;}
-        }
-
-        void removeItem(int position) {
-            if (contacts.size() >= position)
-            {contacts.remove(position);}
-            notifyDataSetChanged();
         }
 
         @Override
@@ -213,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                contacts.clear();
-                contacts.addAll( (List) results.values);
+                contactsFull.clear();
+                contactsFull.addAll( (List) results.values);
                 notifyDataSetChanged();
             }
         } ;
@@ -230,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         int position = getAdapterPosition();
-                        ContactClass contactClass = contacts.get(position) ;
+                        ContactClass contactClass = contactsFull.get(position) ;
  //                       Toast.makeText(context, contactClass.getName(), LENGTH_SHORT).show();
-                        Intent remIntent = new Intent(MainActivity.this, Activity_edit.class);
+                        Intent remIntent = new Intent(MainActivity.this, ActivityEdit.class);
                         remIntent.putExtra(EXTRAS.EXTRA_FOR_CONTACT_NAME, contactClass.getName());
                         remIntent.putExtra(EXTRAS.EXTRA_FOR_CONTACT_INFO, contactClass.getNumberOrEmail());
                         remIntent.putExtra(EXTRAS.EXTRA_FOR_CONTACT_IS, contactClass.isEmail);
