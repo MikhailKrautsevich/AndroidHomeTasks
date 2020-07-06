@@ -10,9 +10,13 @@ public class CityEntity {
     @PrimaryKey(autoGenerate = true)
     private int id ;
     private String name ;
+    private double lat ;
+    private double lon ;
 
-    public CityEntity(String name) {
+    public CityEntity(String name, double lat, double lon) {
         this.name = name;
+        this.lat = lat;
+        this.lon = lon;
     }
 
     public String getName() {
@@ -21,5 +25,17 @@ public class CityEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public double getLat() {
+        return lat;
     }
 }

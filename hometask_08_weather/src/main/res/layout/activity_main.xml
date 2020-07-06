@@ -30,12 +30,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/weather"
-                android:gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
                 android:textColor="@android:color/white"
                 android:textSize="24sp"
                 android:paddingLeft="16dp"/>
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,6 +53,7 @@
         android:layout_marginTop="96dp"
         android:hint="City name"
         android:textColor="@android:color/black"
+        android:gravity="center_vertical|center_horizontal"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,6 +73,7 @@
         android:layout_marginTop="16dp"
         android:hint="0 C"
         android:textColor="@android:color/black"
+        android:gravity="center_vertical|center_horizontal"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,6 +87,7 @@
         android:hint="Weather description"
         android:textColor="@android:color/darker_gray"
         android:textSize="20sp"
+        android:gravity="center_vertical|center_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/temperatureText" />

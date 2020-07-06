@@ -24,12 +24,12 @@ public abstract class CityDataBase extends RoomDatabase {
 
     public abstract CityDao getDao() ;
 
-    public static CityDataBase getFridgeDataBase(@NonNull final Context context) {
+    public static CityDataBase getDataBase(@NonNull final Context context) {
         if (INSTANCE == null) {
             synchronized (CityDataBase.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context, CityDataBase.class, "data_base")
-                            .build();
+                    INSTANCE = Room
+                            .databaseBuilder(context, CityDataBase.class , "dataBase").build() ;
                 }
             }
         }
