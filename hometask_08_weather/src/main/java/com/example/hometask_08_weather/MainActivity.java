@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hometask_08_weather.database.CityDao;
@@ -22,6 +24,7 @@ import com.example.hometask_08_weather.database.CityEntity;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         temperature = findViewById(R.id.temperatureText) ;
         weatherDescription = findViewById(R.id.weatherDescription) ;
         weatherRecycler = findViewById(R.id.recyclerWeather) ;
+        weatherRecycler.setLayoutManager(new LinearLayoutManager(this));
+        weatherRecycler.setAdapter(new WeatherAdapter(new HourlyWeather[0]));
 
         addCity.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CityAddActivity.class) ;
@@ -200,7 +205,13 @@ public class MainActivity extends AppCompatActivity {
                     return new HourlyWeather[0];
                 }
             }
-        }) ;
+        }).thenAcceptAsync(new Consumer<HourlyWeather[]>() {
+            @Override
+            public void accept(HourlyWeather[] hourlyWeathers) {
+                Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 4");
+                weatherRecycler.setAdapter(new WeatherAdapter(hourlyWeathers));
+            }
+        }, ContextCompat.getMainExecutor(this)) ;
     }
 
     private Request makeHourlyRequest (Coordinations coordinations){
@@ -235,34 +246,52 @@ public class MainActivity extends AppCompatActivity {
 
     class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherHolder>{
 
+        private HourlyWeather[] weathers ;
+
+        public WeatherAdapter(HourlyWeather[] weathers) {
+            this.weathers = weathers;
+        }
+
         @NonNull
         @Override
         public WeatherHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return null;
+            View view = LayoutInflater.from(parent.getContext()).
+                    inflate(R.layout.weather_element, parent, false);
+            return new WeatherHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull WeatherHolder holder, int position) {
-
+            if (weathers[position] != null) {
+                holder.bindData(weathers[position]);
+            }
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return weathers.length;
         }
 
         class WeatherHolder extends RecyclerView.ViewHolder{
 
-            private TextView timeTextView ;
-            private TextView descrTextView ;
-            private TextView tempTextView ;
+            TextView timeTextView ;
+            TextView descrTextView ;
+            TextView tempTextView ;
 
             public WeatherHolder(@NonNull View itemView) {
                 super(itemView);
 
-                timeTextView = findViewById(R.id.time) ;
-                descrTextView = findViewById(R.id.weatherDescrRec) ;
-                tempTextView = findViewById(R.id.temperatureRec) ;
+                timeTextView = itemView.findViewById(R.id.timeRec) ;
+                descrTextView = itemView.findViewById(R.id.weatherDescrRec) ;
+                tempTextView = itemView.findViewById(R.id.temperatureRec) ;
+            }
+
+            public void bindData(HourlyWeather weather) {
+                timeTextView.setText(weather.getTime());
+                descrTextView.setText(weather.getDescription());
+                if (degreesType.equals(FAHRENHEIT)) {
+                    tempTextView.setText(weather.getDegreesFahrenheit());
+                } else {tempTextView.setText(weather.getDegreesCelcius());}
             }
         }
     }

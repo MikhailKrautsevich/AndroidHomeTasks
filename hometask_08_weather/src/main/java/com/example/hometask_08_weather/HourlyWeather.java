@@ -1,6 +1,7 @@
 package com.example.hometask_08_weather;
 
 public class HourlyWeather {
+
     private String time ;
     private String degreesCelcius ;
     private String degreesFahrenheit ;

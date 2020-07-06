@@ -80,8 +80,8 @@ public class WeatherParser {
             Double degreesFahrenheit =  9*(degreesCelvin -273)/5 + 32 ;
 
             String sDegreesCelvin = String.format("%.2f", degreesCelvin) ;
-            String sDegreesCelcius = String.format("%.2f", degreesCelcius) ;
-            String sDegreesFahrenheit = String.format("%.2f", degreesFahrenheit) ;
+            String sDegreesCelcius = String.format("%.2f", degreesCelcius).concat("\u2103") ;
+            String sDegreesFahrenheit = String.format("%.2f", degreesFahrenheit).concat("\u2109") ;
 
             Log.d(LOG_TAG, "WeatherParser - getHourly() : sDegreesCelvin = " + sDegreesCelvin);
             Log.d(LOG_TAG, "WeatherParser - getHourly() : sDegreesCelcius = " + sDegreesCelcius);
