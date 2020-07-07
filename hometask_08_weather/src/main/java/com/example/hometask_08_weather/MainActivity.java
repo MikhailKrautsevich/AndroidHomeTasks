@@ -25,13 +25,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -173,52 +169,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getHourlyWeather() {
-        CompletableFuture.supplyAsync(new Supplier<Coordinations>() {
-            @Override
-            public Coordinations get() {
-                if (cityWanted.equals("London")) {
-                    return new Coordinations(-0.13, 51.51) ;
-                } else {
-                    CityDataBase dataBase = CityDataBase.getDataBase(MainActivity.this) ;
-                    CityDao dao = dataBase.getDao() ;
-                    CityEntity city = dao.getCityByName(cityWanted) ;
-                    Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 1 , city = " + city.getName());
-                    return new Coordinations(city.getLon(), city.getLat()) ;
-                }
+        CompletableFuture.supplyAsync(() -> {
+            if (cityWanted.equals("London")) {
+                return new Coordinations(-0.13, 51.51) ;
+            } else {
+                CityDataBase dataBase = CityDataBase.getDataBase(MainActivity.this) ;
+                CityDao dao = dataBase.getDao() ;
+                CityEntity city = dao.getCityByName(cityWanted) ;
+                Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 1 , city = " + city.getName());
+                return new Coordinations(city.getLon(), city.getLat()) ;
             }
-        }).thenApply(new Function<Coordinations, Response>() {
-            @Override
-            public Response apply(Coordinations coordinations) {
+        }).thenApply(coordinations -> {
+            try {
+                Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 2");
+                return okHttpClient.newCall(makeHourlyRequest(coordinations)).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null ;
+            }
+        }).thenApply(response -> {
+            if (response != null) {
                 try {
-                    Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 2");
-                    return okHttpClient.newCall(makeHourlyRequest(coordinations)).execute();
-                } catch (IOException e) {
+                    Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 3");
+                    WeatherParser parser = new WeatherParser(response.body().string()) ;
+                    return parser.getHourly() ;
+                } catch (Exception e) {
                     e.printStackTrace();
-                    return null ;
-                }
-            }
-        }).thenApply(new Function<Response, HourlyWeather[]>() {
-            @Override
-            public HourlyWeather[] apply(Response response) {
-                if (response != null) {
-                    try {
-                        Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 3");
-                        WeatherParser parser = new WeatherParser(response.body().string()) ;
-                        return parser.getHourly() ;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return new HourlyWeather[0];
-                    }
-                } else {
                     return new HourlyWeather[0];
                 }
+            } else {
+                return new HourlyWeather[0];
             }
-        }).thenAcceptAsync(new Consumer<HourlyWeather[]>() {
-            @Override
-            public void accept(HourlyWeather[] hourlyWeathers) {
-                Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 4");
-                weatherRecycler.setAdapter(new WeatherAdapter(hourlyWeathers));
-            }
+        }).thenAcceptAsync(hourlyWeathers -> {
+            Log.d(LOG_TAG, "MA - Метод getHourlyWeather() = 4");
+            weatherRecycler.setAdapter(new WeatherAdapter(hourlyWeathers));
         }, ContextCompat.getMainExecutor(this)) ;
     }
 

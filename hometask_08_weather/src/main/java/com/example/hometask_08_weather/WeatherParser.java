@@ -26,10 +26,16 @@ class WeatherParser {
             String description = null;
             String temperature = null;
             String iconUrl = null;
+            String date = null ;
 
             JSONObject jsonObject = new JSONObject(json) ;
             JSONObject weatherObject = jsonObject.getJSONArray("weather").getJSONObject(0) ;
             JSONObject mainObject = jsonObject.getJSONObject("main") ;
+
+            if (jsonObject != null) {
+                long unix = jsonObject.getLong("dt") ;
+                date = getTimeAndDate(unix) ;
+            }
 
             if (weatherObject != null) {
                 description = weatherObject.getString("description");
@@ -39,10 +45,10 @@ class WeatherParser {
             if (mainObject != null) {
                 temperature = mainObject.getString("temp") ;
             }
-            return new WeatherData(Double.parseDouble(temperature), description, iconUrl) ;
+            return new WeatherData(Double.parseDouble(temperature), description, iconUrl, date) ;
         } catch (JSONException e) {
             e.printStackTrace();
-            return new WeatherData(1000.0, "Smth wrong", "" );
+            return new WeatherData(1000.0, "Smth wrong", "" , "");
         }
     }
 
@@ -73,9 +79,7 @@ class WeatherParser {
         for (int i = 0 ; i<24 ;i++) {
             JSONObject object = jsonObjArray.getJSONObject(i);
             long unix = object.getLong("dt") ;
-            Date date = new Date(unix*1000L);
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm") ;
-            String time = sdf.format(date) ;
+            String time = getTime(unix) ;
             Log.d(LOG_TAG, "WeatherParser - getHourly() : time = " + time);
 
             double degreesCelvin = object.getDouble("temp") ;
@@ -98,7 +102,18 @@ class WeatherParser {
 
             result[i] = new HourlyWeather(time, sDegreesCelcius, sDegreesFahrenheit, description, iconUrl) ;
         }
-
         return result ;
+    }
+
+    private String getTime(long unix) {
+        Date date = new Date(unix*1000L);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm") ;
+        return sdf.format(date) ;
+    }
+
+    private String getTimeAndDate(long unix) {
+        Date date = new Date(unix*1000L);
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm") ;
+        return sdf.format(date) ;
     }
 }

@@ -104,6 +104,9 @@ public class CityAddActivity extends AppCompatActivity {
                                 CityEntity toAdd = new CityEntity(fromEditCapitalised, doubles[0], doubles[1]) ;
                                 Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 3 : city to add = " + toAdd.getName());
                                 cityDao.addCity(toAdd);
+                                String cityAddedMessage = toAdd.getName() + " added" ;
+                                Toast.makeText(CityAddActivity.this , cityAddedMessage, Toast.LENGTH_SHORT)
+                                        .show();
                             }) ;
                         } else {
                             Toast.makeText(CityAddActivity.this , R.string.city_not_correct, Toast.LENGTH_SHORT)
