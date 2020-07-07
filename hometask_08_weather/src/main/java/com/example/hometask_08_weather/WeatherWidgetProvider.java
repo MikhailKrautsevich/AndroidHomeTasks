@@ -91,7 +91,7 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
                 RemoteViews remoteViews = new RemoteViews(context.getPackageName() , R.layout.widget_layout) ;
                 remoteViews.setTextViewText(R.id.widgetCityTV, cityWanted);
                 remoteViews.setTextViewText(R.id.widgetDateTV, weather.getDate());
-                remoteViews.setTextViewText(R.id.widgetDescrV, weather.getDescription());
+                remoteViews.setTextViewText(R.id.widgetDescrTV, weather.getDescription());
                 remoteViews.setTextViewText(R.id.widgetTempTV, getTemperatureString(weather));
 
                 try {
@@ -122,6 +122,12 @@ public class WeatherWidgetProvider extends AppWidgetProvider {
                     e.printStackTrace();
                     Log.d(LOG_TAG, "WWP - setDataToWidget() = Exception" );
                     appWidgetManager.updateAppWidget(appWidgetIds , remoteViews);
+
+//                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetCityTV);
+//                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetDateTV);
+//                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetDescrTV);
+//                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetTempTV);
+//                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widgetIcon);
                 }
             }
         }, ContextCompat.getMainExecutor(context));
