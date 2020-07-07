@@ -4,7 +4,7 @@
     android:layout_height="60dp">
     
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/iconWeatherRec"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="4dp"

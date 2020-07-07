@@ -1,32 +1,38 @@
 package com.example.hometask_08_weather;
 
-public class HourlyWeather {
+class HourlyWeather {
 
     private String time ;
     private String degreesCelcius ;
     private String degreesFahrenheit ;
     private String description ;
+    private String iconUrl ;
 
-    public HourlyWeather(String time, String degreesCelcius, String degreesFahrenheit, String description) {
+    HourlyWeather(String time, String degreesCelcius, String degreesFahrenheit, String description, String iconUrl) {
         this.time = time;
         this.degreesCelcius = degreesCelcius;
         this.degreesFahrenheit = degreesFahrenheit;
         this.description = description;
+        this.iconUrl = iconUrl;
     }
 
-    public String getTime() {
+    String getTime() {
         return time;
     }
 
-    public String getDegreesCelcius() {
+    String getDegreesCelcius() {
         return degreesCelcius;
     }
 
-    public String getDegreesFahrenheit() {
+    String getDegreesFahrenheit() {
         return degreesFahrenheit;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
+    }
+
+    String getIconUrl() {
+        return iconUrl;
     }
 }

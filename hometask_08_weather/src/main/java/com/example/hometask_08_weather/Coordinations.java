@@ -4,16 +4,16 @@ public class Coordinations {
     private double lon ;
     private double lat ;
 
-    public Coordinations(double lon, double lat) {
+    Coordinations(double lon, double lat) {
         this.lon = lon;
         this.lat = lat;
     }
 
-    public double getLon() {
+    double getLon() {
         return lon;
     }
 
-    public double getLat() {
+    double getLat() {
         return lat;
     }
 }

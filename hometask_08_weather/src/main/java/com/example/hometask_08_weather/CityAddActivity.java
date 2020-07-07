@@ -32,13 +32,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 
 public class CityAddActivity extends AppCompatActivity {
 
@@ -79,44 +75,35 @@ public class CityAddActivity extends AppCompatActivity {
                             final String url = makeTextCallForCity(fromEditCapitalised) ;
                             final Request request = new Request.Builder().url(url).build() ;
 
-                            CompletableFuture.supplyAsync(new Supplier<Response>() {
-                                @Override
-                                public Response get() {
-                                    try {
-                                        Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 1");
-                                        return okHttpClient.newCall(request).execute();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which - 1 !EXCEPTION!");
+                            CompletableFuture.supplyAsync(() -> {
+                                try {
+                                    Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 1");
+                                    return okHttpClient.newCall(request).execute();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which - 1 !EXCEPTION!");
+                                    return null ;
+                                }
+                            }).thenApplyAsync(response -> {
+                                try {
+                                    if (response != null) {
+                                        WeatherParser parser = new WeatherParser(response.body().string()) ;
+                                        Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 2");
+                                        return parser.getCoords() ;
+                                    } else {
+                                        Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 2 - !RETURN NULL!");
                                         return null ;
                                     }
+                                } catch (IOException | JSONException e) {
+                                    e.printStackTrace();
+                                    Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which - 2 !EXCEPTION!");
+                                    return null ;
                                 }
-                            }).thenApplyAsync(new Function<Response, double []>() {
-                                @Override
-                                public double[] apply(Response response) {
-                                    try {
-                                        if (response != null) {
-                                            WeatherParser parser = new WeatherParser(response.body().string()) ;
-                                            Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 2");
-                                            return parser.getCoords() ;
-                                        } else {
-                                            Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 2 - !RETURN NULL!");
-                                            return null ;
-                                        }
-                                    } catch (IOException | JSONException e) {
-                                        e.printStackTrace();
-                                        Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which - 2 !EXCEPTION!");
-                                        return null ;
-                                    }
-                                }
-                            }).thenAccept(new Consumer<double[]>() {
-                                @Override
-                                public void accept(double[] doubles) {
-                                    cityToObserve = fromEditCapitalised ;
-                                    CityEntity toAdd = new CityEntity(fromEditCapitalised, doubles[0], doubles[1]) ;
-                                    Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 3 : city to add = " + toAdd.getName());
-                                    cityDao.addCity(toAdd);
-                                }
+                            }).thenAccept(doubles -> {
+                                cityToObserve = fromEditCapitalised ;
+                                CityEntity toAdd = new CityEntity(fromEditCapitalised, doubles[0], doubles[1]) ;
+                                Log.d(LOG_TAG, "CAA - Метод onClick(DialogInterface dialog, int which) - 3 : city to add = " + toAdd.getName());
+                                cityDao.addCity(toAdd);
                             }) ;
                         } else {
                             Toast.makeText(CityAddActivity.this , R.string.city_not_correct, Toast.LENGTH_SHORT)
@@ -225,14 +212,10 @@ public class CityAddActivity extends AppCompatActivity {
 
                 cityName = itemView.findViewById(R.id.cityNameRec) ;
                 check = itemView.findViewById(R.id.check) ;
-                itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String newCityToObserve = cityName.getText().toString() ;
-                        cityToObserve = newCityToObserve ;
-                        preferences.edit().putString("cityKey", cityToObserve).apply();
-                        cityRecycler.setAdapter(new CityAdapter((ArrayList<String>) cityList.getValue()));
-                    }
+                itemView.setOnClickListener(v -> {
+                    cityToObserve = cityName.getText().toString();
+                    preferences.edit().putString("cityKey", cityToObserve).apply();
+                    cityRecycler.setAdapter(new CityAdapter((ArrayList<String>) cityList.getValue()));
                 });
             }
 

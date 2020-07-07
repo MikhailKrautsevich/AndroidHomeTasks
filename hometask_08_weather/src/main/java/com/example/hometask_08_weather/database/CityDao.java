@@ -11,14 +11,11 @@ import java.util.List;
 public interface CityDao {
 
     @Query("SELECT cityEntity.name from CityEntity")
-    public LiveData<List<String>> getAllCityNames() ;
-
-    @Query("Delete from CityEntity where name =:name")
-    public void deleteCityByName (String name) ;
+    LiveData<List<String>> getAllCityNames() ;
 
     @Query("SELECT * from CITYENTITY where name =:name")
-    public CityEntity getCityByName(String name) ;
+    CityEntity getCityByName(String name) ;
 
     @Insert
-    public void addCity(CityEntity city) ;
+    void addCity(CityEntity city) ;
 }

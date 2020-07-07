@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.hometask_08_weather.database.CityDao;
 import com.example.hometask_08_weather.database.CityDataBase;
 import com.example.hometask_08_weather.database.CityEntity;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView temperature ;
     private TextView weatherDescription ;
     private RecyclerView weatherRecycler ;
+    private ImageView weatherPic ;
 
     private static final String LOG_TAG = "myLogs";
     private static final String CELSIUS = "Celsius" ;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         cityNameTV = findViewById(R.id.cityName) ;
         temperature = findViewById(R.id.temperatureText) ;
         weatherDescription = findViewById(R.id.weatherDescription) ;
+        weatherPic = findViewById(R.id.weatherPic) ;
         weatherRecycler = findViewById(R.id.recyclerWeather) ;
         weatherRecycler.setLayoutManager(new LinearLayoutManager(this));
         weatherRecycler.setAdapter(new WeatherAdapter(new HourlyWeather[0]));
@@ -148,6 +151,11 @@ public class MainActivity extends AppCompatActivity {
                     temprText = " \u2109" ;
                 }
                 temperature.setText(weather.getTemperature() + temprText);
+                Picasso.with(MainActivity.this)
+                        .load(weather.getIconURL())
+                        .placeholder(R.drawable.weather_icon)
+                        .error(R.drawable.weather_icon)
+                        .into(weatherPic);
             }
         },ContextCompat.getMainExecutor(this));
     }
@@ -274,24 +282,31 @@ public class MainActivity extends AppCompatActivity {
 
         class WeatherHolder extends RecyclerView.ViewHolder{
 
-            TextView timeTextView ;
-            TextView descrTextView ;
-            TextView tempTextView ;
+            private TextView timeTextView ;
+            private TextView descrTextView ;
+            private TextView tempTextView ;
+            private ImageView iconWeatherRec ;
 
-            public WeatherHolder(@NonNull View itemView) {
+            WeatherHolder(@NonNull View itemView) {
                 super(itemView);
 
                 timeTextView = itemView.findViewById(R.id.timeRec) ;
                 descrTextView = itemView.findViewById(R.id.weatherDescrRec) ;
                 tempTextView = itemView.findViewById(R.id.temperatureRec) ;
+                iconWeatherRec = itemView.findViewById(R.id.iconWeatherRec) ;
             }
 
-            public void bindData(HourlyWeather weather) {
+            void bindData(HourlyWeather weather) {
                 timeTextView.setText(weather.getTime());
                 descrTextView.setText(weather.getDescription());
                 if (degreesType.equals(FAHRENHEIT)) {
                     tempTextView.setText(weather.getDegreesFahrenheit());
                 } else {tempTextView.setText(weather.getDegreesCelcius());}
+                Picasso.with(MainActivity.this)
+                        .load(weather.getIconUrl())
+                        .placeholder(R.drawable.weather_icon)
+                        .error(R.drawable.weather_icon)
+                        .into(iconWeatherRec);
             }
         }
     }
