@@ -25,6 +25,7 @@ public class ActivityAdd extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         answerIntent = new Intent() ;
+        setResult(RESULT_CANCELED, answerIntent);
 
         phoneNumberRadButton = findViewById(R.id.phoneNumberRadButton) ;
         emailRadButton = findViewById(R.id.emailRadButton) ;
