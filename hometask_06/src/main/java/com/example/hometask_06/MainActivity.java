@@ -81,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {recyclerContacts.setLayoutManager(gridLayoutManager) ;}
         recyclerContacts.setVisibility(View.INVISIBLE);
-        if (adapter1==null) {
-            adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
-        }
 
         SearchView searchView = findViewById(R.id.search) ;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -110,14 +107,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<ContactClass> contactClasses) {
                 recyclerContacts.setAdapter(new NameListAdapter(contactClasses));
-                recyclerContacts.setVisibility(View.VISIBLE);
-                noContacts.setVisibility(View.INVISIBLE);
+                adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+                if (adapter1 != null && !adapter1.isListOfContactsEmpty()) {
+                    noContacts.setVisibility(View.GONE);
+                    recyclerContacts.setVisibility(View.VISIBLE);
+                }
             }
         });
-        if (adapter1 != null && !adapter1.isListOfContactsEmpty()) {
-            noContacts.setVisibility(View.GONE);
-            recyclerContacts.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -161,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         contactDao = null ;
         dataBase.close();
         dataBase = null ;
