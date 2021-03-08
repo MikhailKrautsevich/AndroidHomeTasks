@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">hometask_08_weather</string>
+    <string name="weather">Weather</string>
+    <string name="city">City</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="enter_the_city">Enter the city name</string>
+    <string name="type_city_name_here">Type city name here</string>
+    <string name="city_not_correct">City name is not correct</string>
+    <string name="settings">Settings</string>
+    <string name="degrees_type">Degrees type</string>
+    <string name="date_hint">Date hint</string>
+    <string name="city_hint">City hint</string>
+    <string name="temperature_hint">Temperature hint</string>
+    <string name="descr_hint">Descr hint</string>
+</resources>

@@ -20,17 +20,12 @@ public class Custom extends View {
     private Paint paint = new Paint();
     private int centerX;
     private int centerY;
-    private int clickedX;
-    private int clickedY;
     final int radiusArk = 500;
     final int radiusCircle = 150;
-    private int cube ;
-    private int modX, modY ;
     private RectF oval = new RectF();
     private Random rnd = new Random();
     private int[][] colors = new int[5][3];
     private CustomListener listener ;
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -76,27 +71,27 @@ public class Custom extends View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        clickedX = (int) event.getX() ;
-        clickedY = (int) event.getY() ;
+        int clickedX = (int) event.getX();
+        int clickedY = (int) event.getY();
         if (listener !=null) {
             listener.viewClicked(clickedX, clickedY);
         }
-        modX = Math.abs(centerX-clickedX) ;
-        modY = Math.abs(centerY-clickedY);
-        cube = (int) Math.pow((modX*modX + modY*modY), 0.5) ;
+        int modX = Math.abs(centerX - clickedX);
+        int modY = Math.abs(centerY - clickedY);
+        int cube = (int) Math.pow((modX * modX + modY * modY), 0.5);
         if (radiusCircle >= cube)
         {getAllNewColors();
         invalidate();}
-        if (clickedX<centerX && clickedY > centerY && radiusArk >= cube)
+        if (clickedX <centerX && clickedY > centerY && radiusArk >= cube)
         {getNewColor(1);
         invalidate();}
-        if (clickedX>centerX && clickedY > centerY && radiusArk >= cube)
+        if (clickedX >centerX && clickedY > centerY && radiusArk >= cube)
         {getNewColor(0);
             invalidate();}
-        if (clickedX>centerX && clickedY < centerY && radiusArk >= cube)
+        if (clickedX >centerX && clickedY < centerY && radiusArk >= cube)
         {getNewColor(3);
             invalidate();}
-        if (clickedX<centerX && clickedY < centerY&& radiusArk >= cube)
+        if (clickedX <centerX && clickedY < centerY&& radiusArk >= cube)
         {getNewColor(2);
             invalidate();}
         return super.onTouchEvent(event);

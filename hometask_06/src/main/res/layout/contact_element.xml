@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp">
+
+    <ImageView
+        android:id="@+id/phNumberPic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@android:drawable/ic_menu_call"
+        tools:ignore="RtlHardcoded,VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/emailPic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        app:srcCompat="@android:drawable/ic_dialog_email"
+        tools:ignore="RtlHardcoded,VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        tools:text="name example"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="-80dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="-80dp"/>
+
+    <TextView
+        android:id="@+id/emailText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        tools:text="email example"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginLeft="-80dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="-80dp" />
+</FrameLayout>

@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">homeTask_06_contacts</string>
+    <string name="title_activity_example">example</string>
+    <string name="add_contact">Add contact</string>
+    <string name="phonenumber">PhoneNumber</string>
+    <string name="phone_number">Phone number</string>
+    <string name="edit_contact">Edit contact</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="remove">Remove</string>
+    <string name="no_contacts_please_add">No contacts. Please add</string>
+    <string name="somethingwrongwithc">Something wrong with contact to add</string>
+    <string name="choosecontype">Выберите тип контакта</string>
+    <string name="wilsavephnumber">Будем сохранять номер телефона</string>
+    <string name="willsaveemail">Будем сохранять емайл</string>
+    <string name="youhavetochoose">Ты определись</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="remove_contact">Remove contact?</string>
+
+</resources>

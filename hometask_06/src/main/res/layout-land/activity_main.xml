@@ -1,0 +1,45 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:queryHint="Search contacts"
+        android:textColorHint="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerContacts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search" />
+
+    <ImageButton
+        android:id="@+id/addNewContact"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/add_button"
+        android:src="@android:drawable/ic_menu_add"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerContacts"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/noContacts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/no_contacts_please_add"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
