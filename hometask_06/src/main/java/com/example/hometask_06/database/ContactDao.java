@@ -1,5 +1,6 @@
 package com.example.hometask_06.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,7 +16,7 @@ import java.util.List;
 public interface ContactDao {
 
     @Query("SELECT name, numberOrEmail, isEmail from ContactEntity")
-    List<ContactClass> getAllContacts() ;
+    LiveData<List<ContactClass>> getAllContacts() ;
 
     @Delete
     void deleteContact(ContactEntity contactEntity);
