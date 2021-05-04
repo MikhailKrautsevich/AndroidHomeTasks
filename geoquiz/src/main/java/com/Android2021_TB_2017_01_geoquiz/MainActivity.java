@@ -2,7 +2,6 @@ package com.Android2021_TB_2017_01_geoquiz;
 
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -50,26 +49,10 @@ public class MainActivity extends AppCompatActivity {
         updateQuestion();
 
         mQuestionTextView.setOnClickListener(new GeoQuizListener());
-
         mTrueButton.setOnClickListener(new GeoQuizListener());
-
         mFalseButton.setOnClickListener(new GeoQuizListener());
-
-        mNextButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeIndexOfQuestion(true);
-                updateQuestion();
-            }
-        });
-
-        mPreviousButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeIndexOfQuestion(false);
-                updateQuestion();
-            }
-        });
+        mNextButton.setOnClickListener(new GeoQuizListener());
+        mPreviousButton.setOnClickListener(new GeoQuizListener());
     }
 
     private void updateQuestion() {
