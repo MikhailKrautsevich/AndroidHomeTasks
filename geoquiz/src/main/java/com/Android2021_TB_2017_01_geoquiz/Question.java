@@ -1,6 +1,6 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
-public class Question {
+class Question {
 
     private int mTextResId ;
     private boolean mAnswerTrue ;
@@ -10,19 +10,11 @@ public class Question {
         this.mAnswerTrue = mAnswerTrue ;
     }
 
-    public void setTextResId(int mTextResId) {
-        this.mTextResId = mTextResId;
-    }
-
-    public void setAnswerTrue(boolean mAnswerTrue) {
-        this.mAnswerTrue = mAnswerTrue;
-    }
-
-    public int getTextResId() {
+    int getTextResId() {
         return mTextResId;
     }
 
-    public boolean isAnswerTrue() {
+    boolean isAnswerTrue() {
         return mAnswerTrue;
     }
 
