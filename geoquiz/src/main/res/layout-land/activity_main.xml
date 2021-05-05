@@ -2,7 +2,8 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/question_text_view"
@@ -10,7 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:hint="@string/hint_question_TV"
-        android:textSize="24sp"
+        android:textSize="32sp"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
         />
