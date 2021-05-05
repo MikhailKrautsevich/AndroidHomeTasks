@@ -1,6 +1,7 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -14,8 +15,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
-    LinearLayout mainLayout;
+    private static final String LOG = "QuizLog" ;
 
+    private LinearLayout mainLayout;
     private Button mTrueButton;
     private Button mFalseButton;
     private ImageButton mNextButton;
@@ -38,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mainLayout = findViewById(R.id.main_layout);
+        Log.d(LOG, "OnCreate() called") ;
 
+        mainLayout = findViewById(R.id.main_layout);
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
         mNextButton = findViewById(R.id.next_button);
@@ -53,6 +56,36 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new GeoQuizListener());
         mNextButton.setOnClickListener(new GeoQuizListener());
         mPreviousButton.setOnClickListener(new GeoQuizListener());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(LOG, "OnStart() called") ;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG, "OnResume() called") ;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LOG, "OnPause() called") ;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG, "OnStop() called") ;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG, "OnDestroy() called") ;
     }
 
     private void updateQuestion() {
