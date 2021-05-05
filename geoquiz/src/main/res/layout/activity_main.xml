@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageButton
-            android:id="@+id/prev_button"
+            android:id="@+id/prev_im_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="12dp"
@@ -50,7 +50,7 @@
             android:drawablePadding="12dp"
             android:contentDescription="@string/prev_button"/>
         <ImageButton
-            android:id="@+id/next_button"
+            android:id="@+id/next_im_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="12dp"
