@@ -1,11 +1,9 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,12 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout mainLayout;
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
-    private Button mPreviousButton;
-    private ImageButton mNextImageButton;
-    private ImageButton mPreviousImageButton;
-
+    private View mNextButton;
+    private View mPreviousButton;
     private TextView mQuestionTextView;
+
+    private GeoQuizListener mGeoQuizListener;
 
     private Question[] mQuestionBank = new Question[]{
             new Question(R.string.question_australia, true),
@@ -55,30 +52,16 @@ public class MainActivity extends AppCompatActivity {
         mainLayout = findViewById(R.id.main_layout);
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
+        mNextButton =  (View) findViewById(R.id.next_button) ;
+        mPreviousButton = findViewById(R.id.prev_button) ;
 
-        mQuestionTextView.setOnClickListener(new GeoQuizListener());
-        mTrueButton.setOnClickListener(new GeoQuizListener());
-        mFalseButton.setOnClickListener(new GeoQuizListener());
+        mGeoQuizListener = new GeoQuizListener() ;
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mNextImageButton = findViewById(R.id.next_im_button);
-            mPreviousImageButton = findViewById(R.id.prev_im_button);
-
-            mNextButton = null ;
-            mPreviousButton = null ;
-
-            mNextImageButton.setOnClickListener(new GeoQuizListener());
-            mPreviousImageButton.setOnClickListener(new GeoQuizListener());
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mNextButton = findViewById(R.id.next_button);
-            mPreviousButton = findViewById(R.id.prev_button);
-
-            mNextImageButton = null ;
-            mPreviousImageButton = null ;
-
-            mNextButton.setOnClickListener(new GeoQuizListener());
-            mPreviousButton.setOnClickListener(new GeoQuizListener());
-        }
+        mQuestionTextView.setOnClickListener(mGeoQuizListener);
+        mTrueButton.setOnClickListener(mGeoQuizListener);
+        mFalseButton.setOnClickListener(mGeoQuizListener);
+        mNextButton.setOnClickListener(mGeoQuizListener);
+        mPreviousButton.setOnClickListener(mGeoQuizListener);
 
         updateQuestion();
     }
@@ -174,13 +157,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.next_button :
-                case R.id.next_im_button :
                 case R.id.question_text_view: {
                     changeIndexOfQuestion(true);
                     updateQuestion();
                     break;
                 }
-                case R.id.prev_im_button :
                 case R.id.prev_button : {
                     changeIndexOfQuestion(false);
                     updateQuestion();
