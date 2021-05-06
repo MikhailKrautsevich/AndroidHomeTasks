@@ -1,5 +1,6 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkAnswer(boolean answer) {
         boolean isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int message;
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(mainLayout,
                 message,
                 Snackbar.LENGTH_SHORT)
-                .setTextColor(colour)
+                .setBackgroundTint(getColor(colour))
                 .show();
         }
 
@@ -155,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     class GeoQuizListener implements View.OnClickListener {
+        @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
