@@ -1,14 +1,11 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,25 +16,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG = "QuizLog" ;
     private static final String KEY_INDEX = "KEY_INDEX" ;
+    private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
 
     private LinearLayout mainLayout;
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
-    private Button mPreviousButton;
-    private ImageButton mNextImageButton;
-    private ImageButton mPreviousImageButton;
-
+    private View mNextButton;
+    private View mPreviousButton;
     private TextView mQuestionTextView;
 
-    private Question[] mQuestionBank = new Question[]{
-            new Question(R.string.question_australia, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true),
-    };
+    private GeoQuizListener mGeoQuizListener;
+
+    private Question[] mQuestionBank ;
 
     private int mCurrentIndex = 0;
 
@@ -49,36 +39,23 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
-        }
+            mQuestionBank = (Question[]) savedInstanceState.getSerializable(KEY_QUESTIONS) ;
+        } else initDefaultQuestionBank();
 
         mQuestionTextView = findViewById(R.id.question_text_view);
         mainLayout = findViewById(R.id.main_layout);
         mTrueButton = findViewById(R.id.true_button);
         mFalseButton = findViewById(R.id.false_button);
+        mNextButton = findViewById(R.id.next_button) ;
+        mPreviousButton = findViewById(R.id.prev_button) ;
 
-        mQuestionTextView.setOnClickListener(new GeoQuizListener());
-        mTrueButton.setOnClickListener(new GeoQuizListener());
-        mFalseButton.setOnClickListener(new GeoQuizListener());
+        mGeoQuizListener = new GeoQuizListener() ;
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            mNextImageButton = findViewById(R.id.next_im_button);
-            mPreviousImageButton = findViewById(R.id.prev_im_button);
-
-            mNextButton = null ;
-            mPreviousButton = null ;
-
-            mNextImageButton.setOnClickListener(new GeoQuizListener());
-            mPreviousImageButton.setOnClickListener(new GeoQuizListener());
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mNextButton = findViewById(R.id.next_button);
-            mPreviousButton = findViewById(R.id.prev_button);
-
-            mNextImageButton = null ;
-            mPreviousImageButton = null ;
-
-            mNextButton.setOnClickListener(new GeoQuizListener());
-            mPreviousButton.setOnClickListener(new GeoQuizListener());
-        }
+        mQuestionTextView.setOnClickListener(mGeoQuizListener);
+        mTrueButton.setOnClickListener(mGeoQuizListener);
+        mFalseButton.setOnClickListener(mGeoQuizListener);
+        mNextButton.setOnClickListener(mGeoQuizListener);
+        mPreviousButton.setOnClickListener(mGeoQuizListener);
 
         updateQuestion();
     }
@@ -118,11 +95,23 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(LOG, "onSaveInstanceState() called") ;
         outState.putInt(KEY_INDEX, mCurrentIndex);
+        outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
 
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getTextResId();
         mQuestionTextView.setText(question);
+    }
+
+    private void initDefaultQuestionBank() {
+        mQuestionBank = new Question[]{
+                new Question(R.string.question_australia, true),
+                new Question(R.string.question_oceans, true),
+                new Question(R.string.question_mideast, false),
+                new Question(R.string.question_africa, false),
+                new Question(R.string.question_americas, true),
+                new Question(R.string.question_asia, true),
+        };
     }
 
     private void checkAnswer(boolean answer) {
@@ -133,9 +122,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             message = R.string.incorrect_toast;
         }
-        Toast.makeText(MainActivity.this,
+        Snackbar.make(mainLayout,
                 message,
-                Toast.LENGTH_SHORT)
+                Snackbar.LENGTH_SHORT)
                 .show();
     }
 
@@ -174,13 +163,11 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
                 case R.id.next_button :
-                case R.id.next_im_button :
                 case R.id.question_text_view: {
                     changeIndexOfQuestion(true);
                     updateQuestion();
                     break;
                 }
-                case R.id.prev_im_button :
                 case R.id.prev_button : {
                     changeIndexOfQuestion(false);
                     updateQuestion();
