@@ -117,16 +117,20 @@ public class MainActivity extends AppCompatActivity {
     private void checkAnswer(boolean answer) {
         boolean isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int message;
+        int colour ;
         if (answer == isAnswerTrue) {
             message = R.string.correct_toast;
+            colour = R.color.green ;
         } else {
             message = R.string.incorrect_toast;
+            colour = R.color.red ;
         }
         Snackbar.make(mainLayout,
                 message,
                 Snackbar.LENGTH_SHORT)
+                .setTextColor(colour)
                 .show();
-    }
+        }
 
     private void changeIndexOfQuestion(boolean up) {
         if (up) {
