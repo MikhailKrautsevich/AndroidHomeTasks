@@ -4,8 +4,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "KEY_INDEX" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
 
-    private LinearLayout mainLayout;
+    private ViewGroup mainLayout;
     private Button mTrueButton;
     private Button mFalseButton;
     private View mNextButton;

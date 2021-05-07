@@ -16,7 +16,7 @@
     <string name="incorrect_toast">Incorrect</string>
 
     <string name="no_more_q_snackbar">Sorry, we have no more questions.</string>
-    <string name="its_first_q_snackbar">It is the first question</string>
+    <string name="its_first_q_snackbar">It is the first question.</string>
 
     <string name="hint_question_TV">Question\'s text</string>
 
