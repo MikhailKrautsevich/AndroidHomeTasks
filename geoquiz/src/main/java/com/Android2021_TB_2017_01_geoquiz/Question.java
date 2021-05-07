@@ -7,13 +7,16 @@ class Question implements Serializable {
     private int mTextResId ;
     private boolean mAnswerTrue ;
     private boolean mIsAnswered ;
+    private boolean mIsAnsweredRight ;
 
     Question(int mTextResId, boolean mAnswerTrue) {
         this.mTextResId = mTextResId ;
         this.mAnswerTrue = mAnswerTrue ;
     }
 
-    void itIsAnswered() {mIsAnswered = true; }
+    void itWasAnswered() {mIsAnswered = true; }
+
+    void itWasAnsweredRight() {mIsAnsweredRight = true ;}
 
     int getTextResId() {
         return mTextResId;
@@ -23,5 +26,7 @@ class Question implements Serializable {
         return mAnswerTrue;
     }
 
-    boolean isItAnswered() {return mIsAnswered; }
+    boolean wasItAnswered() {return mIsAnswered; }
+
+    boolean wasAnsweredRight() {return mIsAnsweredRight; }
 }
