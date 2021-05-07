@@ -14,9 +14,9 @@ class Question implements Serializable {
         this.mAnswerTrue = mAnswerTrue ;
     }
 
-    void itIsAnswered() {mIsAnswered = true; }
+    void itWasAnswered() {mIsAnswered = true; }
 
-    void itIsAnsweredRight() {mIsAnsweredRight = true ;}
+    void itWasAnsweredRight() {mIsAnsweredRight = true ;}
 
     int getTextResId() {
         return mTextResId;
@@ -26,7 +26,7 @@ class Question implements Serializable {
         return mAnswerTrue;
     }
 
-    boolean isItAnswered() {return mIsAnswered; }
+    boolean wasItAnswered() {return mIsAnswered; }
 
-    boolean isAnsweredRight() {return mIsAnsweredRight; }
+    boolean wasAnsweredRight() {return mIsAnsweredRight; }
 }

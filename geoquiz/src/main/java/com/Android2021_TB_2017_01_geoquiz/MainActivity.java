@@ -18,7 +18,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG = "QuizLog" ;
     private static final String KEY_INDEX = "KEY_INDEX" ;
+    private static final String KEY_QUANTITY_OF_CORRECT_ANSWERS = "CORRECT" ;
+    private static final String KEY_QUANTITY_OF_INCORRECT_ANSWERS = "INCORRECT" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
+
 
     private ViewGroup mainLayout;
     private Button mTrueButton;
@@ -32,7 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private Question[] mQuestionBank ;
 
     private int mCurrentIndex = 0;
+    private int mQCorrectAnswers = 0;
+    private int mQInCorrectAnswers = 0;
+    private int mQuestionsQuantity = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +48,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
+            mQCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_CORRECT_ANSWERS) ;
+            mQInCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS) ;
             mQuestionBank = (Question[]) savedInstanceState.getSerializable(KEY_QUESTIONS) ;
         } else initDefaultQuestionBank();
+
+        if (mQuestionBank != null) {
+        mQuestionsQuantity = mQuestionBank.length;
+        }
 
         mQuestionTextView = findViewById(R.id.question_text_view);
         mainLayout = findViewById(R.id.main_layout);
@@ -100,9 +113,19 @@ public class MainActivity extends AppCompatActivity {
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getTextResId();
-        mQuestionTextView.setText(question);
+        Question currentQuestion = mQuestionBank[mCurrentIndex] ;
+        mQuestionTextView.setText(currentQuestion.getTextResId());
+        if (currentQuestion.wasItAnswered()) {
+            if (currentQuestion.wasAnsweredRight()) {
+                mQuestionTextView.setTextColor(getColor(R.color.green));
+            } else {
+                mQuestionTextView.setTextColor(getColor(R.color.red));
+            }
+        } else {
+            mQuestionTextView.setTextColor(getColor(R.color.black));
+        }
     }
 
     private void initDefaultQuestionBank() {
@@ -118,22 +141,30 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkAnswer(boolean answer) {
-        boolean isAnswerTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
-        int message;
-        int colour ;
-        if (answer == isAnswerTrue) {
-            message = R.string.correct_toast;
-            colour = R.color.green ;
-        } else {
-            message = R.string.incorrect_toast;
-            colour = R.color.red ;
+        Question currentQuestion = mQuestionBank[mCurrentIndex] ;
+        if (!currentQuestion.wasItAnswered()) {
+            boolean isAnswerTrue = currentQuestion.isAnswerTrue();
+            currentQuestion.itWasAnswered();
+            int message;
+            int colour ;
+            if (answer == isAnswerTrue) {
+                message = R.string.correct_toast;
+                colour = R.color.green ;
+                mQuestionBank[mCurrentIndex].itWasAnsweredRight();
+                mQCorrectAnswers++ ;
+            } else {
+                message = R.string.incorrect_toast;
+                colour = R.color.red ;
+                mQInCorrectAnswers++ ;
+            }
+            Snackbar.make(mainLayout,
+                    message,
+                    Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(getColor(colour))
+                    .show();
         }
-        Snackbar.make(mainLayout,
-                message,
-                Snackbar.LENGTH_SHORT)
-                .setBackgroundTint(getColor(colour))
-                .show();
-        }
+    }
+
 
     private void changeIndexOfQuestion(boolean up) {
         if (up) {
@@ -157,6 +188,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showResults(){
+        Log.d(LOG, "showResults() called") ;
+    }
+
     class GeoQuizListener implements View.OnClickListener {
         @RequiresApi(api = Build.VERSION_CODES.M)
         @Override
@@ -173,15 +208,17 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.next_button :
                 case R.id.question_text_view: {
                     changeIndexOfQuestion(true);
-                    updateQuestion();
                     break;
                 }
                 case R.id.prev_button : {
                     changeIndexOfQuestion(false);
-                    updateQuestion();
                     break;
                 }
                 default: break;
+            }
+            updateQuestion();
+            if (mQCorrectAnswers + mQInCorrectAnswers == mQuestionsQuantity) {
+                showResults();
             }
         }
     }
