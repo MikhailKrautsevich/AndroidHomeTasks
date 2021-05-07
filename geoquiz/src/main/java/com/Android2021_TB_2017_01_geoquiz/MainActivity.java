@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.d(LOG, "onSaveInstanceState() called") ;
         outState.putInt(KEY_INDEX, mCurrentIndex);
+        outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
+        outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
 
