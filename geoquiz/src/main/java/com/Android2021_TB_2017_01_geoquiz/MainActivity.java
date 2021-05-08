@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
         View view = congratsSnackBar.getView() ;
         TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text) ;
         textView.setMaxLines(5);
-        congratsSnackBar.setAction(getText(R.string.again) , new TryAgainListener()) ;
+        congratsSnackBar.setAction(getText(R.string.again), new TryAgainListener()) ;
         congratsSnackBar.show();
     }
 
