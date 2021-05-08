@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG = "QuizLog" ;
@@ -190,8 +192,37 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initDefaultValues() {
+        mCurrentIndex = 0;
+        mQCorrectAnswers = 0;
+        mQInCorrectAnswers = 0;
+    }
+
     private void showResults(){
-        Log.d(LOG, "showResults() called") ;
+        double percentsForAnAnswer = 100.0/mQuestionBank.length ;
+        double correctPercents = percentsForAnAnswer*mQCorrectAnswers ;
+        double inCorrectPercents = percentsForAnAnswer*mQInCorrectAnswers ;
+
+        String stringForFormat = getString(R.string.results_toast) ;
+
+        String congrats = String
+                .format(Locale.getDefault(),
+                        stringForFormat,
+                        correctPercents,
+                        inCorrectPercents) ;
+        if (correctPercents >= 50.0) {
+            congrats = getResources().getString(R.string.congratulations) + congrats ;
+        }
+        Log.d(LOG, "showResults() called "+ congrats) ;
+        Snackbar congratsSnackBar = Snackbar.make(MainActivity.this,
+                mainLayout,
+                congrats,
+                Snackbar.LENGTH_LONG);
+        View view = congratsSnackBar.getView() ;
+        TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text) ;
+        textView.setMaxLines(5);
+        congratsSnackBar.setAction(getText(R.string.again) , new TryAgainListener()) ;
+        congratsSnackBar.show();
     }
 
     class GeoQuizListener implements View.OnClickListener {
@@ -222,6 +253,16 @@ public class MainActivity extends AppCompatActivity {
             if (mQCorrectAnswers + mQInCorrectAnswers == mQuestionsQuantity) {
                 showResults();
             }
+        }
+    }
+
+    class TryAgainListener implements View.OnClickListener {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        public void onClick(View v) {
+            initDefaultValues();
+            initDefaultQuestionBank();
+            updateQuestion();
         }
     }
 }
