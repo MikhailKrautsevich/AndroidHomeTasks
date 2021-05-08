@@ -19,5 +19,7 @@
     <string name="its_first_q_snackbar">It is the first question.</string>
 
     <string name="hint_question_TV">Question\'s text</string>
+    <string name="Congratulations">Congratulations!\n</string>
+    <string name="your_result_toast">Your result:\n correct answers \%s %, \n</string>
 
 </resources>
