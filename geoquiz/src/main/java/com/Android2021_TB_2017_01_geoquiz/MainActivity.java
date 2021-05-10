@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mFalseButton;
     private View mNextButton;
     private View mPreviousButton;
+    private Button mCheatButton ;
     private TextView mQuestionTextView;
 
     private GeoQuizListener mGeoQuizListener;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton = findViewById(R.id.false_button);
         mNextButton = findViewById(R.id.next_button) ;
         mPreviousButton = findViewById(R.id.prev_button) ;
+        mCheatButton = findViewById(R.id.cheat_button) ;
 
         mGeoQuizListener = new GeoQuizListener() ;
 
@@ -245,6 +247,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 case R.id.prev_button : {
                     changeIndexOfQuestion(false);
+                    break;
+                }
+                case R.id.cheat_button : {
                     break;
                 }
                 default: break;
