@@ -1,5 +1,6 @@
 package com.Android2021_TB_2017_01_geoquiz;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,13 +26,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_QUANTITY_OF_CORRECT_ANSWERS = "CORRECT" ;
     private static final String KEY_QUANTITY_OF_INCORRECT_ANSWERS = "INCORRECT" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
-
+    private static final int REQUEST_CODE_FOR_CHEAT = 0 ;
 
     private ViewGroup mainLayout;
     private Button mTrueButton;
     private Button mFalseButton;
     private View mNextButton;
     private View mPreviousButton;
+    private Button mCheatButton ;
     private TextView mQuestionTextView;
 
     private GeoQuizListener mGeoQuizListener;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private int mQCorrectAnswers = 0;
     private int mQInCorrectAnswers = 0;
     private int mQuestionsQuantity = 0;
+    private boolean mIsCheater ;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton = findViewById(R.id.false_button);
         mNextButton = findViewById(R.id.next_button) ;
         mPreviousButton = findViewById(R.id.prev_button) ;
+        mCheatButton = findViewById(R.id.cheat_button) ;
 
         mGeoQuizListener = new GeoQuizListener() ;
 
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(mGeoQuizListener);
         mNextButton.setOnClickListener(mGeoQuizListener);
         mPreviousButton.setOnClickListener(mGeoQuizListener);
+        mCheatButton.setOnClickListener(mGeoQuizListener);
 
         updateQuestion();
     }
@@ -115,6 +122,19 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
         outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_FOR_CHEAT) {
+                if (data != null) {
+                    mIsCheater = CheatActivity.wasAnswerShown(data) ;
+                }
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -166,6 +186,12 @@ public class MainActivity extends AppCompatActivity {
                     Snackbar.LENGTH_SHORT)
                     .setBackgroundTint(getColor(colour))
                     .show();
+            if (mIsCheater) {
+                Toast.makeText(MainActivity.this,
+                        R.string.judgment_toast,
+                        Toast.LENGTH_SHORT)
+                        .show();
+            }
         }
     }
 
@@ -221,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         View view = congratsSnackBar.getView() ;
         TextView textView = view.findViewById(com.google.android.material.R.id.snackbar_text) ;
         textView.setMaxLines(5);
-        congratsSnackBar.setAction(getText(R.string.again) , new TryAgainListener()) ;
+        congratsSnackBar.setAction(getText(R.string.again), new TryAgainListener()) ;
         congratsSnackBar.show();
     }
 
@@ -247,9 +273,17 @@ public class MainActivity extends AppCompatActivity {
                     changeIndexOfQuestion(false);
                     break;
                 }
+                case R.id.cheat_button : {
+                    Log.d(LOG, "CheatActivity started") ;
+                    boolean cheat_answer = mQuestionBank[mCurrentIndex].isAnswerTrue() ;
+                    Intent intent = CheatActivity.newIntent(MainActivity.this, cheat_answer) ;
+                    startActivityForResult(intent, REQUEST_CODE_FOR_CHEAT);
+                    break;
+                }
                 default: break;
             }
             updateQuestion();
+            mIsCheater = false ;
             if (mQCorrectAnswers + mQInCorrectAnswers == mQuestionsQuantity) {
                 showResults();
             }

@@ -11,16 +11,21 @@
     <string name="false_button">FALSE</string>
     <string name="next_button">NEXT</string>
     <string name="prev_button">PREVIOUS</string>
+    <string name="show_answer_button">Show Answer</string>
+    <string name="cheat_button">Cheat!</string>
 
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect</string>
+    <string name="judgment_toast">Cheating is wrong!</string>
+    <string name="results_toast">Your result:\ncorrect - %5.2f%%, \nincorrect - %5.2f%%.</string>
+    <string name="warning_text">Are you sure to do this?</string>
 
     <string name="no_more_q_snackbar">Sorry, we have no more questions.</string>
     <string name="its_first_q_snackbar">It is the first question.</string>
 
     <string name="hint_question_TV">Question\'s text</string>
     <string name="congratulations">Congratulations!\n</string>
-    <string name="results_toast">Your result:\ncorrect - %5.2f%%, \nincorrect - %5.2f%%.</string>
 
     <string name="again">Again?</string>
+    <string name="answer">Answer</string>
 </resources>
