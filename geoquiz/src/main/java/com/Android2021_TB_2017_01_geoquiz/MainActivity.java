@@ -94,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(LOG, "OnResume() called") ;
+//        if (mIsCheater) {
+//            Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override
