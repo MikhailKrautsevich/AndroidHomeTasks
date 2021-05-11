@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_QUANTITY_OF_CORRECT_ANSWERS = "CORRECT" ;
     private static final String KEY_QUANTITY_OF_INCORRECT_ANSWERS = "INCORRECT" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
+    private static final String KEY_CHEATER = "KEY_CHEATER" ;
     private static final int REQUEST_CODE_FOR_CHEAT = 0 ;
 
     private ViewGroup mainLayout;
@@ -51,12 +52,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(LOG, "OnCreate() called") ;
+        Log.d(LOG, "MA - OnCreate() called") ;
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
             mQCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_CORRECT_ANSWERS) ;
             mQInCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS) ;
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER) ;
             mQuestionBank = (Question[]) savedInstanceState.getSerializable(KEY_QUESTIONS) ;
         } else initDefaultQuestionBank();
 
@@ -87,40 +89,45 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(LOG, "OnStart() called") ;
+        Log.d(LOG, "MA - OnStart() called") ;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(LOG, "OnResume() called") ;
+        Log.d(LOG, "MA - OnResume() called") ;
+        if (mIsCheater) {
+            Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(LOG, "OnPause() called") ;
+        Log.d(LOG, "MA - OnPause() called") ;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(LOG, "OnStop() called") ;
+        Log.d(LOG, "MA - OnStop() called") ;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(LOG, "OnDestroy() called") ;
+        Log.d(LOG, "Ma - OnDestroy() called") ;
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(LOG, "onSaveInstanceState() called") ;
+        Log.d(LOG, "MA- onSaveInstanceState() called") ;
+
         outState.putInt(KEY_INDEX, mCurrentIndex);
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
         outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
+        outState.putBoolean(KEY_CHEATER, mIsCheater);
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
 
