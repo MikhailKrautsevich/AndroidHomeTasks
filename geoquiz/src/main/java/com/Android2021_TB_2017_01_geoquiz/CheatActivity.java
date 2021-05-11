@@ -51,6 +51,10 @@ public class CheatActivity extends AppCompatActivity {
             Log.d(LOG, "CheatActivity - get data from savedInstanceState : mIsCheater = " + mIsCheater) ;
         }
 
+        if (mIsCheater) {
+            setAnswerShownResult();
+        }
+
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
