@@ -17,7 +17,6 @@ public class CheatActivity extends AppCompatActivity {
     private static final String EXTRA_CHEAT = "com.Android2021_TB_2017_01_geoquiz.KEY_CHEAT" ;
     private static final String EXTRA_ANSWER_WAS_SHOWN = "com.Android2021_TB_2017_01_geoquiz.ANSWER_WAS_SHOWN" ;
 
-    private static final String KEY_IS_ANSWER_TRUE = "KEY_IS_ANSWER_TRUE" ;
     private static final String KEY_IS_CHEATER = "KEY_IS_CHEATER" ;
 
     private boolean mIsAnswerTrue ;
@@ -45,13 +44,11 @@ public class CheatActivity extends AppCompatActivity {
         mAnswerTextView = findViewById(R.id.answer_text_view) ;
         mShowAnswerButton = findViewById(R.id.show_answer_button) ;
 
-        if (savedInstanceState != null) {
-            mIsAnswerTrue = savedInstanceState.getBoolean(KEY_IS_ANSWER_TRUE) ;
-            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER) ;
+        mIsAnswerTrue = getIntent().getBooleanExtra(EXTRA_CHEAT, false);
 
-            Log.d(LOG, "CheatActivity - get data from savedInstanceState") ;
-        } else {
-            mIsAnswerTrue = getIntent().getBooleanExtra(EXTRA_CHEAT, false);
+        if (savedInstanceState != null) {
+            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER) ;
+            Log.d(LOG, "CheatActivity - get data from savedInstanceState : mIsCheater = " + mIsCheater) ;
         }
 
         View.OnClickListener listener = new View.OnClickListener() {
@@ -63,6 +60,7 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswerTextView.setText(R.string.false_button);
                 }
                 mIsCheater = true ;
+                setAnswerShownResult();
             }
         } ;
 
@@ -71,12 +69,22 @@ public class CheatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.d(LOG, "CheatActivity - onPause()") ;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        Log.d(LOG, "CheatActivity - onStop()") ;
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (mIsCheater) {
-            setAnswerShownResult();
-        }
 
         Log.d(LOG, "CheatActivity - onDestroy()") ;
     }
@@ -85,8 +93,8 @@ public class CheatActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putBoolean(KEY_IS_ANSWER_TRUE, mIsAnswerTrue);
         outState.putBoolean(KEY_IS_CHEATER, mIsCheater);
+        Log.d(LOG, "CheatActivity - onSaveInstanceState() : mIsCheater = " + mIsCheater) ;
     }
 
     private void setAnswerShownResult() {

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(LOG, "OnCreate() called") ;
+        Log.d(LOG, "MA - OnCreate() called") ;
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
@@ -89,13 +89,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(LOG, "OnStart() called") ;
+        Log.d(LOG, "MA - OnStart() called") ;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(LOG, "OnResume() called") ;
+        Log.d(LOG, "MA - OnResume() called") ;
         if (mIsCheater) {
             Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
         }
@@ -104,25 +104,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(LOG, "OnPause() called") ;
+        Log.d(LOG, "MA - OnPause() called") ;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(LOG, "OnStop() called") ;
+        Log.d(LOG, "MA - OnStop() called") ;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(LOG, "OnDestroy() called") ;
+        Log.d(LOG, "Ma - OnDestroy() called") ;
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(LOG, "onSaveInstanceState() called") ;
+        Log.d(LOG, "MA- onSaveInstanceState() called") ;
 
         outState.putInt(KEY_INDEX, mCurrentIndex);
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
