@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(LOG, "OnResume() called") ;
-//        if (mIsCheater) {
-//            Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
-//        }
+        if (mIsCheater) {
+            Toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Log.d(LOG, "onSaveInstanceState() called") ;
+
         outState.putInt(KEY_INDEX, mCurrentIndex);
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
         outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
