@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
         if (up) {
             if (mCurrentIndex < mQuestionBank.length - 1) {
                 mCurrentIndex++;
+                mIsCheater = false ;
             } else {
                 Snackbar.make(mainLayout,
                         R.string.no_more_q_snackbar,
@@ -221,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             } else {
                 mCurrentIndex--;
+                mIsCheater = false ;
             }
         }
     }
@@ -290,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
                 default: break;
             }
             updateQuestion();
-            mIsCheater = false ;
             if (mQCorrectAnswers + mQInCorrectAnswers == mQuestionsQuantity) {
                 showResults();
             }
