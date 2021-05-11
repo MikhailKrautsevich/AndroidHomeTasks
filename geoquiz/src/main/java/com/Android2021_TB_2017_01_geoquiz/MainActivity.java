@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_QUANTITY_OF_CORRECT_ANSWERS = "CORRECT" ;
     private static final String KEY_QUANTITY_OF_INCORRECT_ANSWERS = "INCORRECT" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
+    private static final String KEY_CHEATER = "KEY_CHEATER" ;
     private static final int REQUEST_CODE_FOR_CHEAT = 0 ;
 
     private ViewGroup mainLayout;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
             mQCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_CORRECT_ANSWERS) ;
             mQInCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS) ;
+            mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER) ;
             mQuestionBank = (Question[]) savedInstanceState.getSerializable(KEY_QUESTIONS) ;
         } else initDefaultQuestionBank();
 
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(KEY_INDEX, mCurrentIndex);
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
         outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
+        outState.putBoolean(KEY_CHEATER, mIsCheater);
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
 
