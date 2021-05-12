@@ -68,7 +68,6 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswerTextView.setText(R.string.false_button);
                 }
                 mIsCheater = true ;
-                setAnswerShownResult();
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     int cx = mShowAnswerButton.getWidth()/2;
@@ -87,6 +86,8 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     mShowAnswerButton.setVisibility(View.INVISIBLE);
                 }
+
+                setAnswerShownResult();
             }
         } ;
 
