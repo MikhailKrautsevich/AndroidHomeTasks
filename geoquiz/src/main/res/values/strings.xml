@@ -28,4 +28,5 @@
 
     <string name="again">Again?</string>
     <string name="answer">Answer</string>
+    <string name="can_t_get_version_api">Can\'t get version API</string>
 </resources>
