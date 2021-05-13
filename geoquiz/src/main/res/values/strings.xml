@@ -28,7 +28,7 @@
     <string name="again">Again?</string>
     <string name="answer">Answer</string>
 
-    <string name="your_api_message">API level is </string>
+    <string name="your_api_message">API level is\u0020</string>
     <string name="you_have_hints">You have %d hints.</string>
     <string name="you_have_no_hints">You have no hints.</string>
     <string name="cheats_left">Cheats left.</string>
