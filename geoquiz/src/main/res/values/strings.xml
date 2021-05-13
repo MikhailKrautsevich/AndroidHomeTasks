@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
+
     <string name="question_australia">Canberra is the capital of Australia.</string>
     <string name="question_oceans">The Pacific Ocean is larger than the Atlantic Ocean.</string>
     <string name="question_mideast">The Suez Canal connects the Red sea and the Indian Ocean.</string>
@@ -23,9 +24,14 @@
     <string name="no_more_q_snackbar">Sorry, we have no more questions.</string>
     <string name="its_first_q_snackbar">It is the first question.</string>
 
-    <string name="hint_question_TV">Question\'s text</string>
     <string name="congratulations">Congratulations!\n</string>
-
     <string name="again">Again?</string>
     <string name="answer">Answer</string>
+
+    <string name="your_api_message">API level is\u0020</string>
+    <string name="you_have_hints">You have %d hints.</string>
+    <string name="you_have_no_hints">You have no hints.</string>
+    <string name="cheats_left">Cheats left.</string>
+    <string name="can_t_get_version_api">Can\'t get version API</string>
+    <string name="hint_question_TV">Question\'s text</string>
 </resources>

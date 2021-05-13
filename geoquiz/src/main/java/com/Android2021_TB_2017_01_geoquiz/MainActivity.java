@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INDEX = "KEY_INDEX" ;
     private static final String KEY_QUANTITY_OF_CORRECT_ANSWERS = "CORRECT" ;
     private static final String KEY_QUANTITY_OF_INCORRECT_ANSWERS = "INCORRECT" ;
+    private static final String KEY_QUANTITY_OF_CHEATS = "QUANTITY_OF_CHEATS" ;
     private static final String KEY_QUESTIONS = "KEY_QUESTIONS" ;
     private static final String KEY_CHEATER = "KEY_CHEATER" ;
     private static final int REQUEST_CODE_FOR_CHEAT = 0 ;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private int mQCorrectAnswers = 0;
     private int mQInCorrectAnswers = 0;
     private int mQuestionsQuantity = 0;
+    private int mCheatsLeft = 3 ;
     private boolean mIsCheater ;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX) ;
             mQCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_CORRECT_ANSWERS) ;
             mQInCorrectAnswers = savedInstanceState.getInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS) ;
+            mCheatsLeft = savedInstanceState.getInt(KEY_QUANTITY_OF_CHEATS) ;
             mIsCheater = savedInstanceState.getBoolean(KEY_CHEATER) ;
             mQuestionBank = (Question[]) savedInstanceState.getSerializable(KEY_QUESTIONS) ;
         } else initDefaultQuestionBank();
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(KEY_INDEX, mCurrentIndex);
         outState.putInt(KEY_QUANTITY_OF_CORRECT_ANSWERS, mQCorrectAnswers);
         outState.putInt(KEY_QUANTITY_OF_INCORRECT_ANSWERS, mQInCorrectAnswers);
+        outState.putInt(KEY_QUANTITY_OF_CHEATS, mCheatsLeft);
         outState.putBoolean(KEY_CHEATER, mIsCheater);
         outState.putSerializable(KEY_QUESTIONS, mQuestionBank);
     }
@@ -139,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
             if (requestCode == REQUEST_CODE_FOR_CHEAT) {
                 if (data != null) {
                     mIsCheater = CheatActivity.wasAnswerShown(data) ;
+                    if (mIsCheater) {
+                        mCheatsLeft-- ;
+                    }
                 }
             }
         }
@@ -286,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(LOG, "CheatActivity started") ;
                     boolean cheat_answer = mQuestionBank[mCurrentIndex].isAnswerTrue() ;
                     Intent intent = CheatActivity.newIntent(MainActivity.this, cheat_answer) ;
+                    CheatActivity.putCheatsQuantity(intent, mCheatsLeft) ;
                     startActivityForResult(intent, REQUEST_CODE_FOR_CHEAT);
                     break;
                 }

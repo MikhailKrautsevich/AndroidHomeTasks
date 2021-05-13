@@ -29,4 +29,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/show_answer_button"/>
+
+    <TextView
+        android:id="@+id/hints_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/cheats_left"
+        android:textColor="@color/black"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/api_lvl_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/can_t_get_version_api"
+        android:textColor="@color/black"
+        android:textSize="16sp"/>
 </LinearLayout>
