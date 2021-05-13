@@ -39,8 +39,8 @@ public class CheatActivity extends AppCompatActivity {
         return intent ;
     }
 
-    public static Intent putCheatsQuantity(Intent intent, int cheatsQuantity) {
-        return intent.putExtra(EXTRA_CHEATS_LEFT, cheatsQuantity) ;
+    public static void putCheatsQuantity(Intent intent, int cheatsQuantity) {
+        intent.putExtra(EXTRA_CHEATS_LEFT, cheatsQuantity) ;
     }
 
     public static boolean wasAnswerShown(Intent data) {
@@ -63,7 +63,6 @@ public class CheatActivity extends AppCompatActivity {
         mIsAnswerTrue = getIntent().getBooleanExtra(EXTRA_CHEAT, false);
 
         checkIfPlayerHasHints(getIntent());
-
 
         if (savedInstanceState != null) {
             mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER) ;
@@ -106,16 +105,17 @@ public class CheatActivity extends AppCompatActivity {
             }
         } ;
 
-        mAnswerTextView.setOnClickListener(listener);
         mShowAnswerButton.setOnClickListener(listener);
     }
 
     private void checkIfPlayerHasHints(Intent intent) {
         int cheatsQuantity = intent.getIntExtra(EXTRA_CHEATS_LEFT, 0) ;
-        String stringFormHintsLeftTextView = "You have no hints." ;
+        String stringFormHintsLeftTextView = getString(R.string.you_have_no_hints) ;
         if (cheatsQuantity > 0) {
             stringFormHintsLeftTextView =
-                    String.format(Locale.getDefault(),"You have %d hints.", cheatsQuantity) ;
+                    String.format(Locale.getDefault(),
+                            getString(R.string.you_have_hints),
+                            cheatsQuantity) ;
         } else {
             mShowAnswerButton.setVisibility(View.INVISIBLE);
         }
@@ -158,7 +158,7 @@ public class CheatActivity extends AppCompatActivity {
     }
 
     private String getAPIVersion() {
-        return R.string.your_api_message + String.valueOf(Build.VERSION.SDK_INT) ;
+        return getString(R.string.your_api_message) + Build.VERSION.SDK_INT;
     }
 
 }
