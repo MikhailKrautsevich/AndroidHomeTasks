@@ -15,24 +15,32 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Locale;
+
 public class CheatActivity extends AppCompatActivity {
 
     private static  final String LOG = "QuizLog" ;
     private static final String EXTRA_CHEAT = "com.Android2021_TB_2017_01_geoquiz.KEY_CHEAT" ;
     private static final String EXTRA_ANSWER_WAS_SHOWN = "com.Android2021_TB_2017_01_geoquiz.ANSWER_WAS_SHOWN" ;
+    private static final String EXTRA_CHEATS_LEFT = "com.Android2021_TB_2017_01_geoquiz.EXTRA_CHEATS_LEFT" ;
 
     private static final String KEY_IS_CHEATER = "KEY_IS_CHEATER" ;
 
     private boolean mIsAnswerTrue ;
     private boolean mIsCheater ;
     private TextView mAnswerTextView ;
-    private TextView mAPITextViw ;
+    private TextView mAPITextView ;
+    private TextView mHintsLeftTextView ;
     private Button mShowAnswerButton ;
 
     public static Intent newIntent(Context context, boolean answer_is_true) {
         Intent intent = new Intent(context, CheatActivity.class) ;
         intent.putExtra(EXTRA_CHEAT, answer_is_true) ;
         return intent ;
+    }
+
+    public static Intent putCheatsQuantity(Intent intent, int cheatsQuantity) {
+        return intent.putExtra(EXTRA_CHEATS_LEFT, cheatsQuantity) ;
     }
 
     public static boolean wasAnswerShown(Intent data) {
@@ -48,10 +56,14 @@ public class CheatActivity extends AppCompatActivity {
 
         mAnswerTextView = findViewById(R.id.answer_text_view) ;
         mShowAnswerButton = findViewById(R.id.show_answer_button) ;
-        mAPITextViw = findViewById(R.id.api_lvl_text_view) ;
-        mAPITextViw.setText(getAPIVersion());
+        mHintsLeftTextView= findViewById(R.id.hints_left) ;
+        mAPITextView = findViewById(R.id.api_lvl_text_view) ;
+        mAPITextView.setText(getAPIVersion());
 
         mIsAnswerTrue = getIntent().getBooleanExtra(EXTRA_CHEAT, false);
+
+        checkIfPlayerHasHints(getIntent());
+
 
         if (savedInstanceState != null) {
             mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER) ;
@@ -98,6 +110,18 @@ public class CheatActivity extends AppCompatActivity {
         mShowAnswerButton.setOnClickListener(listener);
     }
 
+    private void checkIfPlayerHasHints(Intent intent) {
+        int cheatsQuantity = intent.getIntExtra(EXTRA_CHEATS_LEFT, 0) ;
+        String stringFormHintsLeftTextView = "You have no hints." ;
+        if (cheatsQuantity > 0) {
+            stringFormHintsLeftTextView =
+                    String.format(Locale.getDefault(),"You have %d hints.", cheatsQuantity) ;
+        } else {
+            mShowAnswerButton.setVisibility(View.INVISIBLE);
+        }
+        mHintsLeftTextView.setText(stringFormHintsLeftTextView);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -134,7 +158,7 @@ public class CheatActivity extends AppCompatActivity {
     }
 
     private String getAPIVersion() {
-        return "API level is " + String.valueOf(Build.VERSION.SDK_INT) ;
+        return R.string.your_api_message + String.valueOf(Build.VERSION.SDK_INT) ;
     }
 
 }

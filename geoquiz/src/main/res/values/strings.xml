@@ -29,4 +29,6 @@
     <string name="again">Again?</string>
     <string name="answer">Answer</string>
     <string name="can_t_get_version_api">Can\'t get version API</string>
+    <string name="your_api_message">API level is </string>
+    <string name="cheats_left">Cheats left.</string>
 </resources>
