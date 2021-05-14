@@ -100,7 +100,6 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     mShowAnswerButton.setVisibility(View.INVISIBLE);
                 }
-
                 setAnswerShownResult();
             }
         } ;

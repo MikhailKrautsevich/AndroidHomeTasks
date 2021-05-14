@@ -1,0 +1,4 @@
+#Thu Apr 23 01:39:51 MSK 2020
+base.0=E\:\\Code\\example_radbutton\\build\\intermediates\\dex\\debug\\out\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
