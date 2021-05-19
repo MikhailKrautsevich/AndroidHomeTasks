@@ -21,7 +21,6 @@ public class CrimeLab {
             Crime crime = new Crime();
             crime.setTitle("Crime # " + i);
             crime.setSolved(i % 2 == 0);
-            crime.setPoliceRequires(i % 5 == 0) ;
             mCrimes.add(crime) ;
             Log.d(LOG, "Crime #" + i + " added.") ;
         }

@@ -9,6 +9,5 @@
     <string name="crime_title">Crime Title</string>
 
     <string name="is_clicked">\u0020is clicked!</string>
-    <string name="button_was_clicked">Button was clicked!</string>
-    <string name="button_call_the_police">Call the POLICE</string>
+    <string name="solved">solved</string>
 </resources>
