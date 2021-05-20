@@ -31,6 +31,7 @@ public class CrimeLab {
         if (sCrimeLab == null) {
             sCrimeLab = new CrimeLab(context) ;
         }
+        Log.d(LOG, "CrimeLab get(Context context)") ;
         return sCrimeLab ;
     }
 
