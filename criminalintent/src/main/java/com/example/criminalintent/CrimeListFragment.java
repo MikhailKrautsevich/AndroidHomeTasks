@@ -24,6 +24,7 @@ public class CrimeListFragment extends Fragment {
     private static final String LOG = "CrimeListFragment" ;
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
+    private int mCrimeChanged;
 
     @Nullable
     @Override
@@ -37,12 +38,24 @@ public class CrimeListFragment extends Fragment {
         return view ;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void updateUI() {
         CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
         List<Crime> crimes = mCrimeLab.getCrimes() ;
-        mAdapter = new CrimeAdapter(crimes);
-        mcCrimeRecyclerView.setAdapter(mAdapter);
-        mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mcCrimeRecyclerView.setAdapter(mAdapter);
+            mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        } else {
+            if (mCrimeChanged >= 0) {
+                mAdapter.notifyItemChanged(mCrimeChanged);
+            }
+        }
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -75,6 +88,11 @@ public class CrimeListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getID()) ;
+            int absAdapterPosition = CrimeHolder.this.getAbsoluteAdapterPosition() ;
+            Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
+            int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
+            Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
+            mCrimeChanged = bindAdapterPosition ;
             startActivity(intent);
         }
     }
