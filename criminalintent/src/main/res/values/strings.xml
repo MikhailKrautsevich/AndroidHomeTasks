@@ -10,4 +10,6 @@
 
     <string name="is_clicked">\u0020is clicked!</string>
     <string name="solved">solved</string>
+    <string name="first">To the first</string>
+    <string name="last">To the last</string>
 </resources>

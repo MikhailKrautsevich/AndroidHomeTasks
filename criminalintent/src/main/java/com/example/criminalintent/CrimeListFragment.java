@@ -22,6 +22,7 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
 
     private static final String LOG = "CrimeListFragment" ;
+
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
     private int mCrimeChanged;
@@ -87,7 +88,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getID()) ;
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getID()) ;
             int absAdapterPosition = CrimeHolder.this.getAbsoluteAdapterPosition() ;
             Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
             int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
