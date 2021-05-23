@@ -69,4 +69,12 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
         });
     }
+
+    void goToTheFirstItem() {
+        mViewPager.setCurrentItem(0);
+    }
+
+    void  goToTheLastItem() {
+        mViewPager.setCurrentItem(mCrimes.size() - 1);
+    }
 }

@@ -29,6 +29,8 @@ public class CrimeFragment extends Fragment {
     private Crime mCrime ;
     private EditText mTitleField ;
     private Button mDateButton ;
+    private Button mToFirstButton ;
+    private Button mToLastButton ;
     private CheckBox mSolvedCheckBox ;
 
     static CrimeFragment newInstance(UUID crimeID) {
@@ -94,6 +96,28 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        mToFirstButton = view.findViewById(R.id.btn_first) ;
+        mToLastButton = view.findViewById(R.id.btn_last) ;
+        View.OnClickListener listener = new CrimeFragmentListener() ;
+        mToFirstButton.setOnClickListener(listener);
+        mToLastButton.setOnClickListener(listener);
         return view ;
+    }
+
+    class CrimeFragmentListener implements View.OnClickListener {
+        CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_first :
+                    mActivity.goToTheFirstItem();
+                    break;
+                case R.id.btn_last:
+                    mActivity.goToTheLastItem();
+                    break;
+                default:
+                    Log.d(LOG, "CrimeFragmentListener: default branch.");
+            }
+        }
     }
 }
