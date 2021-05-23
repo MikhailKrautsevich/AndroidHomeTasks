@@ -101,6 +101,14 @@ public class CrimeFragment extends Fragment {
         View.OnClickListener listener = new CrimeFragmentListener() ;
         mToFirstButton.setOnClickListener(listener);
         mToLastButton.setOnClickListener(listener);
+
+        CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
+        if (mActivity.isItTheFirstItem()) {
+            mToFirstButton.setEnabled(false);
+        }
+        if (mActivity.isItTheLastItem()) {
+            mToLastButton.setEnabled(false);
+        }
         return view ;
     }
 

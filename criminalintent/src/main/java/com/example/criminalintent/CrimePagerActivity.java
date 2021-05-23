@@ -77,4 +77,16 @@ public class CrimePagerActivity extends AppCompatActivity {
     void  goToTheLastItem() {
         mViewPager.setCurrentItem(mCrimes.size() - 1);
     }
+
+    int getAdapterPos() {
+        return mViewPager.getCurrentItem() ;
+    }
+
+    boolean isItTheFirstItem() {
+        return (getAdapterPos() == 0) ;
+    }
+
+    boolean isItTheLastItem() {
+        return (getAdapterPos() == (mCrimes.size() - 1) );
+    }
 }
