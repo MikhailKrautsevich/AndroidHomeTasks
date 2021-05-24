@@ -103,11 +103,15 @@ public class CrimeFragment extends Fragment {
         mToLastButton.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
-        if (mActivity != null && mActivity.isItTheFirstItem()) {
-            mToFirstButton.setEnabled(false);
-        }
-        if (mActivity != null && mActivity.isItTheLastItem()) {
-            mToLastButton.setEnabled(false);
+        if (mActivity != null) {
+            if (mActivity.isItTheFirstItem()) {
+                mToFirstButton.setEnabled(false);
+            }
+            if (mActivity.isItTheLastItem()) {
+                mToLastButton.setEnabled(false);
+            }
+            mActivity.changeRightAndLeft(mActivity.getAdapterPos());
+            Log.d(LOG, "mActivity.getAdapterPos()" + mActivity.getAdapterPos()) ;
         }
         return view ;
     }

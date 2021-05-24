@@ -22,14 +22,14 @@ public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID = "com.example.criminalIntent.crime_id" ;
     private static final String EXTRA_LEFT_EVENT = "EXTRA_LEFT_EVENT" ;
     private static final String EXTRA_RIGHT_EVENT = "EXTRA_RIGHT_EVENT" ;
-    private static final String LOG = "CrimePagerActivity_LOG" ;
+    private static final String LOG = "CrimePagerActivity_log" ;
 
-    private static boolean sWasEventTurned;
     private static int sLeftEvent ;
     private static int sRightEvent ;
 
     private ViewPager mViewPager ;
     private List<Crime> mCrimes ;
+    private Intent mIntent ;
 
     public static Intent newIntent(Context packageContext, UUID crimeID) {
         Intent intent = new Intent(packageContext, CrimePagerActivity.class) ;
@@ -50,7 +50,6 @@ public class CrimePagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crime_pager);
 
-        sWasEventTurned = false ;
         mViewPager = findViewById(R.id.crime_view_pager) ;
 
         mCrimes = CrimeLab.get(this).getCrimes() ;
@@ -72,24 +71,9 @@ public class CrimePagerActivity extends AppCompatActivity {
 
         for (int i = 0 ; i < mCrimes.size(); i++ ) {
             if (mCrimes.get(i).getID().equals(crimeID)) {
-                if (sWasEventTurned) {
-                    Log.d(LOG, "Branch else") ;
-                    if (i < sLeftEvent) {
-                        Log.d(LOG, "change sLeftEvent = i = " + i) ;
-                        sLeftEvent = i ;
-                    } else if (i > sRightEvent) {
-                        Log.d(LOG, "change sRightEvent = i = " + i) ;
-                        sRightEvent = i ;
-                    }
-                }
-                if (!sWasEventTurned) {
-                    sLeftEvent = i ;
-                    sRightEvent = i ;
-                    sWasEventTurned = true ;
-                    mViewPager.setCurrentItem(i);
-                    Log.d(LOG, "sWasEventTurned = true by sLeftEvent = sRightEvent = i = " + i) ;
-                }
                 mViewPager.setCurrentItem(i);
+                sRightEvent = i ;
+                sLeftEvent = i ;
                 break;
             }
         }
@@ -106,16 +90,6 @@ public class CrimePagerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (sWasEventTurned) {
-            Intent intent = new Intent() ;
-            intent.putExtra(EXTRA_LEFT_EVENT, sLeftEvent) ;
-            intent.putExtra(EXTRA_RIGHT_EVENT, sRightEvent) ;
-            setResult(RESULT_OK);
-            Log.d(LOG, "sLeftEvent = " + sLeftEvent) ;
-            Log.d(LOG, "sRightEvent = " + sRightEvent) ;
-            Log.d(LOG, "I set result OK") ;
-        }
     }
 
     void goToTheFirstItem() {
@@ -131,6 +105,23 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     int getAdapterPos() {
         return mViewPager.getCurrentItem() ;
+    }
+
+    void changeRightAndLeft(int pos) {
+        if (mIntent == null) {
+            mIntent = new Intent() ;
+            setResult(RESULT_OK, mIntent);
+            Log.d(LOG, "changeRightAndLeft: create new Intent") ;
+        }
+        if (pos < sLeftEvent) {
+            sLeftEvent = pos ;
+            Log.d(LOG, "changeRightAndLeft: sLeftEvent to " + pos) ;
+        } else if (pos > sRightEvent) {
+            sRightEvent = pos ;
+            Log.d(LOG, "changeRightAndLeft: sRightEvent to " + pos) ;
+        }
+        mIntent.putExtra(EXTRA_LEFT_EVENT, sLeftEvent) ;
+        mIntent.putExtra(EXTRA_RIGHT_EVENT, sRightEvent) ;
     }
 
     boolean isItTheFirstItem() {

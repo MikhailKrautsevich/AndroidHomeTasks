@@ -23,7 +23,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class CrimeListFragment extends Fragment {
 
-    private static final String LOG = "CrimeListFragment" ;
+    private static final String LOG = "CrimeListFragment_log" ;
     private static final int REQUEST_CODE_FOR_UPDATE = 1114 ;
 
     private RecyclerView mcCrimeRecyclerView ;
@@ -56,6 +56,7 @@ public class CrimeListFragment extends Fragment {
             if (resultCode == RESULT_OK) {
                 int left = CrimePagerActivity.getLeftEvent(data) ;
                 int right = CrimePagerActivity.getRightEvent(data) ;
+                Log.d(LOG, "I get Right = " + right + " and Left = " + left);
                 updateSomeCrimes(left, right) ;
             } else {
                 updateUI();
@@ -81,6 +82,7 @@ public class CrimeListFragment extends Fragment {
         if (mAdapter != null && right < mAdapter.getList().size()) {
             for (int i = left; i <= right; i++) {
                 mAdapter.notifyItemChanged(i);
+                Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
             }
         }
     }
@@ -102,8 +104,8 @@ public class CrimeListFragment extends Fragment {
 
         void bind(Crime crime) {
             mCrime = crime ;
-            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
-            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
+//            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
+//            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
             mTitleTextView.setText(crime.getTitle());
             String dateString = DateFormat
                     .format( "EEEE, dd MMM, yyyy", mCrime.getDate())
@@ -116,9 +118,9 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getID()) ;
             int absAdapterPosition = CrimeHolder.this.getAbsoluteAdapterPosition() ;
-            Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
+//            Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
             int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
-            Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
+//            Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
             mCrimeChanged = bindAdapterPosition ;
             startActivityForResult(intent, REQUEST_CODE_FOR_UPDATE);
         }
