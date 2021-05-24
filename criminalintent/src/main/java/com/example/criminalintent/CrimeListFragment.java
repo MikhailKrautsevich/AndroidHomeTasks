@@ -19,9 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CrimeListFragment extends Fragment {
 
     private static final String LOG = "CrimeListFragment" ;
+    private static final int REQUEST_CODE_FOR_UPDATE = 1114 ;
 
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
@@ -45,6 +48,21 @@ public class CrimeListFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_FOR_UPDATE && data != null) {
+            if (resultCode == RESULT_OK) {
+                int left = CrimePagerActivity.getLeftEvent(data) ;
+                int right = CrimePagerActivity.getRightEvent(data) ;
+                updateSomeCrimes(left, right) ;
+            } else {
+                updateUI();
+            }
+        }
+    }
+
     private void updateUI() {
         CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
         List<Crime> crimes = mCrimeLab.getCrimes();
@@ -55,6 +73,14 @@ public class CrimeListFragment extends Fragment {
         } else {
             if (mCrimeChanged >= 0) {
                 mAdapter.notifyItemChanged(mCrimeChanged);
+            }
+        }
+    }
+
+    private void updateSomeCrimes(int left, int right) {
+        if (mAdapter != null && right < mAdapter.getList().size()) {
+            for (int i = left; i <= right; i++) {
+                mAdapter.notifyItemChanged(i);
             }
         }
     }
@@ -94,7 +120,7 @@ public class CrimeListFragment extends Fragment {
             int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
             Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
             mCrimeChanged = bindAdapterPosition ;
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_FOR_UPDATE);
         }
     }
 
@@ -123,6 +149,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        List<Crime> getList(){
+            return mCrimes ;
         }
     }
 }
