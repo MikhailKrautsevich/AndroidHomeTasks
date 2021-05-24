@@ -20,10 +20,9 @@ import java.util.UUID;
 public class CrimePagerActivity extends AppCompatActivity {
 
     private static final String EXTRA_CRIME_ID = "com.example.criminalIntent.crime_id" ;
-    private static final String EXTRA_WAS_EVENT_TURNED = "EXTRA_WAS_EVENT_TURNED" ;
     private static final String EXTRA_LEFT_EVENT = "EXTRA_LEFT_EVENT" ;
     private static final String EXTRA_RIGHT_EVENT = "EXTRA_RIGHT_EVENT" ;
-    private static final String LOG = "CrimePagerActivity" ;
+    private static final String LOG = "CrimePagerActivity_LOG" ;
 
     private static boolean sWasEventTurned;
     private static int sLeftEvent ;
@@ -73,18 +72,22 @@ public class CrimePagerActivity extends AppCompatActivity {
 
         for (int i = 0 ; i < mCrimes.size(); i++ ) {
             if (mCrimes.get(i).getID().equals(crimeID)) {
+                if (sWasEventTurned) {
+                    Log.d(LOG, "Branch else") ;
+                    if (i < sLeftEvent) {
+                        Log.d(LOG, "change sLeftEvent = i = " + i) ;
+                        sLeftEvent = i ;
+                    } else if (i > sRightEvent) {
+                        Log.d(LOG, "change sRightEvent = i = " + i) ;
+                        sRightEvent = i ;
+                    }
+                }
                 if (!sWasEventTurned) {
                     sLeftEvent = i ;
                     sRightEvent = i ;
                     sWasEventTurned = true ;
                     mViewPager.setCurrentItem(i);
-                    Log.d(LOG, "sWasEventTurned = true by sLeftEvent=sRightEvent=i= " + i) ;
-                } else {
-                    if (i < sLeftEvent) {
-                        sLeftEvent = i ;
-                    } else if (i > sRightEvent) {
-                        sRightEvent = i ;
-                    }
+                    Log.d(LOG, "sWasEventTurned = true by sLeftEvent = sRightEvent = i = " + i) ;
                 }
                 mViewPager.setCurrentItem(i);
                 break;
@@ -109,6 +112,9 @@ public class CrimePagerActivity extends AppCompatActivity {
             intent.putExtra(EXTRA_LEFT_EVENT, sLeftEvent) ;
             intent.putExtra(EXTRA_RIGHT_EVENT, sRightEvent) ;
             setResult(RESULT_OK);
+            Log.d(LOG, "sLeftEvent = " + sLeftEvent) ;
+            Log.d(LOG, "sRightEvent = " + sRightEvent) ;
+            Log.d(LOG, "I set result OK") ;
         }
     }
 
