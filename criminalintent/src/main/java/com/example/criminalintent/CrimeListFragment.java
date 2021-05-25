@@ -118,9 +118,9 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getID()) ;
             int absAdapterPosition = CrimeHolder.this.getAbsoluteAdapterPosition() ;
-//            Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
+            Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
             int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
-//            Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
+            Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
             mCrimeChanged = bindAdapterPosition ;
             startActivityForResult(intent, REQUEST_CODE_FOR_UPDATE);
         }
