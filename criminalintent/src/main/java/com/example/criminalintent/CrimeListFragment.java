@@ -19,9 +19,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CrimeListFragment extends Fragment {
 
-    private static final String LOG = "CrimeListFragment" ;
+    private static final String LOG = "CrimeListFragment_log" ;
+    private static final int REQUEST_CODE_FOR_UPDATE = 1114 ;
+
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
     private int mCrimeChanged;
@@ -44,6 +48,22 @@ public class CrimeListFragment extends Fragment {
         updateUI();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_FOR_UPDATE && data != null) {
+            if (resultCode == RESULT_OK) {
+                int left = CrimePagerActivity.getLeftEvent(data) ;
+                int right = CrimePagerActivity.getRightEvent(data) ;
+                Log.d(LOG, "I get Right = " + right + " and Left = " + left);
+                updateSomeCrimes(left, right) ;
+            } else {
+                updateUI();
+            }
+        }
+    }
+
     private void updateUI() {
         CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
         List<Crime> crimes = mCrimeLab.getCrimes();
@@ -54,6 +74,15 @@ public class CrimeListFragment extends Fragment {
         } else {
             if (mCrimeChanged >= 0) {
                 mAdapter.notifyItemChanged(mCrimeChanged);
+            }
+        }
+    }
+
+    private void updateSomeCrimes(int left, int right) {
+        if (mAdapter != null && right < mAdapter.getList().size()) {
+            for (int i = left; i <= right; i++) {
+                mAdapter.notifyItemChanged(i);
+                Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
             }
         }
     }
@@ -75,8 +104,8 @@ public class CrimeListFragment extends Fragment {
 
         void bind(Crime crime) {
             mCrime = crime ;
-            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
-            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
+//            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
+//            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
             mTitleTextView.setText(crime.getTitle());
             String dateString = DateFormat
                     .format( "EEEE, dd MMM, yyyy", mCrime.getDate())
@@ -87,13 +116,13 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getID()) ;
+            Intent intent = CrimePagerActivity.newIntent(getActivity(), mCrime.getID()) ;
             int absAdapterPosition = CrimeHolder.this.getAbsoluteAdapterPosition() ;
             Log.d(LOG, "getAbsoluteAdapterPosition() = " + absAdapterPosition) ;
             int bindAdapterPosition = CrimeHolder.this.getBindingAdapterPosition() ;
             Log.d(LOG, "getBindingAdapterPosition() = " + bindAdapterPosition) ;
             mCrimeChanged = bindAdapterPosition ;
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_FOR_UPDATE);
         }
     }
 
@@ -122,6 +151,10 @@ public class CrimeListFragment extends Fragment {
         @Override
         public int getItemCount() {
             return mCrimes.size();
+        }
+
+        List<Crime> getList(){
+            return mCrimes ;
         }
     }
 }
