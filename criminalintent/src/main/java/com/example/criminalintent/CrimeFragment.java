@@ -16,6 +16,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class CrimeFragment extends Fragment {
 
     private static final String LOG = "CrimeFragment_log" ;
     private static final String ARG_CRIME_ID = "crime_id" ;
+    private static final String DIALOG_DATE = "DialogDate" ;
 
     private Crime mCrime ;
     private EditText mTitleField ;
@@ -84,7 +86,7 @@ public class CrimeFragment extends Fragment {
         mDateButton.setText(
                 DateFormat.format( "EEEE, dd MMM, yyyy", mCrime.getDate())
                 .toString() );
-        mDateButton.setEnabled(false);
+
 
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
         mSolvedCheckBox.setChecked(mCrime.getSolved());
@@ -101,6 +103,7 @@ public class CrimeFragment extends Fragment {
         View.OnClickListener listener = new CrimeFragmentListener() ;
         mToFirstButton.setOnClickListener(listener);
         mToLastButton.setOnClickListener(listener);
+        mDateButton.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -127,6 +130,10 @@ public class CrimeFragment extends Fragment {
                 case R.id.btn_last:
                     mActivity.goToTheLastItem();
                     break;
+                case R.id.crime_date:
+                    FragmentManager fragmentManager = getFragmentManager() ;
+                    DatePickerFragment dialog = new DatePickerFragment() ;
+                    dialog.show(fragmentManager, DIALOG_DATE);
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
             }
