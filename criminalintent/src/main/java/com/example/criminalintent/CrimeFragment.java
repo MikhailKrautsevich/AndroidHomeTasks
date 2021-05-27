@@ -30,11 +30,14 @@ public class CrimeFragment extends Fragment {
     private static final String LOG = "CrimeFragment_log" ;
     private static final String ARG_CRIME_ID = "crime_id" ;
     private static final String DIALOG_DATE = "DialogDate" ;
+    private static final String DIALOG_TIME = "DialogTime" ;
     private static final int REQUEST_DATE = 211 ;
+    private static final int REQUEST_TIME = 222 ;
 
     private Crime mCrime ;
     private EditText mTitleField ;
     private Button mDateButton ;
+    private Button mTimeButton ;
     private Button mToFirstButton ;
     private Button mToLastButton ;
     private CheckBox mSolvedCheckBox ;
@@ -88,6 +91,9 @@ public class CrimeFragment extends Fragment {
         mDateButton = view.findViewById(R.id.crime_date) ;
         updateDate(mCrime.getDate());
 
+        mTimeButton = view.findViewById(R.id.crime_time) ;
+        updateTime(new Date());
+
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
         mSolvedCheckBox.setChecked(mCrime.getSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -104,6 +110,7 @@ public class CrimeFragment extends Fragment {
         mToFirstButton.setOnClickListener(listener);
         mToLastButton.setOnClickListener(listener);
         mDateButton.setOnClickListener(listener);
+        mTimeButton.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -121,10 +128,14 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-         if (resultCode == RESULT_OK) {
+         if (requestCode == REQUEST_DATE && resultCode == RESULT_OK) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE) ;
             mCrime.setDate(date) ;
-             updateDate(date);
+            updateDate(date);
+         }
+         if (requestCode == REQUEST_TIME && resultCode == RESULT_OK) {
+             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_FOR_TIME) ;
+             updateTime(date);
          }
     }
 
@@ -138,8 +149,19 @@ public class CrimeFragment extends Fragment {
                 .toString();
     }
 
+    private void updateTime (Date date) {
+        mTimeButton.setText(getFormattedTime(date)) ;
+    }
+
+    private String getFormattedTime(Date date) {
+        return DateFormat
+                .format("HH:mm", date)
+                .toString() ;
+    }
+
     class CrimeFragmentListener implements View.OnClickListener {
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
+        FragmentManager fragmentManager = getFragmentManager() ;
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -150,10 +172,14 @@ public class CrimeFragment extends Fragment {
                     mActivity.goToTheLastItem();
                     break;
                 case R.id.crime_date:
-                    FragmentManager fragmentManager = getFragmentManager() ;
                     DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate()) ;
                     dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                     dialog.show(fragmentManager, DIALOG_DATE);
+                    break;
+                case R.id.crime_time:
+                    TimePickerFragment timePickerFragment = new TimePickerFragment() ;
+                    timePickerFragment.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                    timePickerFragment.show(fragmentManager, DIALOG_TIME) ;
                     break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
