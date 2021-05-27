@@ -128,14 +128,16 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-         if (requestCode == REQUEST_DATE && resultCode == RESULT_OK) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE) ;
-            mCrime.setDate(date) ;
-            updateDate(date);
-         }
-         if (requestCode == REQUEST_TIME && resultCode == RESULT_OK) {
-             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_FOR_TIME) ;
-             updateTime(date);
+         if (resultCode == RESULT_OK) {
+             if (requestCode == REQUEST_DATE) {
+                 Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE) ;
+                 mCrime.setDate(date) ;
+                 updateDate(date);
+             }
+             if (requestCode == REQUEST_TIME) {
+                 Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_FOR_TIME) ;
+                 updateTime(date);
+             }
          }
     }
 
