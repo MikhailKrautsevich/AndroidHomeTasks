@@ -27,6 +27,7 @@ public class CrimeFragment extends Fragment {
     private static final String LOG = "CrimeFragment_log" ;
     private static final String ARG_CRIME_ID = "crime_id" ;
     private static final String DIALOG_DATE = "DialogDate" ;
+    private static final int REQUEST_DATE = 211 ;
 
     private Crime mCrime ;
     private EditText mTitleField ;
@@ -132,8 +133,10 @@ public class CrimeFragment extends Fragment {
                     break;
                 case R.id.crime_date:
                     FragmentManager fragmentManager = getFragmentManager() ;
-                    DatePickerFragment dialog = new DatePickerFragment() ;
+                    DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate()) ;
+                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
                     dialog.show(fragmentManager, DIALOG_DATE);
+                    break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
             }
