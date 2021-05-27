@@ -1,5 +1,6 @@
 package com.example.criminalintent;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,8 +19,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import java.util.Date;
 import java.util.UUID;
 
+import static android.app.Activity.RESULT_OK;
 import static android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class CrimeFragment extends Fragment {
@@ -83,11 +86,7 @@ public class CrimeFragment extends Fragment {
         });
 
         mDateButton = view.findViewById(R.id.crime_date) ;
-
-        mDateButton.setText(
-                DateFormat.format( "EEEE, dd MMM, yyyy", mCrime.getDate())
-                .toString() );
-
+        updateDate(mCrime.getDate());
 
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
         mSolvedCheckBox.setChecked(mCrime.getSolved());
@@ -118,6 +117,25 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "mActivity.getAdapterPos()" + mActivity.getAdapterPos()) ;
         }
         return view ;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+         if (resultCode == RESULT_OK) {
+            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE) ;
+            mCrime.setDate(date) ;
+             updateDate(date);
+         }
+    }
+
+    private void updateDate(Date date) {
+        mDateButton.setText(getFormattedDate(date));
+    }
+
+    private String getFormattedDate(Date date) {
+        return DateFormat
+                .format( "EEEE, dd MMM, yyyy", date)
+                .toString();
     }
 
     class CrimeFragmentListener implements View.OnClickListener {
