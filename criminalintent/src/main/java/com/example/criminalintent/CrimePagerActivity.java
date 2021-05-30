@@ -124,11 +124,11 @@ public class CrimePagerActivity extends AppCompatActivity {
         mIntent.putExtra(EXTRA_RIGHT_EVENT, sRightEvent) ;
     }
 
-    boolean isItTheFirstItem() {
-        return (getAdapterPos() == 0) ;
+    boolean isItTheFirstItem(Crime crime) {
+        return (mCrimes.get(0).equals(crime)) ;
     }
 
-    boolean isItTheLastItem() {
-        return (getAdapterPos() == (mCrimes.size() - 1) );
+    boolean isItTheLastItem(Crime crime) {
+        return ((mCrimes.get(mCrimes.size()-1).equals(crime)));
     }
 }

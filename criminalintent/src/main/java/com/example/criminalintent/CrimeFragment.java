@@ -114,14 +114,16 @@ public class CrimeFragment extends Fragment {
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
-            if (mActivity.isItTheFirstItem()) {
+            if (mActivity.isItTheFirstItem(mCrime)) {
+                Log.d(LOG, "CrimeFragment: mActivity.isItTheFirstItem()) = " + mActivity.isItTheFirstItem(mCrime)) ;
                 mToFirstButton.setEnabled(false);
             }
-            if (mActivity.isItTheLastItem()) {
+            if (mActivity.isItTheLastItem(mCrime)) {
+                Log.d(LOG, "CrimeFragment: mActivity.isItTheLastItem()) = " + mActivity.isItTheLastItem(mCrime)) ;
                 mToLastButton.setEnabled(false);
             }
             mActivity.changeRightAndLeft(mActivity.getAdapterPos());
-            Log.d(LOG, "mActivity.getAdapterPos()" + mActivity.getAdapterPos()) ;
+            Log.d(LOG, "mActivity.getAdapterPos() = " + mActivity.getAdapterPos()) ;
         }
         return view ;
     }
