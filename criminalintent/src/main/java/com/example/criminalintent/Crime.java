@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.UUID;
 
 class Crime {
-
     private UUID mID ;
     private String mTitle ;
     private Date mDate ;
