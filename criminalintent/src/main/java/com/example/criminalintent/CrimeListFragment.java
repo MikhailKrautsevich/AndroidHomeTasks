@@ -33,7 +33,7 @@ public class CrimeListFragment extends Fragment {
     private static final int REQUEST_CODE_FOR_UPDATE = 1114 ;
 
     private TextView mListIsEmpty ;
-    ImageButton mCrimeAdd ;
+    private ImageButton mCrimeAdd ;
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
     private int mCrimeChanged;
