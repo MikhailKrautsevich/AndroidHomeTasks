@@ -142,8 +142,8 @@ public class CrimeFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_crime :
-                CrimeLab.get(getActivity()).deleteCrime(mCrime.getID());
                 CrimePagerActivity activity = (CrimePagerActivity) getActivity() ;
+                CrimeLab.get(activity).deleteCrime(mCrime.getID());
                 activity.deleteCrime();
                 activity.finish();
                 return true;
