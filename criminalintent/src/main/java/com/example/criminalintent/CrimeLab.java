@@ -49,4 +49,8 @@ class CrimeLab {
     Crime getCrime(UUID uuid) {
         return mCrimes.get(uuid) ;
     }
+
+    void deleteCrime(UUID id) {
+        mCrimes.remove(id) ;
+    }
 }

@@ -82,10 +82,16 @@ public class CrimeListFragment extends Fragment {
 
         if (requestCode == REQUEST_CODE_FOR_UPDATE && data != null) {
             if (resultCode == RESULT_OK) {
-                int left = CrimePagerActivity.getLeftEvent(data) ;
-                int right = CrimePagerActivity.getRightEvent(data) ;
-                Log.d(LOG, "I get Right = " + right + " and Left = " + left);
-                updateSomeCrimes(left, right) ;
+                boolean wasDeleted = CrimePagerActivity.getDeleted(data);
+                if (wasDeleted) {
+                    mCrimeChanged = -1 ;
+                    updateUI();
+                } else {
+                    int left = CrimePagerActivity.getLeftEvent(data) ;
+                    int right = CrimePagerActivity.getRightEvent(data) ;
+                    Log.d(LOG, "I get Right = " + right + " and Left = " + left);
+                    updateSomeCrimes(left, right) ;
+                }
             } else {
                 updateUI();
             }
