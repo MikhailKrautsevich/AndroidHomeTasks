@@ -22,6 +22,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     private static final String EXTRA_CRIME_ID = "com.example.criminalIntent.crime_id" ;
     private static final String EXTRA_LEFT_EVENT = "EXTRA_LEFT_EVENT" ;
     private static final String EXTRA_RIGHT_EVENT = "EXTRA_RIGHT_EVENT" ;
+    private static final String EXTRA_DELETE = "EXTRA_DELETE" ;
     private static final String LOG = "CrimePagerActivity_log" ;
 
     private static int sLeftEvent ;
@@ -43,6 +44,10 @@ public class CrimePagerActivity extends AppCompatActivity {
 
     static int getRightEvent(Intent data) {
         return data.getIntExtra(EXTRA_RIGHT_EVENT, 0) ;
+    }
+
+    static boolean getDeleted(Intent data) {
+        return data.getBooleanExtra(EXTRA_DELETE, false) ;
     }
 
     @Override
@@ -124,11 +129,19 @@ public class CrimePagerActivity extends AppCompatActivity {
         mIntent.putExtra(EXTRA_RIGHT_EVENT, sRightEvent) ;
     }
 
-    boolean isItTheFirstItem() {
-        return (getAdapterPos() == 0) ;
+    void deleteCrime() {
+        if (mIntent == null) {
+            mIntent = new Intent() ;
+        }
+        setResult(RESULT_OK, mIntent);
+        mIntent.putExtra(EXTRA_DELETE, true) ;
     }
 
-    boolean isItTheLastItem() {
-        return (getAdapterPos() == (mCrimes.size() - 1) );
+    boolean isItTheFirstItem(Crime crime) {
+        return (mCrimes.get(0).equals(crime)) ;
+    }
+
+    boolean isItTheLastItem(Crime crime) {
+        return ((mCrimes.get(mCrimes.size()-1).equals(crime)));
     }
 }

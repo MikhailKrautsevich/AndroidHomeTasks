@@ -5,13 +5,18 @@ import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,11 +29,21 @@ import static android.app.Activity.RESULT_OK;
 public class CrimeListFragment extends Fragment {
 
     private static final String LOG = "CrimeListFragment_log" ;
+    private static final String SAVED_SUBTITLE_VISIBLE = "subtitle" ;
     private static final int REQUEST_CODE_FOR_UPDATE = 1114 ;
 
+    private TextView mListIsEmpty ;
+    private ImageButton mCrimeAdd ;
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
     private int mCrimeChanged;
+    private boolean mSubtitleVisible ;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -38,6 +53,19 @@ public class CrimeListFragment extends Fragment {
         mcCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view) ;
         mcCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        mListIsEmpty = view.findViewById(R.id.crime_list_is_empty) ;
+        mCrimeAdd = view.findViewById(R.id.crime_add_fab) ;
+        mCrimeAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityToAddNewCrime();
+            }
+        });
+
+        if (savedInstanceState != null) {
+            mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE) ;
+        }
+
         updateUI() ;
         return view ;
     }
@@ -45,7 +73,19 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(LOG, "CrimeListFragment: onResume()") ;
         updateUI();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(SAVED_SUBTITLE_VISIBLE, mSubtitleVisible);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -54,14 +94,61 @@ public class CrimeListFragment extends Fragment {
 
         if (requestCode == REQUEST_CODE_FOR_UPDATE && data != null) {
             if (resultCode == RESULT_OK) {
-                int left = CrimePagerActivity.getLeftEvent(data) ;
-                int right = CrimePagerActivity.getRightEvent(data) ;
-                Log.d(LOG, "I get Right = " + right + " and Left = " + left);
-                updateSomeCrimes(left, right) ;
+                boolean wasDeleted = CrimePagerActivity.getDeleted(data);
+                if (wasDeleted) {
+                    mCrimeChanged = -1 ;
+                    updateUI();
+                } else {
+                    int left = CrimePagerActivity.getLeftEvent(data) ;
+                    int right = CrimePagerActivity.getRightEvent(data) ;
+                    Log.d(LOG, "I get Right = " + right + " and Left = " + left);
+                    updateSomeCrimes(left, right) ;
+                }
             } else {
                 updateUI();
             }
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime_list, menu);
+
+        MenuItem subtitleItem = menu.findItem(R.id.show_subtitle) ;
+        if (mSubtitleVisible) {
+            subtitleItem.setTitle(R.string.hide_subtitle) ;
+        } else {
+            subtitleItem.setTitle(R.string.show_subtitle) ;
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.new_crime :
+                startActivityToAddNewCrime();
+                return true ;
+            case R.id.show_subtitle:
+                mSubtitleVisible = !mSubtitleVisible ;
+                getActivity().invalidateOptionsMenu();
+                updateSubtitle();
+                return true ;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateSubtitle(){
+        CrimeLab crimeLab = CrimeLab.get(getActivity()) ;
+        int crimeCount = crimeLab.getCrimes().size() ;
+
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount) ;
+        if (!mSubtitleVisible) {
+            subtitle = null ;
+        }
+        AppCompatActivity activity = (AppCompatActivity) getActivity() ;
+        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
     private void updateUI() {
@@ -71,10 +158,22 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mcCrimeRecyclerView.setAdapter(mAdapter);
             mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        }
+        if (mCrimeChanged >= 0) {
+            mAdapter.notifyItemChanged(mCrimeChanged);
+        }
+        if (mCrimeChanged == -1) {
+            mAdapter.mCrimes = crimes ;
+            mAdapter.notifyDataSetChanged();
+        }
+        updateSubtitle();
+
+        if (crimes.size() > 0) {
+            mListIsEmpty.setVisibility(View.INVISIBLE);
+            mcCrimeRecyclerView.setVisibility(View.VISIBLE);
         } else {
-            if (mCrimeChanged >= 0) {
-                mAdapter.notifyItemChanged(mCrimeChanged);
-            }
+            mListIsEmpty.setVisibility(View.VISIBLE);
+            mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -85,6 +184,15 @@ public class CrimeListFragment extends Fragment {
                 Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
             }
         }
+    }
+
+    private void startActivityToAddNewCrime(){
+        Crime crime = new Crime();
+        CrimeLab.get(getActivity())
+                .addCrime(crime);
+        Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getID());
+        mCrimeChanged = -1 ;
+        startActivity(intent);
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
