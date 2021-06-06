@@ -3,14 +3,18 @@ package com.example.criminalintent;
 import java.util.Date;
 import java.util.UUID;
 
-class Crime {
+public class Crime {
     private UUID mID ;
     private String mTitle ;
     private Date mDate ;
     private boolean mSolved ;
     
     Crime() {
-        mID = UUID.randomUUID() ;
+        this(UUID.randomUUID());
+    }
+
+    public Crime(UUID id) {
+        mID = id ;
         mDate = new Date() ;
     }
 
@@ -30,15 +34,15 @@ class Crime {
         return mSolved;
     }
 
-    void setTitle(String title) {
+    public void setTitle(String title) {
         mTitle = title;
     }
 
-    void setDate(Date date) {
+    public void setDate(Date date) {
         mDate = date;
     }
 
-    void setSolved(boolean solved) {
+    public void setSolved(boolean solved) {
         mSolved = solved;
     }
 }
