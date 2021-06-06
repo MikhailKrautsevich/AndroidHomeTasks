@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.criminalintent.database.CrimeBaseHelper;
+import com.example.criminalintent.database.CrimeCursorWrapper;
 import com.example.criminalintent.database.CrimeDbSchema.CrimeTable.Cols;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ class CrimeLab {
         return values ;
     }
 
-    private Cursor queryCrime(String whereClause, String[] whereArgs) {
+    private CrimeCursorWrapper queryCrime(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(CrimeTable.NAME,
                 null,
                 whereClause,
@@ -55,7 +56,7 @@ class CrimeLab {
                 null,
                 null,
                 null) ;
-        return cursor ;
+        return new CrimeCursorWrapper(cursor) ;
     }
 
     void addCrime(Crime crime) {
@@ -64,7 +65,7 @@ class CrimeLab {
         mDatabase.insert(CrimeTable.NAME, null, values ) ;
     }
 
-    public void updateCrime (Crime crime) {
+    void updateCrime (Crime crime) {
         String uuidString = crime.getID().toString() ;
         ContentValues values = getContentValues(crime) ;
 
@@ -74,11 +75,36 @@ class CrimeLab {
     }
 
     List<Crime> getCrimes(){
-        return new ArrayList<>() ;
+        ArrayList<Crime> crimes = new ArrayList<>() ;
+        CrimeCursorWrapper cursor = queryCrime(null, null) ;
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                crimes.add(cursor.getCrime()) ;
+                cursor.moveToNext() ;
+            }
+        } finally {
+            cursor.close();
+        }
+        return crimes ;
     }
 
     Crime getCrime(UUID uuid) {
-        return null ;
+        CrimeCursorWrapper cursor = queryCrime(
+                Cols.UUID + " = ?" ,
+                new String[] {uuid.toString()}) ;
+        try {
+            if (cursor.getCount() == 0) {
+                return null ;
+            }
+
+            cursor.moveToFirst() ;
+            return cursor.getCrime() ;
+        }
+        finally {
+            cursor.close();
+        }
     }
 
     void deleteCrime(UUID id) {
