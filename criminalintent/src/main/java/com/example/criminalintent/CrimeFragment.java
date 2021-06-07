@@ -62,9 +62,12 @@ public class CrimeFragment extends Fragment {
         UUID crimeID  = null;
         if (getArguments() != null) {
             crimeID = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
+            mCrime = CrimeLab.get(getActivity())
+                    .getCrime(crimeID) ;
+        } else {
+            mCrime = new Crime() ;
+            mCrime.setTitle(getString(R.string.smth_wrong));
         }
-        mCrime = CrimeLab.get(getActivity())
-                .getCrime(crimeID) ;
     }
 
     @Nullable
@@ -130,6 +133,14 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "mActivity.getAdapterPos() = " + mActivity.getAdapterPos()) ;
         }
         return view ;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.get(getActivity())
+                .updateCrime(mCrime);
     }
 
     @Override

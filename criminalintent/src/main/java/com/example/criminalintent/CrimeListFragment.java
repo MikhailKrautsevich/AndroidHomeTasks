@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -36,7 +37,7 @@ public class CrimeListFragment extends Fragment {
     private ImageButton mCrimeAdd ;
     private RecyclerView mcCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
-    private int mCrimeChanged;
+    private int mCrimeChanged ;
     private boolean mSubtitleVisible ;
 
     @Override
@@ -104,8 +105,6 @@ public class CrimeListFragment extends Fragment {
                     Log.d(LOG, "I get Right = " + right + " and Left = " + left);
                     updateSomeCrimes(left, right) ;
                 }
-            } else {
-                updateUI();
             }
         }
     }
@@ -154,16 +153,20 @@ public class CrimeListFragment extends Fragment {
     private void updateUI() {
         CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
         List<Crime> crimes = mCrimeLab.getCrimes();
+
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
             mcCrimeRecyclerView.setAdapter(mAdapter);
             mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         }
-        if (mCrimeChanged >= 0) {
+        if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
+            UUID uuid = crimes.get(mCrimeChanged).getID() ;
+            Crime crimeToUpdate = mCrimeLab.getCrime(uuid) ;
+            mAdapter.mCrimes.set(mCrimeChanged, crimeToUpdate) ;
             mAdapter.notifyItemChanged(mCrimeChanged);
         }
         if (mCrimeChanged == -1) {
-            mAdapter.mCrimes = crimes ;
+            mAdapter.mCrimes = mCrimeLab.getCrimes() ;
             mAdapter.notifyDataSetChanged();
         }
         updateSubtitle();
@@ -178,16 +181,29 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void updateSomeCrimes(int left, int right) {
-        if (mAdapter != null && right < mAdapter.getList().size()) {
-            for (int i = left; i <= right; i++) {
-                mAdapter.notifyItemChanged(i);
-                Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
+        if (mAdapter != null) {
+            List<Crime> adaptersList = mAdapter.getList() ;
+            if (right < adaptersList.size()) {
+                CrimeLab lab = CrimeLab.get(getContext()) ;
+                if (right-left < adaptersList.size()/2) {
+                    for (int i = left; i <= right; i++) {
+                        UUID id = adaptersList.get(i).getID() ;
+                        Crime crimeToUpdate = lab.getCrime(id) ;
+                        adaptersList.set(i, crimeToUpdate) ;
+                        mAdapter.notifyItemChanged(i);
+                        Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
+                    }
+                } else {
+                    mAdapter.mCrimes = lab.getCrimes() ;
+                    mAdapter.notifyDataSetChanged();
+                }
             }
         }
     }
 
     private void startActivityToAddNewCrime(){
         Crime crime = new Crime();
+        Log.d(LOG, "startActivityToAddNewCrime() : crime.getDate = " + crime.getDate().toString()) ;
         CrimeLab.get(getActivity())
                 .addCrime(crime);
         Intent intent = CrimePagerActivity.newIntent(getActivity(), crime.getID());
