@@ -27,4 +27,6 @@
     <string name="last">To the last</string>
     <string name="delete_crime">Delete crime</string>
     <string name="crimelist_is_empty">CrimeList is empty</string>
+
+    <string name="smth_wrong">Something goes wrong</string>
 </resources>

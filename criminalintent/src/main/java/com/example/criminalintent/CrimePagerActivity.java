@@ -65,6 +65,7 @@ public class CrimePagerActivity extends AppCompatActivity {
             @Override
             public Fragment getItem(int position) {
                 Crime crime = mCrimes.get(position) ;
+                Log.d(LOG, "getItem(int position): crime.getDate = " + crime.getDate().toString() );
                 return CrimeFragment.newInstance(crime.getID());
             }
 
@@ -138,10 +139,10 @@ public class CrimePagerActivity extends AppCompatActivity {
     }
 
     boolean isItTheFirstItem(Crime crime) {
-        return (mCrimes.get(0).equals(crime)) ;
+        return (mCrimes.get(0).getID().equals(crime.getID())) ;
     }
 
     boolean isItTheLastItem(Crime crime) {
-        return ((mCrimes.get(mCrimes.size()-1).equals(crime)));
+        return ((mCrimes.get(mCrimes.size()-1).getID().equals(crime.getID())));
     }
 }

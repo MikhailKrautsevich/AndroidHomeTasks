@@ -1,9 +1,14 @@
 package com.example.criminalintent;
 
+import android.util.Log;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class Crime {
+
+    private static final String LOG = "Crime_log" ;
+
     private UUID mID ;
     private String mTitle ;
     private Date mDate ;
@@ -11,11 +16,13 @@ public class Crime {
     
     Crime() {
         this(UUID.randomUUID());
+        Log.d(LOG, " Crime()") ;
     }
 
     public Crime(UUID id) {
         mID = id ;
-        mDate = new Date() ;
+        mDate = new Date();
+        Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString()) ;
     }
 
     UUID getID() {

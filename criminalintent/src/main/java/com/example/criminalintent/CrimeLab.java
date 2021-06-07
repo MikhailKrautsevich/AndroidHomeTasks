@@ -43,7 +43,7 @@ class CrimeLab {
         ContentValues values = new ContentValues() ;
         values.put(Cols.UUID, crime.getID().toString());
         values.put(Cols.TITLE, crime.getTitle());
-        values.put(Cols.DATE, crime.getDate().toString());
+        values.put(Cols.DATE, crime.getDate().getTime());
         values.put(Cols.SOLVED, crime.getSolved() ? 1 : 0);
         return values ;
     }
@@ -76,38 +76,34 @@ class CrimeLab {
 
     List<Crime> getCrimes(){
         ArrayList<Crime> crimes = new ArrayList<>() ;
-        CrimeCursorWrapper cursor = queryCrime(null, null) ;
 
-        try {
+        try (CrimeCursorWrapper cursor = queryCrime(null, null)) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                crimes.add(cursor.getCrime()) ;
-                cursor.moveToNext() ;
+                crimes.add(cursor.getCrime());
+                cursor.moveToNext();
             }
-        } finally {
-            cursor.close();
         }
         return crimes ;
     }
 
     Crime getCrime(UUID uuid) {
-        CrimeCursorWrapper cursor = queryCrime(
-                Cols.UUID + " = ?" ,
-                new String[] {uuid.toString()}) ;
-        try {
+        try (CrimeCursorWrapper cursor = queryCrime(
+                Cols.UUID + " = ?",
+                new String[]{uuid.toString()})) {
             if (cursor.getCount() == 0) {
-                return null ;
+                return null;
             }
 
-            cursor.moveToFirst() ;
-            return cursor.getCrime() ;
-        }
-        finally {
-            cursor.close();
+            cursor.moveToFirst();
+            return cursor.getCrime();
         }
     }
 
     void deleteCrime(UUID id) {
+        mDatabase.delete( CrimeTable.NAME,
+                Cols.UUID + " = ?",
+                new String[] {id.toString()} ) ;
     }
 
 //    void autoInit10Crimes(LinkedHashMap<UUID, Crime> map) {
