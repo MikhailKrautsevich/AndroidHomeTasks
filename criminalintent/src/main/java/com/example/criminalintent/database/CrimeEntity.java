@@ -20,46 +20,52 @@ public class CrimeEntity {
     private UUID mID ;
     private String mTitle ;
     private Date mDate ;
-    private String mSolved ;
+    private boolean mSolved ;
 
     public CrimeEntity(Crime crime) {
         mID = crime.getID() ;
         mTitle = crime.getTitle() ;
         mDate = crime.getDate() ;
-        mSolved = String.valueOf(crime.getSolved());
+        mSolved = crime.getSolved();
     }
 
-    public CrimeEntity(){}
+    @SuppressWarnings(value = "unused")
+    CrimeEntity(){}
 
-    public UUID getID() {
+    @NonNull
+    UUID getID() {
         return mID;
     }
 
+    @SuppressWarnings(value = "unused")
     public void setID(UUID ID) {
         mID = ID;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return mTitle;
     }
 
+    @SuppressWarnings(value = "unused")
     public void setTitle(String title) {
         mTitle = title;
     }
 
-    public Date getDate() {
+    Date getDate() {
         return mDate;
     }
 
+    @SuppressWarnings(value = "unused")
     public void setDate(Date date) {
         mDate = date;
     }
 
-    public String getSolved() {
+    boolean getSolved() {
         return mSolved;
     }
 
-    public void setSolved(String solved) {
+    @SuppressWarnings(value = "unused")
+    public void setSolved(boolean solved) {
         mSolved = solved;
     }
 }

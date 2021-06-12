@@ -21,17 +21,10 @@ public class Crime {
         Log.d(LOG, " Crime()") ;
     }
 
-    Crime(UUID id) {
+    private Crime(UUID id) {
         mID = id ;
         mDate = new Date();
         Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString()) ;
-    }
-
-    public Crime(UUID id, String title, Date date, boolean solved) {
-        mID = id ;
-        mTitle = title ;
-        mDate = date ;
-        mSolved = solved ;
     }
 
     static CrimeEntity createEntity(Crime crime) {

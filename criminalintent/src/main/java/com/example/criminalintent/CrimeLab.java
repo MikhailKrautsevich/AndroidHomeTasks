@@ -30,7 +30,6 @@ class CrimeLab {
                 allowMainThreadQueries()
                 .build() ;
         mDao = mDatabase.getDao() ;
-
     }
 
     static CrimeLab get(Context context) {
