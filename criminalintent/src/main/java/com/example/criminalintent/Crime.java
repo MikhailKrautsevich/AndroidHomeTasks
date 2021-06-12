@@ -2,6 +2,8 @@ package com.example.criminalintent;
 
 import android.util.Log;
 
+import com.example.criminalintent.database.CrimeEntity;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,32 +16,45 @@ public class Crime {
     private Date mDate ;
     private boolean mSolved ;
     
-    Crime() {
+    public Crime() {
         this(UUID.randomUUID());
         Log.d(LOG, " Crime()") ;
     }
 
-    public Crime(UUID id) {
+    Crime(UUID id) {
         mID = id ;
         mDate = new Date();
         Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString()) ;
     }
 
-    UUID getID() {
+    public Crime(UUID id, String title, Date date, boolean solved) {
+        mID = id ;
+        mTitle = title ;
+        mDate = date ;
+        mSolved = solved ;
+    }
+
+    static CrimeEntity createEntity(Crime crime) {
+        return new CrimeEntity(crime) ;
+    }
+
+    public UUID getID() {
         return mID;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return mTitle;
     }
 
-    Date getDate() {
+    public Date getDate() {
         return mDate;
     }
 
-    boolean getSolved() {
+    public boolean getSolved() {
         return mSolved;
     }
+
+    public void setID(UUID id) {mID = id ;}
 
     public void setTitle(String title) {
         mTitle = title;

@@ -1,34 +1,36 @@
 package com.example.criminalintent;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.criminalintent.database.CrimeBaseHelper;
-import com.example.criminalintent.database.CrimeCursorWrapper;
-import com.example.criminalintent.database.CrimeDbSchema.CrimeTable.Cols;
+import androidx.room.Room;
 
-import java.util.ArrayList;
+import com.example.criminalintent.database.CrimeDao;
+import com.example.criminalintent.database.CrimeDataBase;
+
 import java.util.List;
 import java.util.UUID;
-
-import static com.example.criminalintent.database.CrimeDbSchema.*;
 
 class CrimeLab {
 
     private static CrimeLab sCrimeLab ;
     private static final String LOG = "CrimeLab" ;
+    private static final String DATABASENAME = "CrimeDataBase" ;
 
     private Context mContext ;
-    private SQLiteDatabase mDatabase ;
+    private CrimeDataBase mDatabase ;
+    private CrimeDao mDao ;
 
     private CrimeLab(Context context) {
         Log.d(LOG, "Constructor started") ;
         mContext = context.getApplicationContext() ;
-        mDatabase = new CrimeBaseHelper(mContext)
-                .getReadableDatabase() ;
+        mDatabase = Room.databaseBuilder(mContext,
+                CrimeDataBase.class,
+                DATABASENAME).
+                allowMainThreadQueries()
+                .build() ;
+        mDao = mDatabase.getDao() ;
+
     }
 
     static CrimeLab get(Context context) {
@@ -39,71 +41,25 @@ class CrimeLab {
         return sCrimeLab ;
     }
 
-    private static ContentValues getContentValues(Crime crime) {
-        ContentValues values = new ContentValues() ;
-        values.put(Cols.UUID, crime.getID().toString());
-        values.put(Cols.TITLE, crime.getTitle());
-        values.put(Cols.DATE, crime.getDate().getTime());
-        values.put(Cols.SOLVED, crime.getSolved() ? 1 : 0);
-        return values ;
-    }
-
-    private CrimeCursorWrapper queryCrime(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(CrimeTable.NAME,
-                null,
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null) ;
-        return new CrimeCursorWrapper(cursor) ;
-    }
-
     void addCrime(Crime crime) {
-        ContentValues values = getContentValues(crime) ;
-
-        mDatabase.insert(CrimeTable.NAME, null, values ) ;
+        mDao.addCrime(Crime.createEntity(crime));
     }
 
     void updateCrime (Crime crime) {
-        String uuidString = crime.getID().toString() ;
-        ContentValues values = getContentValues(crime) ;
-
-        mDatabase.update(CrimeTable.NAME, values,
-                Cols.UUID + " = ?",
-                new String[] {uuidString}) ;
+        mDao.updateCrime(Crime.createEntity(crime));
     }
 
     List<Crime> getCrimes(){
-        ArrayList<Crime> crimes = new ArrayList<>() ;
-
-        try (CrimeCursorWrapper cursor = queryCrime(null, null)) {
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                crimes.add(cursor.getCrime());
-                cursor.moveToNext();
-            }
-        }
-        return crimes ;
+        return mDao.getCrimes() ;
     }
 
     Crime getCrime(UUID uuid) {
-        try (CrimeCursorWrapper cursor = queryCrime(
-                Cols.UUID + " = ?",
-                new String[]{uuid.toString()})) {
-            if (cursor.getCount() == 0) {
-                return null;
-            }
-
-            cursor.moveToFirst();
-            return cursor.getCrime();
-        }
+        return mDao.getCrime(uuid) ;
     }
 
     void deleteCrime(UUID id) {
-        mDatabase.delete( CrimeTable.NAME,
-                Cols.UUID + " = ?",
-                new String[] {id.toString()} ) ;
+        Crime crime = mDao.getCrime(id) ;
+        mDao.deleteCrime(Crime.createEntity(crime));
     }
 
 //    void autoInit10Crimes(LinkedHashMap<UUID, Crime> map) {
