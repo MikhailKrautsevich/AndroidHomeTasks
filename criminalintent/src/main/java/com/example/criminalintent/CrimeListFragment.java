@@ -18,6 +18,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -139,45 +141,58 @@ public class CrimeListFragment extends Fragment {
     }
 
     private void updateSubtitle(){
-        CrimeLab crimeLab = CrimeLab.get(getActivity()) ;
-        int crimeCount = crimeLab.getCrimes().size() ;
+        final CrimeLab crimeLab = CrimeLab.get(getActivity()) ;
+        final LiveData<List<Crime>> liveData = crimeLab.getCrimes() ;
+        liveData.observe(getViewLifecycleOwner(), new Observer<List<Crime>>() {
+            @Override
+            public void onChanged(List<Crime> crimes) {
+                int crimeCount  = 0 ;
+                if (liveData.getValue() != null) {
+                    crimeCount = liveData.getValue().size() ;
+                }
 
-        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount) ;
-        if (!mSubtitleVisible) {
-            subtitle = null ;
-        }
-        AppCompatActivity activity = (AppCompatActivity) getActivity() ;
-        activity.getSupportActionBar().setSubtitle(subtitle);
+                String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount) ;
+                if (!mSubtitleVisible) {
+                    subtitle = null ;
+                }
+                AppCompatActivity activity = (AppCompatActivity) getActivity() ;
+                activity.getSupportActionBar().setSubtitle(subtitle);
+            }
+        });
     }
 
     private void updateUI() {
-        CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
-        List<Crime> crimes = mCrimeLab.getCrimes();
+        final CrimeLab mCrimeLab = CrimeLab.get(getActivity()) ;
+        LiveData<List<Crime>> liveData = mCrimeLab.getCrimes();
+        liveData.observe(getViewLifecycleOwner(), new Observer<List<Crime>>() {
+            @Override
+            public void onChanged(List<Crime> crimes) {
+                if (mAdapter == null) {
+                    mAdapter = new CrimeAdapter(crimes);
+                    mcCrimeRecyclerView.setAdapter(mAdapter);
+                    mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+                }
+                if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
+                    UUID uuid = crimes.get(mCrimeChanged).getID() ;
+                    Crime crimeToUpdate = mCrimeLab.getCrime(uuid) ;
+                    mAdapter.mCrimes.set(mCrimeChanged, crimeToUpdate) ;
+                    mAdapter.notifyItemChanged(mCrimeChanged);
+                }
+                if (mCrimeChanged == -1) {
+                    mAdapter.mCrimes = mCrimeLab.getCrimes().getValue() ;
+                    mAdapter.notifyDataSetChanged();
+                }
+                updateSubtitle();
 
-        if (mAdapter == null) {
-            mAdapter = new CrimeAdapter(crimes);
-            mcCrimeRecyclerView.setAdapter(mAdapter);
-            mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        }
-        if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
-            UUID uuid = crimes.get(mCrimeChanged).getID() ;
-            Crime crimeToUpdate = mCrimeLab.getCrime(uuid) ;
-            mAdapter.mCrimes.set(mCrimeChanged, crimeToUpdate) ;
-            mAdapter.notifyItemChanged(mCrimeChanged);
-        }
-        if (mCrimeChanged == -1) {
-            mAdapter.mCrimes = mCrimeLab.getCrimes() ;
-            mAdapter.notifyDataSetChanged();
-        }
-        updateSubtitle();
-
-        if (crimes.size() > 0) {
-            mListIsEmpty.setVisibility(View.INVISIBLE);
-            mcCrimeRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            mListIsEmpty.setVisibility(View.VISIBLE);
-            mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
-        }
+                if (crimes.size() > 0) {
+                    mListIsEmpty.setVisibility(View.INVISIBLE);
+                    mcCrimeRecyclerView.setVisibility(View.VISIBLE);
+                } else {
+                    mListIsEmpty.setVisibility(View.VISIBLE);
+                    mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
     }
 
     private void updateSomeCrimes(int left, int right) {
@@ -194,7 +209,7 @@ public class CrimeListFragment extends Fragment {
                         Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
                     }
                 } else {
-                    mAdapter.mCrimes = lab.getCrimes() ;
+                    mAdapter.mCrimes = lab.getCrimes().getValue() ;
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -274,7 +289,9 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return mCrimes.size();
+            if (mCrimes == null) {
+                return 0 ;
+            } else return mCrimes.size();
         }
 
         List<Crime> getList(){

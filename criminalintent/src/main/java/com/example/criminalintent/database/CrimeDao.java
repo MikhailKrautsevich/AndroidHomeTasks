@@ -1,5 +1,6 @@
 package com.example.criminalintent.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -15,10 +16,10 @@ import java.util.UUID;
 @Dao
 public interface CrimeDao {
 
-    @Query("SELECT mID, mTitle, mDate, mSolved from CrimeEntity")
-    List<Crime> getCrimes() ;
+    @Query("SELECT mID, mTitle, mDate, mSolved from Crime")
+    LiveData<List<Crime>> getCrimes() ;
 
-    @Query("SELECT * from CrimeEntity where mId = :mId")
+    @Query("SELECT * from Crime where mId = :mId")
     Crime getCrime(UUID mId) ;
 
     @Delete

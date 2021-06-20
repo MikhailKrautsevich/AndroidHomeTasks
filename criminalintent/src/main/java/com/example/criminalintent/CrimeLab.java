@@ -3,6 +3,7 @@ package com.example.criminalintent;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import com.example.criminalintent.database.CrimeDao;
@@ -11,7 +12,7 @@ import com.example.criminalintent.database.CrimeDataBase;
 import java.util.List;
 import java.util.UUID;
 
-class CrimeLab {
+public class CrimeLab {
 
     private static CrimeLab sCrimeLab ;
     private static final String LOG = "CrimeLab" ;
@@ -27,12 +28,12 @@ class CrimeLab {
         mDatabase = Room.databaseBuilder(mContext,
                 CrimeDataBase.class,
                 DATABASENAME).
-                allowMainThreadQueries()
-                .build() ;
+//                allowMainThreadQueries().
+                build() ;
         mDao = mDatabase.getDao() ;
     }
 
-    static CrimeLab get(Context context) {
+    public static CrimeLab get(Context context) {
         if (sCrimeLab == null) {
             sCrimeLab = new CrimeLab(context) ;
         }
@@ -40,15 +41,25 @@ class CrimeLab {
         return sCrimeLab ;
     }
 
-    void addCrime(Crime crime) {
-        mDao.addCrime(crime);
+    void addCrime(final Crime crime) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mDao.addCrime(crime);
+            }
+        }).start();
+            }
+
+    void updateCrime (final Crime crime) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mDao.updateCrime(crime);
+            }
+        }).start();
     }
 
-    void updateCrime (Crime crime) {
-        mDao.updateCrime(crime);
-    }
-
-    List<Crime> getCrimes(){
+    LiveData<List<Crime>> getCrimes(){
         return mDao.getCrimes() ;
     }
 
@@ -56,9 +67,14 @@ class CrimeLab {
         return mDao.getCrime(uuid) ;
     }
 
-    void deleteCrime(UUID id) {
-        Crime crime = mDao.getCrime(id) ;
-        mDao.deleteCrime(crime);
+    void deleteCrime(final UUID id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Crime crime = mDao.getCrime(id) ;
+                mDao.deleteCrime(crime);
+            }
+        }).start();
     }
 
 //    void autoInit10Crimes(LinkedHashMap<UUID, Crime> map) {
