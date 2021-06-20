@@ -22,11 +22,11 @@ public interface CrimeDao {
     Crime getCrime(UUID mId) ;
 
     @Delete
-    void deleteCrime(CrimeEntity entity) ;
+    void deleteCrime(Crime crime) ;
 
     @Update
-    void  updateCrime(CrimeEntity entity) ;
+    void  updateCrime(Crime crime) ;
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addCrime(CrimeEntity entity) ;
+    void addCrime(Crime crime) ;
 }

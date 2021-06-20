@@ -5,7 +5,7 @@ import androidx.room.TypeConverter;
 import java.util.Date;
 import java.util.UUID;
 
-class CrimeTypeConverter {
+public class CrimeTypeConverter {
 
     @SuppressWarnings(value = "all")
     @TypeConverter

@@ -17,9 +17,9 @@ class CrimeLab {
     private static final String LOG = "CrimeLab" ;
     private static final String DATABASENAME = "CrimeDataBase" ;
 
-    private Context mContext ;
-    private CrimeDataBase mDatabase ;
-    private CrimeDao mDao ;
+    private final Context mContext ;
+    private final CrimeDataBase mDatabase ;
+    private final CrimeDao mDao ;
 
     private CrimeLab(Context context) {
         Log.d(LOG, "Constructor started") ;
@@ -41,11 +41,11 @@ class CrimeLab {
     }
 
     void addCrime(Crime crime) {
-        mDao.addCrime(Crime.createEntity(crime));
+        mDao.addCrime(crime);
     }
 
     void updateCrime (Crime crime) {
-        mDao.updateCrime(Crime.createEntity(crime));
+        mDao.updateCrime(crime);
     }
 
     List<Crime> getCrimes(){
@@ -58,7 +58,7 @@ class CrimeLab {
 
     void deleteCrime(UUID id) {
         Crime crime = mDao.getCrime(id) ;
-        mDao.deleteCrime(Crime.createEntity(crime));
+        mDao.deleteCrime(crime);
     }
 
 //    void autoInit10Crimes(LinkedHashMap<UUID, Crime> map) {

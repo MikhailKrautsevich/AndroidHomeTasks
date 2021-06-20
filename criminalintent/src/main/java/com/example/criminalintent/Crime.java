@@ -2,15 +2,25 @@ package com.example.criminalintent;
 
 import android.util.Log;
 
-import com.example.criminalintent.database.CrimeEntity;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import com.example.criminalintent.database.CrimeTypeConverter;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Entity(indices = {@Index(value = "mID")})
+@TypeConverters({CrimeTypeConverter.class})
 public class Crime {
 
     private static final String LOG = "Crime_log" ;
 
+    @PrimaryKey
+    @NonNull
     private UUID mID ;
     private String mTitle ;
     private Date mDate ;
@@ -27,9 +37,9 @@ public class Crime {
         Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString()) ;
     }
 
-    static CrimeEntity createEntity(Crime crime) {
-        return new CrimeEntity(crime) ;
-    }
+//    static CrimeEntity createEntity(Crime crime) {
+//        return new CrimeEntity(crime) ;
+//    }
 
     public UUID getID() {
         return mID;
