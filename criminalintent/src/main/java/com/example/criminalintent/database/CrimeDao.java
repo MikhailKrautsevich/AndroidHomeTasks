@@ -25,6 +25,9 @@ public interface CrimeDao {
     @Query("SELECT * from Crime where mId = :mId")
     Crime getCrime(UUID mId) ;
 
+    @Query("SELECT * from Crime where mId = :mId")
+    LiveData<Crime> getLVCrime(UUID mId) ;
+
     @Delete
     void deleteCrime(Crime crime) ;
 

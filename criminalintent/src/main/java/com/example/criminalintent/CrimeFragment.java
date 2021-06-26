@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import java.util.Date;
 import java.util.UUID;
@@ -37,6 +39,8 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 211 ;
     private static final int REQUEST_TIME = 222 ;
 
+    private UUID crimeID ;
+    LiveData<Crime> mLiveData ;
     private Crime mCrime ;
     private EditText mTitleField ;
     private Button mDateButton ;
@@ -59,11 +63,18 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        UUID crimeID  = null;
         if (getArguments() != null) {
             crimeID = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
-            mCrime = CrimeLab.get(getActivity())
+            mLiveData = CrimeLab.get(getActivity())
                     .getCrime(crimeID) ;
+            mLiveData.observe(CrimeFragment.this, new Observer() {
+                @Override
+                public void onChanged(Object o) {
+                    if (o instanceof Crime) {
+                        mCrime = (Crime) o ;
+                    }
+                }
+            });
         } else {
             mCrime = new Crime() ;
             mCrime.setTitle(getString(R.string.smth_wrong));
@@ -77,11 +88,9 @@ public class CrimeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime, container, false) ;
 
         mTitleField = view.findViewById(R.id.crime_title) ;
-        mTitleField.setText(mCrime.getTitle());
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -91,18 +100,14 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
         mDateButton = view.findViewById(R.id.crime_date) ;
-        updateDate(mCrime.getDate());
-
         mTimeButton = view.findViewById(R.id.crime_time) ;
         updateTime(new Date());
 
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
-        mSolvedCheckBox.setChecked(mCrime.getSolved());
         mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -119,19 +124,17 @@ public class CrimeFragment extends Fragment {
         mDateButton.setOnClickListener(listener);
         mTimeButton.setOnClickListener(listener);
 
-        CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
-        if (mActivity != null) {
-            if (mActivity.isItTheFirstItem(mCrime)) {
-                Log.d(LOG, "CrimeFragment: mActivity.isItTheFirstItem()) = " + mActivity.isItTheFirstItem(mCrime)) ;
-                mToFirstButton.setEnabled(false);
-            }
-            if (mActivity.isItTheLastItem(mCrime)) {
-                Log.d(LOG, "CrimeFragment: mActivity.isItTheLastItem()) = " + mActivity.isItTheLastItem(mCrime)) ;
-                mToLastButton.setEnabled(false);
-            }
-            mActivity.changeRightAndLeft(mActivity.getAdapterPos());
-            Log.d(LOG, "mActivity.getAdapterPos() = " + mActivity.getAdapterPos()) ;
+        if (mLiveData.getValue() != null) {
+            setCrimeData();
         }
+
+        mLiveData.observe(CrimeFragment.this.getViewLifecycleOwner(), new Observer<Crime>() {
+            @Override
+            public void onChanged(Crime crime) {
+                setCrimeData();
+            }
+        });
+
         return view ;
     }
 
@@ -176,6 +179,28 @@ public class CrimeFragment extends Fragment {
                  updateTime(date);
              }
          }
+    }
+
+    private void setCrimeData() {
+        if (mCrime != null) {
+            mTitleField.setText(mCrime.getTitle());
+            updateDate(mCrime.getDate());
+            mSolvedCheckBox.setChecked(mCrime.getSolved());
+
+            CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
+            if (mActivity != null) {
+                if (mActivity.isItTheFirstItem(mCrime)) {
+                    Log.d(LOG, "CrimeFragment: mActivity.isItTheFirstItem()) = " + mActivity.isItTheFirstItem(mCrime)) ;
+                    mToFirstButton.setEnabled(false);
+                }
+                if (mActivity.isItTheLastItem(mCrime)) {
+                    Log.d(LOG, "CrimeFragment: mActivity.isItTheLastItem()) = " + mActivity.isItTheLastItem(mCrime)) ;
+                    mToLastButton.setEnabled(false);
+                }
+                mActivity.changeRightAndLeft(mActivity.getAdapterPos());
+                Log.d(LOG, "mActivity.getAdapterPos() = " + mActivity.getAdapterPos()) ;
+            }
+        }
     }
 
     private void updateDate(Date date) {

@@ -67,8 +67,8 @@ public class CrimeLab {
         return mDao.getListOfCrimes() ;
     }
 
-    Crime getCrime(UUID uuid) {
-        return mDao.getCrime(uuid) ;
+    LiveData<Crime> getCrime(UUID uuid) {
+        return mDao.getLVCrime(uuid) ;
     }
 
     void deleteCrime(final UUID id) {

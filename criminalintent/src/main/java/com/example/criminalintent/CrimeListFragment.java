@@ -178,7 +178,6 @@ public class CrimeListFragment extends Fragment {
                         mAdapter.notifyItemChanged(mCrimeChanged);
                     }
                     if (mCrimeChanged == -1) {
-                        mAdapter.mCrimes = mCrimeLab.getCrimes().getValue() ;
                         mAdapter.notifyDataSetChanged();
                     }
                     updateSubtitle();
@@ -295,18 +294,30 @@ public class CrimeListFragment extends Fragment {
             mContext = context ;
             this.left = left ;
             this.right = right ;
+
+            Log.d(LOG, "GetAllCrimesAsync constructor: left =" + left + ", right = " + right);
         }
 
         @Override
         protected List<Crime> doInBackground(Void ... args) {
             final CrimeLab lab = CrimeLab.get(mContext) ;
+            Log.d(LOG, "GetAllCrimesAsync : doInBackground ended");
             return lab.getListCrimes();
         }
 
         @Override
         protected void onPostExecute(List<Crime> crimes) {
             super.onPostExecute(crimes);
-            List<Crime> list = mcCrimeRecyclerView.getAdapter().getAdaptersList();
+            Log.d(LOG, "GetAllCrimesAsync : onPostExecute started");
+            CrimeAdapter adapter = (CrimeAdapter) mcCrimeRecyclerView.getAdapter() ;
+            List<Crime> list = adapter.getAdaptersList() ;
+            if (list != null) {
+                for (int i = left; i <= right; i++) {
+                    list.set(i, crimes.get(i)) ;
+                    adapter.notifyItemChanged(i);
+                    Log.d(LOG, "GetAllCrimesAsync : onPostExecute: i = " + i);
+                }
+            }
         }
     }
 }
