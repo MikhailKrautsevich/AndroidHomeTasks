@@ -114,6 +114,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     }
 
     void changeRightAndLeft(int pos) {
+        Log.d(LOG, "changeRightAndLeft: pos = " + pos) ;
         if (mIntent == null) {
             mIntent = new Intent() ;
             setResult(RESULT_OK, mIntent);
@@ -145,4 +146,8 @@ public class CrimePagerActivity extends AppCompatActivity {
     boolean isItTheLastItem(Crime crime) {
         return ((mCrimes.get(mCrimes.size()-1).getID().equals(crime.getID())));
     }
+
+    void put0ToLeft() {sLeftEvent = 0 ;}
+
+    void put0ToRight() {sRightEvent = 0 ;}
 }
