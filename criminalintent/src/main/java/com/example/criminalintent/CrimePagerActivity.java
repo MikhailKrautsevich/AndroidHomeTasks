@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.viewpager.widget.ViewPager;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class CrimePagerActivity extends AppCompatActivity {
     private static int sRightEvent ;
 
     private ViewPager mViewPager ;
+    private LiveData<List<Crime>> mLiveData ;
     private List<Crime> mCrimes ;
     private Intent mIntent ;
 
@@ -56,33 +59,43 @@ public class CrimePagerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_crime_pager);
 
         mViewPager = findViewById(R.id.crime_view_pager) ;
+        final FragmentManager fragmentManager = getSupportFragmentManager() ;
 
-        mCrimes = CrimeLab.get(this).getCrimes() ;
-        UUID crimeID = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID) ;
-        FragmentManager fragmentManager = getSupportFragmentManager() ;
-        mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-            @NonNull
-            @Override
-            public Fragment getItem(int position) {
-                Crime crime = mCrimes.get(position) ;
-                Log.d(LOG, "getItem(int position): crime.getDate = " + crime.getDate().toString() );
-                return CrimeFragment.newInstance(crime.getID());
-            }
+        final UUID crimeID = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID) ;
 
+        mLiveData = CrimeLab.get(getApplicationContext()).getCrimes() ;
+        mLiveData.observe(CrimePagerActivity.this, new Observer<List<Crime>>() {
             @Override
-            public int getCount() {
-                return mCrimes.size();
+            public void onChanged(List<Crime> crimes) {
+               mCrimes = crimes ;
+
+               if (mCrimes != null) {
+                   mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+                       @NonNull
+                       @Override
+                       public Fragment getItem(int position) {
+                           Crime crime = mCrimes.get(position) ;
+                           Log.d(LOG, "getItem(int position): crime.getDate = " + crime.getDate().toString() );
+                           return CrimeFragment.newInstance(crime.getID());
+                       }
+
+                       @Override
+                       public int getCount() {
+                           return mCrimes.size();
+                       }
+                   });
+
+                   for (int i = 0 ; i < mCrimes.size(); i++ ) {
+                       if (mCrimes.get(i).getID().equals(crimeID)) {
+                           mViewPager.setCurrentItem(i);
+                           sRightEvent = i ;
+                           sLeftEvent = i ;
+                           break;
+                       }
+                   }
+               }
             }
         });
-
-        for (int i = 0 ; i < mCrimes.size(); i++ ) {
-            if (mCrimes.get(i).getID().equals(crimeID)) {
-                mViewPager.setCurrentItem(i);
-                sRightEvent = i ;
-                sLeftEvent = i ;
-                break;
-            }
-        }
 
         mViewPager.setPageTransformer(false, new ViewPager.PageTransformer() {
             @Override
