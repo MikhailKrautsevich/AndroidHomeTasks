@@ -75,7 +75,7 @@ class CrimeLab {
     }
 
     List<Crime> getCrimes(){
-        ArrayList<Crime> crimes = new ArrayList<>() ;
+        List<Crime> crimes = new ArrayList<>() ;
 
         try (CrimeCursorWrapper cursor = queryCrime(null, null)) {
             cursor.moveToFirst();
