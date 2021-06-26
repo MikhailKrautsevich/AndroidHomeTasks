@@ -1,6 +1,8 @@
 package com.example.criminalintent;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -25,7 +27,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
-import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -55,6 +56,7 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false) ;
         mcCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view) ;
         mcCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
         mListIsEmpty = view.findViewById(R.id.crime_list_is_empty) ;
         mCrimeAdd = view.findViewById(R.id.crime_add_fab) ;
@@ -119,9 +121,7 @@ public class CrimeListFragment extends Fragment {
         MenuItem subtitleItem = menu.findItem(R.id.show_subtitle) ;
         if (mSubtitleVisible) {
             subtitleItem.setTitle(R.string.hide_subtitle) ;
-        } else {
-            subtitleItem.setTitle(R.string.show_subtitle) ;
-        }
+        } else subtitleItem.setTitle(R.string.show_subtitle);
     }
 
     @Override
@@ -167,52 +167,38 @@ public class CrimeListFragment extends Fragment {
         liveData.observe(getViewLifecycleOwner(), new Observer<List<Crime>>() {
             @Override
             public void onChanged(List<Crime> crimes) {
-                if (mAdapter == null) {
-                    mAdapter = new CrimeAdapter(crimes);
-                    mcCrimeRecyclerView.setAdapter(mAdapter);
-                    mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-                }
-                if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
-                    UUID uuid = crimes.get(mCrimeChanged).getID() ;
-                    Crime crimeToUpdate = mCrimeLab.getCrime(uuid) ;
-                    mAdapter.mCrimes.set(mCrimeChanged, crimeToUpdate) ;
-                    mAdapter.notifyItemChanged(mCrimeChanged);
-                }
-                if (mCrimeChanged == -1) {
-                    mAdapter.mCrimes = mCrimeLab.getCrimes().getValue() ;
-                    mAdapter.notifyDataSetChanged();
-                }
-                updateSubtitle();
+                if (crimes != null) {
+                    if (mAdapter == null) {
+                        mAdapter = new CrimeAdapter(crimes);
+                        mcCrimeRecyclerView.setAdapter(mAdapter);
+                    }
+                    if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
+                        Crime crimeToUpdate = crimes.get(mCrimeChanged);
+                        mAdapter.mCrimes.set(mCrimeChanged, crimeToUpdate) ;
+                        mAdapter.notifyItemChanged(mCrimeChanged);
+                    }
+                    if (mCrimeChanged == -1) {
+                        mAdapter.mCrimes = mCrimeLab.getCrimes().getValue() ;
+                        mAdapter.notifyDataSetChanged();
+                    }
+                    updateSubtitle();
 
-                if (crimes.size() > 0) {
-                    mListIsEmpty.setVisibility(View.INVISIBLE);
-                    mcCrimeRecyclerView.setVisibility(View.VISIBLE);
-                } else {
-                    mListIsEmpty.setVisibility(View.VISIBLE);
-                    mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
+                    if (crimes.size() > 0) {
+                        mListIsEmpty.setVisibility(View.INVISIBLE);
+                        mcCrimeRecyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        mListIsEmpty.setVisibility(View.VISIBLE);
+                        mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
+                    }
                 }
             }
         });
     }
 
-    private void updateSomeCrimes(int left, int right) {
+    private void updateSomeCrimes(final int left, final int right) {
         if (mAdapter != null) {
-            List<Crime> adaptersList = mAdapter.getList() ;
-            if (right < adaptersList.size()) {
-                CrimeLab lab = CrimeLab.get(getContext()) ;
-                if (right-left < adaptersList.size()/2) {
-                    for (int i = left; i <= right; i++) {
-                        UUID id = adaptersList.get(i).getID() ;
-                        Crime crimeToUpdate = lab.getCrime(id) ;
-                        adaptersList.set(i, crimeToUpdate) ;
-                        mAdapter.notifyItemChanged(i);
-                        Log.d(LOG, "updateSomeCrimes : mAdapter.notifyItemChanged(i) , i = " + i) ;
-                    }
-                } else {
-                    mAdapter.mCrimes = lab.getCrimes().getValue() ;
-                    mAdapter.notifyDataSetChanged();
-                }
-            }
+            GetAllCrimesAsync task = new GetAllCrimesAsync(getContext(), left, right);
+            task.execute();
         }
     }
 
@@ -294,8 +280,33 @@ public class CrimeListFragment extends Fragment {
             } else return mCrimes.size();
         }
 
-        List<Crime> getList(){
+        List<Crime> getAdaptersList() {
             return mCrimes ;
+        }
+    }
+
+    class GetAllCrimesAsync extends AsyncTask<Void, Void, List<Crime>> {
+
+        Context mContext ;
+        int left ;
+        int right ;
+
+        private GetAllCrimesAsync(Context context, int left, int right) {
+            mContext = context ;
+            this.left = left ;
+            this.right = right ;
+        }
+
+        @Override
+        protected List<Crime> doInBackground(Void ... args) {
+            final CrimeLab lab = CrimeLab.get(mContext) ;
+            return lab.getListCrimes();
+        }
+
+        @Override
+        protected void onPostExecute(List<Crime> crimes) {
+            super.onPostExecute(crimes);
+            List<Crime> list = mcCrimeRecyclerView.getAdapter().getAdaptersList();
         }
     }
 }

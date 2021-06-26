@@ -19,6 +19,9 @@ public interface CrimeDao {
     @Query("SELECT mID, mTitle, mDate, mSolved from Crime")
     LiveData<List<Crime>> getCrimes() ;
 
+    @Query("SELECT mID, mTitle, mDate, mSolved from Crime")
+    List<Crime> getListOfCrimes() ;
+
     @Query("SELECT * from Crime where mId = :mId")
     Crime getCrime(UUID mId) ;
 

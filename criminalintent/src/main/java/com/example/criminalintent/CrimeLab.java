@@ -63,6 +63,10 @@ public class CrimeLab {
         return mDao.getCrimes() ;
     }
 
+    List<Crime> getListCrimes(){
+        return mDao.getListOfCrimes() ;
+    }
+
     Crime getCrime(UUID uuid) {
         return mDao.getCrime(uuid) ;
     }
