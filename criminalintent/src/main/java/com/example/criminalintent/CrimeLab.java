@@ -45,6 +45,7 @@ class CrimeLab {
         values.put(Cols.TITLE, crime.getTitle());
         values.put(Cols.DATE, crime.getDate().getTime());
         values.put(Cols.SOLVED, crime.getSolved() ? 1 : 0);
+        values.put(Cols.SUSPECT, crime.getSuspect());
         return values ;
     }
 
@@ -75,7 +76,7 @@ class CrimeLab {
     }
 
     List<Crime> getCrimes(){
-        ArrayList<Crime> crimes = new ArrayList<>() ;
+        List<Crime> crimes = new ArrayList<>() ;
 
         try (CrimeCursorWrapper cursor = queryCrime(null, null)) {
             cursor.moveToFirst();

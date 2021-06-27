@@ -123,10 +123,12 @@ public class CrimeFragment extends Fragment {
         if (mActivity != null) {
             if (mActivity.isItTheFirstItem(mCrime)) {
                 Log.d(LOG, "CrimeFragment: mActivity.isItTheFirstItem()) = " + mActivity.isItTheFirstItem(mCrime)) ;
+                mActivity.put0ToLeft();
                 mToFirstButton.setEnabled(false);
             }
             if (mActivity.isItTheLastItem(mCrime)) {
                 Log.d(LOG, "CrimeFragment: mActivity.isItTheLastItem()) = " + mActivity.isItTheLastItem(mCrime)) ;
+                mActivity.put0ToRight();
                 mToLastButton.setEnabled(false);
             }
             mActivity.changeRightAndLeft(mActivity.getAdapterPos());
