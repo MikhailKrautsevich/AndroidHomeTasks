@@ -190,6 +190,33 @@ public class CrimeFragment extends Fragment {
                 .toString();
     }
 
+    private String getCrimeReport(){
+        String solvedString = null;
+        if (mCrime.getSolved()) {
+            solvedString = getString(R.string.crime_report_solved) ;
+        } else {
+            solvedString = getString(R.string.crime_report_unsolved) ;
+        }
+
+        String dateFormat = "EEE, MMM dd" ;
+        String dateString = DateFormat.format(dateFormat, mCrime.getDate()).toString() ;            // источник русского в коде
+
+        String suspect = mCrime.getSuspect() ;
+        if (suspect == null) {
+            suspect = getString(R.string.crime_report_no_suspect) ;
+        } else {
+            suspect = getString(R.string.crime_report_suspect, suspect) ;
+        }
+
+        String report = getString(R.string.crime_report,
+                mCrime.getTitle(),
+                dateString,
+                solvedString,
+                solvedString) ;
+
+        return suspect ;
+    }
+
     private void updateTime (Date date) {
         mTimeButton.setText(getFormattedTime(date)) ;
     }
