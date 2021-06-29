@@ -298,6 +298,13 @@ public class CrimeFragment extends Fragment {
                     timePickerFragment.show(fragmentManager, DIALOG_TIME) ;
                     break;
                 case R.id.crime_report:
+//                    ShareCompat.IntentBuilder
+//                            .from(getActivity())
+//                            .setType("text/plain")
+//                            .setText(getCrimeReport())
+//                            .setChooserTitle(getString(R.string.send_report))
+//                            .startChooser();
+
                     Intent i = new Intent(Intent.ACTION_SEND) ;
                     i.setType("text/plain") ;
                     i.putExtra(Intent.EXTRA_TEXT, getCrimeReport()) ;
