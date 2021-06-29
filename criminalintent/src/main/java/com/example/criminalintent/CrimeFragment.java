@@ -1,5 +1,6 @@
 package com.example.criminalintent;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -48,6 +49,7 @@ public class CrimeFragment extends Fragment {
     private Button mTimeButton ;
     private Button mReportButton ;
     private Button mSuspectButton ;
+    private Button mCallSuspect ;
     private Button mToFirstButton ;
     private Button mToLastButton ;
     private CheckBox mSolvedCheckBox ;
@@ -110,6 +112,7 @@ public class CrimeFragment extends Fragment {
 
         mReportButton = view.findViewById(R.id.crime_report) ;
         mSuspectButton = view.findViewById(R.id.crime_suspect) ;
+        mCallSuspect = view.findViewById(R.id.call_suspect) ;
 
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
         mSolvedCheckBox.setChecked(mCrime.getSolved());
@@ -132,6 +135,7 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setOnClickListener(listener);
         mReportButton.setOnClickListener(listener);
         mSuspectButton.setOnClickListener(listener);
+        mCallSuspect.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -151,6 +155,9 @@ public class CrimeFragment extends Fragment {
 
         if (mCrime.getSuspect() != null) {
             mSuspectButton.setText(mCrime.getSuspect());
+            setSuspectNameToCallBtn(mCrime.getSuspect()) ;
+        } else {
+            mCallSuspect.setVisibility(View.GONE);
         }
 
 //        pickContact.addCategory(Intent.CATEGORY_HOME) ;                                           //    makes mSuspect enable
@@ -213,6 +220,8 @@ public class CrimeFragment extends Fragment {
                 String suspect = c.getString(0) ;
                 mCrime.setSuspect(suspect);
                 mSuspectButton.setText(suspect);
+                mCallSuspect.setVisibility(View.VISIBLE);
+                setSuspectNameToCallBtn(suspect);
             } finally {
                 c.close();
             }
@@ -254,6 +263,10 @@ public class CrimeFragment extends Fragment {
                 suspect) ;
 
         return report ;
+    }
+
+    private void setSuspectNameToCallBtn(String suspect) {
+        mCallSuspect.setText(getString(R.string.call_suspect, suspect));
     }
 
     private void updateTime (Date date) {
@@ -314,7 +327,21 @@ public class CrimeFragment extends Fragment {
                     break;
                 case R.id.crime_suspect:
                     startActivityForResult(pickIntent, REQUEST_CONTACT);
-
+                    break;
+                case R.id.call_suspect:
+                    Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect:start") ;
+                    if (mCrime.getSuspect() != null) {
+                        String [] name = {mCrime.getSuspect()} ;
+                        String[] queryID =  new String[] {ContactsContract.Contacts._ID} ;
+                        ContentResolver cr = getActivity().getContentResolver() ;
+                        Cursor c = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                                queryID,
+                                ContactsContract.Contacts.DISPLAY_NAME + " = ?",
+                                name,
+                                null) ;
+                        Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: cursor == null: " + (c == null)) ;
+                        break;
+                    }
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
             }
