@@ -43,4 +43,7 @@
     <string name="crimelist_is_empty">CrimeList is empty</string>
 
     <string name="smth_wrong">Something goes wrong</string>
+    <string name="image">image</string>
+    <string name="small_photo_preview">small photo preview</string>
+    <string name="camera_icon">camera_icon</string>
 </resources>

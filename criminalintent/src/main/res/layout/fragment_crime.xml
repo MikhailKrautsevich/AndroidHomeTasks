@@ -32,13 +32,16 @@
                 android:cropToPadding="true"
                 android:background="@drawable/photo_shape"
                 android:backgroundTint="@android:color/darker_gray"
-                android:clickable="true"/>
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/small_photo_preview"/>
 
                 <ImageButton
                     android:id="@+id/crime_camera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_menu_camera"/>
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:contentDescription="@string/camera_icon" />
 
             </LinearLayout>
 

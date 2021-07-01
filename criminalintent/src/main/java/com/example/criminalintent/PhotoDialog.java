@@ -44,7 +44,7 @@ public class PhotoDialog extends DialogFragment {
 
         if (file != null && file.exists() && imageView != null) {
             imageView.setImageBitmap(PictureUtils.getScaledBitmap(file.getPath(), getActivity()));
-        } else imageView.setImageDrawable(null);
+        }
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)

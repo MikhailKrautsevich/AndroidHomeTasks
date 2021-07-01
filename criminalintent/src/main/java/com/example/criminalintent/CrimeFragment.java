@@ -241,7 +241,7 @@ public class CrimeFragment extends Fragment {
             Cursor c = getActivity().getContentResolver()
                     .query(conUri, queryString, null, null, null) ;
             try {
-                if (c.getCount() == 0) {return;}
+                if (c == null || c.getCount() == 0) {return;}
                 c.moveToFirst();
                 String suspect = c.getString(0) ;
                 mCrime.setSuspect(suspect);
@@ -391,40 +391,44 @@ public class CrimeFragment extends Fragment {
                                 null) ;
                         String[] id ;
                         String phNum ;
-                        try {
-                            if (c.getCount() == 0) {
-                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c.getCount() == 0 ") ;
-                                return;
-                            }
-                            c.moveToFirst() ;
-                            id = new String[] {c.getString(0)} ;
-                            Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: id[0] = " + id[0]) ;
-                        } finally {
-                            c.close();
-                        }
-                        if (id != null) {
-                            String[] queryPhNum = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
-                            Cursor c1= cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    queryPhNum,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                    id,
-                                    null) ;
+                        if (c != null) {
                             try {
-                                if (c1.getCount() == 0) {
-                                    Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c1.getCount() == 0 ") ;
+                                if (c.getCount() == 0) {
+                                    Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c.getCount() == 0 ") ;
                                     return;
                                 }
-                                c1.moveToFirst() ;
-                                phNum = c1.getString(0) ;
+                                c.moveToFirst() ;
+                                id = new String[] {c.getString(0)} ;
+                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: id[0] = " + id[0]) ;
                             } finally {
-                                c1.close();
+                                c.close();
                             }
-                            if (phNum != null) {
-                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: phNum == " + phNum) ;
-                                Uri phNumUri = Uri.parse("tel:" + phNum) ;
-                                Intent phIntent = new Intent(Intent.ACTION_DIAL) ;
-                                phIntent.setData(phNumUri) ;
-                                startActivity(phIntent);
+                            if (id[0] != null) {
+                                String[] queryPhNum = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
+                                Cursor c1= cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                        queryPhNum,
+                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                        id,
+                                        null) ;
+                                if (c1 != null) {
+                                    try {
+                                        if (c1.getCount() == 0) {
+                                            Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c1.getCount() == 0 ") ;
+                                            return;
+                                        }
+                                        c1.moveToFirst() ;
+                                        phNum = c1.getString(0) ;
+                                    } finally {
+                                        c1.close();
+                                    }
+                                    if (phNum != null) {
+                                        Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: phNum == " + phNum) ;
+                                        Uri phNumUri = Uri.parse("tel:" + phNum) ;
+                                        Intent phIntent = new Intent(Intent.ACTION_DIAL) ;
+                                        phIntent.setData(phNumUri) ;
+                                        startActivity(phIntent);
+                                    }
+                                }
                             }
                         }
                         break;
