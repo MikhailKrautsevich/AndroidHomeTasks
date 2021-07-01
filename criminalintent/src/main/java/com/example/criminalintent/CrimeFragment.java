@@ -319,11 +319,13 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ") ;
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null)) ;
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists())) ;
+            mPhotoView.setEnabled(false);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity()) ;
             mPhotoView.setImageBitmap(bitmap);
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ") ;
+            mPhotoView.setEnabled(true);
         }
     }
 

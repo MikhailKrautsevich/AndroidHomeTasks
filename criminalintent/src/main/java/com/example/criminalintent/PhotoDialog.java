@@ -35,9 +35,13 @@ public class PhotoDialog extends DialogFragment {
         View v = LayoutInflater.from(getContext())
                 .inflate(R.layout.dialog_big_photo, null) ;
 
-        File file = (File) getArguments().getSerializable(ARG_FILE) ;
-
         ImageView imageView = v.findViewById(R.id.big_photo_image_view) ;
+        File file = null ;
+
+        if (getArguments() != null) {
+            file = (File) getArguments().getSerializable(ARG_FILE) ;
+        }
+
         if (file != null && file.exists() && imageView != null) {
             imageView.setImageBitmap(PictureUtils.getScaledBitmap(file.getPath(), getActivity()));
         } else imageView.setImageDrawable(null);
