@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -105,7 +106,6 @@ public class CrimeFragment extends Fragment {
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -115,7 +115,6 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -189,6 +188,7 @@ public class CrimeFragment extends Fragment {
         boolean canTakePhoto = mPhotoFile != null &&
                 mCaptureImage.resolveActivity(packageManager) != null ;
         mPhotoButton.setEnabled(canTakePhoto);
+        updatePhotoView();
 
         return view ;
     }
@@ -250,6 +250,13 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         }
+        if (requestCode == REQUEST_PHOTO) {
+            Uri uri = FileProvider.getUriForFile(getActivity(),
+                    "com.example.criminalintent.fileprovider",
+                    mPhotoFile) ;
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
+        }
     }
 
     private void updateDate(Date date) {
@@ -301,6 +308,21 @@ public class CrimeFragment extends Fragment {
         return DateFormat
                 .format("HH:mm", date)
                 .toString() ;
+    }
+
+    private void updatePhotoView(){
+        Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called") ;
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ") ;
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null)) ;
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists())) ;
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    mPhotoFile.getPath(), getActivity()) ;
+            mPhotoView.setImageBitmap(bitmap);
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ") ;
+        }
     }
 
     class CrimeFragmentListener implements View.OnClickListener {
@@ -421,6 +443,7 @@ public class CrimeFragment extends Fragment {
                     break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
+                    break;
             }
         }
     }

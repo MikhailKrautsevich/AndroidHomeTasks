@@ -1,7 +1,9 @@
 package com.example.criminalintent;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 
 public class PictureUtils {
 
@@ -18,10 +20,18 @@ public class PictureUtils {
         if (srcHeight > destHeight || srcWidth > destWidth ) {
             float heightScale = srcHeight/destHeight ;
             float widthScale = srcWidth/destHeight ;
-            inSampleSize = Math.round(heightScale > widthScale ? heightScale : widthScale) ;
+            inSampleSize = Math.round(Math.max(heightScale, widthScale)) ;
         }
         options = new BitmapFactory.Options() ;
         options.inSampleSize = inSampleSize ;
         return BitmapFactory.decodeFile(path, options) ;
+    }
+
+    public static Bitmap getScaledBitmap(String path, Activity activity) {
+        Point size = new Point() ;
+        activity.getWindowManager()
+                .getDefaultDisplay()
+                .getSize(size);
+        return getScaledBitmap(path, size.x, size.y) ;
     }
 }
