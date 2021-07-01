@@ -10,6 +10,7 @@ import com.example.criminalintent.database.CrimeBaseHelper;
 import com.example.criminalintent.database.CrimeCursorWrapper;
 import com.example.criminalintent.database.CrimeDbSchema.CrimeTable.Cols;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -105,6 +106,11 @@ class CrimeLab {
         mDatabase.delete( CrimeTable.NAME,
                 Cols.UUID + " = ?",
                 new String[] {id.toString()} ) ;
+    }
+
+    public File getPhotoFile(Crime crime) {
+        File filesDir = mContext.getFilesDir() ;
+        return new File(filesDir, crime.getPhotoFilename()) ;
     }
 
 //    void autoInit10Crimes(LinkedHashMap<UUID, Crime> map) {

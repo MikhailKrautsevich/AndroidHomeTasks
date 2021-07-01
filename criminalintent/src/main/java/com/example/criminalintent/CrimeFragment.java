@@ -3,10 +3,13 @@ package com.example.criminalintent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -21,13 +24,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
@@ -42,17 +50,23 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 211 ;
     private static final int REQUEST_TIME = 222 ;
     private static final int REQUEST_CONTACT = 233 ;
+    private static final int REQUEST_PHOTO = 244 ;
 
     private Crime mCrime ;
+    private File mPhotoFile ;
     private EditText mTitleField ;
     private Button mDateButton ;
     private Button mTimeButton ;
     private Button mReportButton ;
     private Button mSuspectButton ;
     private Button mCallSuspect ;
+    private ImageView mPhotoView ;
+    private ImageButton mPhotoButton ;
     private Button mToFirstButton ;
     private Button mToLastButton ;
     private CheckBox mSolvedCheckBox ;
+
+    private final Intent mCaptureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
     static CrimeFragment newInstance(UUID crimeID) {
         Bundle args = new Bundle() ;
@@ -73,6 +87,8 @@ public class CrimeFragment extends Fragment {
             crimeID = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
             mCrime = CrimeLab.get(getActivity())
                     .getCrime(crimeID) ;
+            mPhotoFile = CrimeLab.get(getActivity())
+                    .getPhotoFile(mCrime) ;
         } else {
             mCrime = new Crime() ;
             mCrime.setTitle(getString(R.string.smth_wrong));
@@ -90,7 +106,6 @@ public class CrimeFragment extends Fragment {
         mTitleField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -100,9 +115,11 @@ public class CrimeFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
+
+        mPhotoView = view.findViewById(R.id.crime_photo);
+        mPhotoButton = view.findViewById(R.id.crime_camera);
 
         mDateButton = view.findViewById(R.id.crime_date) ;
         updateDate(mCrime.getDate());
@@ -136,6 +153,7 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener(listener);
         mSuspectButton.setOnClickListener(listener);
         mCallSuspect.setOnClickListener(listener);
+        mPhotoButton.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -166,6 +184,12 @@ public class CrimeFragment extends Fragment {
                 PackageManager.MATCH_DEFAULT_ONLY) == null) {
             mSuspectButton.setEnabled(false);
         }
+
+        boolean canTakePhoto = mPhotoFile != null &&
+                mCaptureImage.resolveActivity(packageManager) != null ;
+        mPhotoButton.setEnabled(canTakePhoto);
+        updatePhotoView();
+
         return view ;
     }
 
@@ -226,6 +250,13 @@ public class CrimeFragment extends Fragment {
                 c.close();
             }
         }
+        if (requestCode == REQUEST_PHOTO) {
+            Uri uri = FileProvider.getUriForFile(getActivity(),
+                    "com.example.criminalintent.fileprovider",
+                    mPhotoFile) ;
+            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updatePhotoView();
+        }
     }
 
     private void updateDate(Date date) {
@@ -277,6 +308,21 @@ public class CrimeFragment extends Fragment {
         return DateFormat
                 .format("HH:mm", date)
                 .toString() ;
+    }
+
+    private void updatePhotoView(){
+        Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called") ;
+        if (mPhotoFile == null || !mPhotoFile.exists()) {
+            mPhotoView.setImageDrawable(null);
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ") ;
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null)) ;
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists())) ;
+        } else {
+            Bitmap bitmap = PictureUtils.getScaledBitmap(
+                    mPhotoFile.getPath(), getActivity()) ;
+            mPhotoView.setImageBitmap(bitmap);
+            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ") ;
+        }
     }
 
     class CrimeFragmentListener implements View.OnClickListener {
@@ -379,8 +425,25 @@ public class CrimeFragment extends Fragment {
                         }
                         break;
                     }
+                case R.id.crime_camera:
+                    Uri uri = FileProvider.getUriForFile(getActivity(),
+                            "com.example.criminalintent.fileprovider",
+                            mPhotoFile) ;
+                    mCaptureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri) ;
+                    List<ResolveInfo> cameraActivities = getActivity()
+                            .getPackageManager()
+                            .queryIntentActivities(mCaptureImage, PackageManager.MATCH_DEFAULT_ONLY) ;
+                    for (ResolveInfo activity : cameraActivities) {
+                        getActivity()
+                                .grantUriPermission(activity.activityInfo.packageName,
+                                        uri,
+                                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
+                    startActivityForResult(mCaptureImage, REQUEST_PHOTO);
+                    break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
+                    break;
             }
         }
     }
