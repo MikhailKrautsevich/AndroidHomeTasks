@@ -47,6 +47,7 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id" ;
     private static final String DIALOG_DATE = "DialogDate" ;
     private static final String DIALOG_TIME = "DialogTime" ;
+    private static final String DIALOG_PHOTO_BIG = "DialogBigPhoto";
     private static final int REQUEST_DATE = 211 ;
     private static final int REQUEST_TIME = 222 ;
     private static final int REQUEST_CONTACT = 233 ;
@@ -154,6 +155,7 @@ public class CrimeFragment extends Fragment {
         mSuspectButton.setOnClickListener(listener);
         mCallSuspect.setOnClickListener(listener);
         mPhotoButton.setOnClickListener(listener);
+        ((View) mPhotoView).setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -440,6 +442,11 @@ public class CrimeFragment extends Fragment {
                                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     }
                     startActivityForResult(mCaptureImage, REQUEST_PHOTO);
+                    break;
+                case R.id.crime_photo:
+                    Log.d(LOG, "CrimeFragmentListener: R.id.crime_photo");
+                    PhotoDialog photoDialog = PhotoDialog.newInstance(mPhotoFile) ;
+                    photoDialog.show(fragmentManager, DIALOG_PHOTO_BIG) ;
                     break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");

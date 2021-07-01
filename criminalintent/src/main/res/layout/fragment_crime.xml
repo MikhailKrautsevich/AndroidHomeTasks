@@ -31,7 +31,8 @@
                 android:scaleType="centerInside"
                 android:cropToPadding="true"
                 android:background="@drawable/photo_shape"
-                android:backgroundTint="@android:color/darker_gray"/>
+                android:backgroundTint="@android:color/darker_gray"
+                android:clickable="true"/>
 
                 <ImageButton
                     android:id="@+id/crime_camera"
