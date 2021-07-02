@@ -15,15 +15,11 @@
             android:id="@+id/main_linear_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:padding="4dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
             <ImageView
                 android:id="@+id/crime_photo"
                 android:layout_width="80dp"
@@ -31,15 +27,17 @@
                 android:scaleType="centerInside"
                 android:cropToPadding="true"
                 android:background="@drawable/photo_shape"
-                android:backgroundTint="@android:color/darker_gray"/>
+                android:backgroundTint="@android:color/darker_gray"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/small_photo_preview" />
 
                 <ImageButton
                     android:id="@+id/crime_camera"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_menu_camera"/>
-
-            </LinearLayout>
+                    android:src="@android:drawable/ic_menu_camera"
+                    android:contentDescription="@string/camera_icon" />
 
         </LinearLayout>
 

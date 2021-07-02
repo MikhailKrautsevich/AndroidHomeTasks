@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,6 +48,7 @@ public class CrimeFragment extends Fragment {
     private static final String ARG_CRIME_ID = "crime_id" ;
     private static final String DIALOG_DATE = "DialogDate" ;
     private static final String DIALOG_TIME = "DialogTime" ;
+    private static final String DIALOG_PHOTO_BIG = "DialogBigPhoto";
     private static final int REQUEST_DATE = 211 ;
     private static final int REQUEST_TIME = 222 ;
     private static final int REQUEST_CONTACT = 233 ;
@@ -154,6 +156,7 @@ public class CrimeFragment extends Fragment {
         mSuspectButton.setOnClickListener(listener);
         mCallSuspect.setOnClickListener(listener);
         mPhotoButton.setOnClickListener(listener);
+        mPhotoView.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -188,7 +191,23 @@ public class CrimeFragment extends Fragment {
         boolean canTakePhoto = mPhotoFile != null &&
                 mCaptureImage.resolveActivity(packageManager) != null ;
         mPhotoButton.setEnabled(canTakePhoto);
-        updatePhotoView();
+
+        ViewTreeObserver observer = mPhotoView.getViewTreeObserver() ;
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (mPhotoFile != null && mPhotoFile.exists()) {
+                    int width = mPhotoView.getWidth();
+                    int height = mPhotoButton.getHeight();
+                    Log.d(LOG, "onGlobalLayout: width = " + width + ", height = " + height) ;
+                    Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), width, height) ;
+                    mPhotoView.setImageBitmap(bitmap);
+                    if (!mPhotoView.isEnabled()) {mPhotoView.setEnabled(true);}
+                }
+            }
+        });
+
+//        updatePhotoView();
 
         return view ;
     }
@@ -239,7 +258,7 @@ public class CrimeFragment extends Fragment {
             Cursor c = getActivity().getContentResolver()
                     .query(conUri, queryString, null, null, null) ;
             try {
-                if (c.getCount() == 0) {return;}
+                if (c == null || c.getCount() == 0) {return;}
                 c.moveToFirst();
                 String suspect = c.getString(0) ;
                 mCrime.setSuspect(suspect);
@@ -317,11 +336,13 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ") ;
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null)) ;
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists())) ;
+            mPhotoView.setEnabled(false);
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity()) ;
             mPhotoView.setImageBitmap(bitmap);
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ") ;
+            mPhotoView.setEnabled(true);
         }
     }
 
@@ -387,40 +408,44 @@ public class CrimeFragment extends Fragment {
                                 null) ;
                         String[] id ;
                         String phNum ;
-                        try {
-                            if (c.getCount() == 0) {
-                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c.getCount() == 0 ") ;
-                                return;
-                            }
-                            c.moveToFirst() ;
-                            id = new String[] {c.getString(0)} ;
-                            Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: id[0] = " + id[0]) ;
-                        } finally {
-                            c.close();
-                        }
-                        if (id != null) {
-                            String[] queryPhNum = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
-                            Cursor c1= cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    queryPhNum,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                    id,
-                                    null) ;
+                        if (c != null) {
                             try {
-                                if (c1.getCount() == 0) {
-                                    Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c1.getCount() == 0 ") ;
+                                if (c.getCount() == 0) {
+                                    Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c.getCount() == 0 ") ;
                                     return;
                                 }
-                                c1.moveToFirst() ;
-                                phNum = c1.getString(0) ;
+                                c.moveToFirst() ;
+                                id = new String[] {c.getString(0)} ;
+                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: id[0] = " + id[0]) ;
                             } finally {
-                                c1.close();
+                                c.close();
                             }
-                            if (phNum != null) {
-                                Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: phNum == " + phNum) ;
-                                Uri phNumUri = Uri.parse("tel:" + phNum) ;
-                                Intent phIntent = new Intent(Intent.ACTION_DIAL) ;
-                                phIntent.setData(phNumUri) ;
-                                startActivity(phIntent);
+                            if (id[0] != null) {
+                                String[] queryPhNum = new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER};
+                                Cursor c1= cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                        queryPhNum,
+                                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                        id,
+                                        null) ;
+                                if (c1 != null) {
+                                    try {
+                                        if (c1.getCount() == 0) {
+                                            Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: (c1.getCount() == 0 ") ;
+                                            return;
+                                        }
+                                        c1.moveToFirst() ;
+                                        phNum = c1.getString(0) ;
+                                    } finally {
+                                        c1.close();
+                                    }
+                                    if (phNum != null) {
+                                        Log.d(LOG, "CrimeFragmentListener: R.id.call_suspect: phNum == " + phNum) ;
+                                        Uri phNumUri = Uri.parse("tel:" + phNum) ;
+                                        Intent phIntent = new Intent(Intent.ACTION_DIAL) ;
+                                        phIntent.setData(phNumUri) ;
+                                        startActivity(phIntent);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -440,6 +465,11 @@ public class CrimeFragment extends Fragment {
                                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     }
                     startActivityForResult(mCaptureImage, REQUEST_PHOTO);
+                    break;
+                case R.id.crime_photo:
+                    Log.d(LOG, "CrimeFragmentListener: R.id.crime_photo");
+                    PhotoDialog photoDialog = PhotoDialog.newInstance(mPhotoFile) ;
+                    photoDialog.show(fragmentManager, DIALOG_PHOTO_BIG) ;
                     break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
