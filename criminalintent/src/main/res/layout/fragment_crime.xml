@@ -19,6 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:padding="4dp">
+
             <ImageView
                 android:id="@+id/crime_photo"
                 android:layout_width="80dp"
@@ -29,7 +30,7 @@
                 android:backgroundTint="@android:color/darker_gray"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/small_photo_preview"/>
+                android:contentDescription="@string/small_photo_preview" />
 
                 <ImageButton
                     android:id="@+id/crime_camera"

@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -155,7 +156,7 @@ public class CrimeFragment extends Fragment {
         mSuspectButton.setOnClickListener(listener);
         mCallSuspect.setOnClickListener(listener);
         mPhotoButton.setOnClickListener(listener);
-        ((View) mPhotoView).setOnClickListener(listener);
+        mPhotoView.setOnClickListener(listener);
 
         CrimePagerActivity mActivity = (CrimePagerActivity) getActivity() ;
         if (mActivity != null) {
@@ -190,7 +191,23 @@ public class CrimeFragment extends Fragment {
         boolean canTakePhoto = mPhotoFile != null &&
                 mCaptureImage.resolveActivity(packageManager) != null ;
         mPhotoButton.setEnabled(canTakePhoto);
-        updatePhotoView();
+
+        ViewTreeObserver observer = mPhotoView.getViewTreeObserver() ;
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (mPhotoFile != null && mPhotoFile.exists()) {
+                    int width = mPhotoView.getWidth();
+                    int height = mPhotoButton.getHeight();
+                    Log.d(LOG, "onGlobalLayout: width = " + width + ", height = " + height) ;
+                    Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), width, height) ;
+                    mPhotoView.setImageBitmap(bitmap);
+                    if (!mPhotoView.isEnabled()) {mPhotoView.setEnabled(true);}
+                }
+            }
+        });
+
+//        updatePhotoView();
 
         return view ;
     }
