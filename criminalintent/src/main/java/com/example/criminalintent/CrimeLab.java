@@ -67,7 +67,7 @@ class CrimeLab {
         mDatabase.insert(CrimeTable.NAME, null, values ) ;
     }
 
-    void updateCrime (Crime crime) {
+    void updateCrime(Crime crime) {
         String uuidString = crime.getID().toString() ;
         ContentValues values = getContentValues(crime) ;
 
