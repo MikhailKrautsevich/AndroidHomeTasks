@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,11 +37,14 @@ public class CrimeListFragment extends Fragment {
 
     private TextView mListIsEmpty ;
     private ImageButton mCrimeAdd ;
-    private RecyclerView mcCrimeRecyclerView ;
+    private RecyclerView mCrimeRecyclerView ;
     private CrimeAdapter mAdapter ;
     private int mCrimeChanged ;
     private boolean mSubtitleVisible ;
     private Callbacks mCallbacks ;
+
+    private ItemTouchHelper.Callback mItemTouchHelperCallback;
+    private ItemTouchHelper mItemTouchHelper ;
 
     public interface Callbacks {
         void onCrimeSelected(Crime crime) ;
@@ -63,8 +67,8 @@ public class CrimeListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_crime_list, container, false) ;
-        mcCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view) ;
-        mcCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCrimeRecyclerView = view.findViewById(R.id.crime_recycler_view) ;
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         mListIsEmpty = view.findViewById(R.id.crime_list_is_empty) ;
         mCrimeAdd = view.findViewById(R.id.crime_add_fab) ;
@@ -174,8 +178,12 @@ public class CrimeListFragment extends Fragment {
 
         if (mAdapter == null) {
             mAdapter = new CrimeAdapter(crimes);
-            mcCrimeRecyclerView.setAdapter(mAdapter);
-            mcCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+            mCrimeRecyclerView.setAdapter(mAdapter);
+            mCrimeRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+
+            mItemTouchHelperCallback = new SimpleItemTouchHelperCallback(mAdapter) ;
+            mItemTouchHelper = new ItemTouchHelper(mItemTouchHelperCallback) ;
+            mItemTouchHelper.attachToRecyclerView(mCrimeRecyclerView);
         }
         if (mCrimeChanged >= 0 && crimes.size() >= mCrimeChanged+1) {
 //            UUID uuid = crimes.get(mCrimeChanged).getID() ;
@@ -197,10 +205,10 @@ public class CrimeListFragment extends Fragment {
 
         if (crimes.size() > 0) {
             mListIsEmpty.setVisibility(View.INVISIBLE);
-            mcCrimeRecyclerView.setVisibility(View.VISIBLE);
+            mCrimeRecyclerView.setVisibility(View.VISIBLE);
         } else {
             mListIsEmpty.setVisibility(View.VISIBLE);
-            mcCrimeRecyclerView.setVisibility(View.INVISIBLE);
+            mCrimeRecyclerView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -278,7 +286,8 @@ public class CrimeListFragment extends Fragment {
         }
     }
 
-    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder>
+    implements ItemTouchHelperAdapter{
 
         private List<Crime> mCrimes ;
 
@@ -307,6 +316,13 @@ public class CrimeListFragment extends Fragment {
 
         List<Crime> getList(){
             return mCrimes ;
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+            Crime crime = mCrimes.get(position) ;
+            CrimeLab.get(getContext()).deleteCrime(crime.getID());
+            updateUI();
         }
     }
 }
