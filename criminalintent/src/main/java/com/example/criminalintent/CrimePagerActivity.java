@@ -17,7 +17,8 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity
+    implements CrimeFragment.Callbacks {
 
     private static final String EXTRA_CRIME_ID = "com.example.criminalIntent.crime_id" ;
     private static final String EXTRA_LEFT_EVENT = "EXTRA_LEFT_EVENT" ;
@@ -150,4 +151,9 @@ public class CrimePagerActivity extends AppCompatActivity {
     void put0ToLeft() {sLeftEvent = 0 ;}
 
     void put0ToRight() {sRightEvent = 0 ;}
+
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+        // пустая реализация
+    }
 }

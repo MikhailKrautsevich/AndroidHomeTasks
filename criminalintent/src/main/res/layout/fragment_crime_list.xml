@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:text="@string/crimelist_is_empty"
         android:textSize="32sp"
+        android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
