@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CriminalIntent</string>
+    <string name="app_name" translatable="false">CriminalIntent</string>
 
     <string name="crime_title_label">Title</string>
     <string name="crime_details_label">Details</string>
@@ -11,22 +11,22 @@
     <string name="time_picker_title">Time of crime:</string>
 
     <string name="new_crime">New Crime</string>
-    <string name="show_subtitle">Show Subtitle</string>
-    <string name="hide_subtitle">Hide Subtitle</string>
+    <string name="show_subtitle" translatable="false">Show Subtitle</string>
+    <string name="hide_subtitle" translatable="false">Hide Subtitle</string>
     <string name="subtitle_format">%1$d crimes</string>
     <string name="crime_suspect_text">Choose Suspect</string>
     <string name="crime_report_text">Send Crime Report</string>
     <string name="call_suspect">Call %1$s</string>
-    <string name="call_hint">Suspect to call</string>
+    <string name="call_hint" translatable="false">Suspect to call</string>
 
-    <string name="crime_report">%1$s!
+    <string name="crime_report" translatable="false">%1$s!
      The crime was discovered on %2$s. %3$s, and %4$s</string>
-    <string name="crime_report_solved">The case is solved</string>
-    <string name="crime_report_unsolved">The case is unsolved</string>
-    <string name="crime_report_no_suspect">there is no suspect.</string>
-    <string name="crime_report_suspect">the suspect is %s.</string>
-    <string name="crime_report_subject">CriminalIntent Crime Report</string>
-    <string name="send_report">Send crime report via</string>
+    <string name="crime_report_solved" translatable="false">The case is solved</string>
+    <string name="crime_report_unsolved" translatable="false">The case is unsolved</string>
+    <string name="crime_report_no_suspect" translatable="false">there is no suspect.</string>
+    <string name="crime_report_suspect" translatable="false">the suspect is %s.</string>
+    <string name="crime_report_subject" translatable="false">CriminalIntent Crime Report</string>
+    <string name="send_report" translatable="false">Send crime report via</string>
     
     
     <plurals name="subtitle_plural">
@@ -34,16 +34,16 @@
         <item quantity="other">%1$d crimes</item>
     </plurals>
 
-    <string name="crime_title_hint">Enter a title for the crime.</string>
-    <string name="is_clicked">\u0020is clicked!</string>
+    <string name="crime_title_hint" translatable="false">Enter a title for the crime.</string>
+    <string name="is_clicked" translatable="false">\u0020is clicked!</string>
     <string name="solved">solved</string>
     <string name="first">To the first</string>
     <string name="last">To the last</string>
     <string name="delete_crime">Delete crime</string>
     <string name="crimelist_is_empty">CrimeList is empty</string>
 
-    <string name="smth_wrong">Something goes wrong</string>
-    <string name="image">image</string>
-    <string name="small_photo_preview">small photo preview</string>
-    <string name="camera_icon">camera_icon</string>
+    <string name="smth_wrong" translatable="false">Something goes wrong</string>
+    <string name="image" translatable="false">image</string>
+    <string name="small_photo_preview" translatable="false">small photo preview</string>
+    <string name="camera_icon" translatable="false">camera_icon</string>
 </resources>
