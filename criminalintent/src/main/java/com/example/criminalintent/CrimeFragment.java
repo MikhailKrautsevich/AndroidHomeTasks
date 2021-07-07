@@ -495,9 +495,11 @@ public class CrimeFragment extends Fragment {
                     startActivityForResult(mCaptureImage, REQUEST_PHOTO);
                     break;
                 case R.id.crime_photo:
-                    Log.d(LOG, "CrimeFragmentListener: R.id.crime_photo");
-                    PhotoDialog photoDialog = PhotoDialog.newInstance(mPhotoFile) ;
-                    photoDialog.show(fragmentManager, DIALOG_PHOTO_BIG) ;
+                    if (mPhotoFile != null && mPhotoFile.exists()) {
+                        Log.d(LOG, "CrimeFragmentListener: R.id.crime_photo");
+                        PhotoDialog photoDialog = PhotoDialog.newInstance(mPhotoFile);
+                        photoDialog.show(fragmentManager, DIALOG_PHOTO_BIG);
+                    }
                     break;
                 default:
                     Log.d(LOG, "CrimeFragmentListener: default branch.");
