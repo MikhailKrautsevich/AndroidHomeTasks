@@ -3,7 +3,6 @@ package com.example.criminalintent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -263,10 +262,7 @@ public class CrimeListFragment extends Fragment {
 //            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
 //            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
             mTitleTextView.setText(crime.getTitle());
-            String dateString = DateFormat
-                    .format( "EEEE, dd MMM, yyyy", mCrime.getDate())
-                    .toString() ;
-            mDateTextView.setText(dateString);
+            mDateTextView.setText(DateFormatter.getFormattedDate(mCrime.getDate(), getContext()));
             mCrimeSolved.setVisibility(mCrime.getSolved()? View.VISIBLE:View.GONE);
         }
 

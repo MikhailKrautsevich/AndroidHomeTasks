@@ -13,7 +13,6 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -307,25 +306,18 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateDate(Date date) {
-        mDateButton.setText(getFormattedDate(date));
-    }
-
-    private String getFormattedDate(Date date) {
-        return DateFormat
-                .format( "EEEE, dd MMM, yyyy", date)
-                .toString();
+        mDateButton.setText(DateFormatter.getFormattedDate(date, getContext()));
     }
 
     private String getCrimeReport(){
-        String solvedString = null;
+        String solvedString;
         if (mCrime.getSolved()) {
             solvedString = getString(R.string.crime_report_solved) ;
         } else {
             solvedString = getString(R.string.crime_report_unsolved) ;
         }
 
-        String dateFormat = "EEE, MMM dd" ;
-        String dateString = DateFormat.format(dateFormat, mCrime.getDate()).toString() ;            // источник русского в коде
+        String dateString = DateFormatter.getFormattedDate(mCrime.getDate(), getContext()) ;
 
         String suspect = mCrime.getSuspect() ;
         if (suspect == null) {
@@ -334,13 +326,11 @@ public class CrimeFragment extends Fragment {
             suspect = getString(R.string.crime_report_suspect, suspect) ;
         }
 
-        String report = getString(R.string.crime_report,
+        return getString(R.string.crime_report,
                 mCrime.getTitle(),
                 dateString,
                 solvedString,
-                suspect) ;
-
-        return report ;
+                suspect);
     }
 
     private void setSuspectNameToCallBtn(String suspect) {
@@ -348,13 +338,7 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateTime (Date date) {
-        mTimeButton.setText(getFormattedTime(date)) ;
-    }
-
-    private String getFormattedTime(Date date) {
-        return DateFormat
-                .format("HH:mm", date)
-                .toString() ;
+        mTimeButton.setText(DateFormatter.getFormattedTime(date, getContext())) ;
     }
 
     private void updatePhotoView(){
