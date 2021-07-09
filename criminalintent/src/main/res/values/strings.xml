@@ -36,7 +36,7 @@
 
     <string name="crime_title_hint" translatable="false">Enter a title for the crime.</string>
     <string name="is_clicked" translatable="false">\u0020is clicked!</string>
-    <string name="solved">solved</string>
+<!--    <string name="solved">solved</string>   -->
     <string name="first">To the first</string>
     <string name="last">To the last</string>
     <string name="delete_crime">Delete crime</string>
@@ -48,4 +48,5 @@
     <string name="crime_photo_button_description" translatable="false">Take photo a crime scene.</string>
     <string name="crime_photo_no_image_description" translatable="false">Crime scene photo (not set)</string>
     <string name="crime_photo_image_description" translatable="false">Crime scene photo (set)</string>
+    <string name="recyclerview_solved_description" translatable="false">This crime id solved.</string>
 </resources>

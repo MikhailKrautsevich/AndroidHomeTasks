@@ -61,6 +61,7 @@ public class CrimePagerActivity extends AppCompatActivity
         mCrimes = CrimeLab.get(this).getCrimes() ;
         UUID crimeID = (UUID) getIntent().getSerializableExtra(EXTRA_CRIME_ID) ;
         FragmentManager fragmentManager = getSupportFragmentManager() ;
+        mViewPager.setOffscreenPageLimit(5);
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @NonNull
             @Override

@@ -44,6 +44,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_solved"
-        android:contentDescription="@string/solved"/>
+        android:contentDescription="@string/recyclerview_solved_description"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -264,6 +264,17 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView.setText(crime.getTitle());
             mDateTextView.setText(DateFormatter.getFormattedDate(mCrime.getDate(), getContext()));
             mCrimeSolved.setVisibility(mCrime.getSolved()? View.VISIBLE:View.GONE);
+            ViewGroup layout = itemView.findViewById(R.id.recItemLayout);
+            StringBuilder description = new StringBuilder(mTitleTextView.getText().toString()) ;
+            if (description.length() != 0){
+                description.append(": ") ;
+            }
+            description.append(mDateTextView.getText().toString()) ;
+            if (mCrimeSolved.getVisibility() != View.GONE) {
+                description.append(' ').append(getString(R.string.recyclerview_solved_description));
+            }
+            layout.setContentDescription(description);
+            Log.d(LOG, "CrimeHolder bind description: " + description) ;
         }
 
         @Override

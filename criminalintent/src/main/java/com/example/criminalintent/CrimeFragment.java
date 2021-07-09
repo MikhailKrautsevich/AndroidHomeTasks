@@ -208,7 +208,7 @@ public class CrimeFragment extends Fragment {
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (mPhotoFile != null && mPhotoFile.exists()) {
+                if (isAdded() && mPhotoFile != null && mPhotoFile.exists()) {
                     int width = mPhotoView.getWidth();
                     int height = mPhotoButton.getHeight();
                     Log.d(LOG, "onGlobalLayout: width = " + width + ", height = " + height) ;
