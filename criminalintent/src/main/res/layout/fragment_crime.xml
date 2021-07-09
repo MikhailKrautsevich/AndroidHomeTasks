@@ -50,8 +50,7 @@
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="@+id/crime_title"
             app:layout_constraintStart_toEndOf="@+id/main_linear_layout"
-            app:layout_constraintTop_toTopOf="parent"
-            android:labelFor="@+id/crime_title"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <EditText
             android:id="@+id/crime_title"
