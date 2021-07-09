@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/photo_shape"
         android:contentDescription="@string/image"
-        android:scaleType="fitXY"/>
+        android:scaleType="fitXY"
+        android:focusable="true"/>
 
 </LinearLayout>

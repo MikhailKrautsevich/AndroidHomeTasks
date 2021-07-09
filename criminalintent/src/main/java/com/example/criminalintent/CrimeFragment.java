@@ -215,6 +215,7 @@ public class CrimeFragment extends Fragment {
                     Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), width, height) ;
                     mPhotoView.setImageBitmap(bitmap);
                     if (!mPhotoView.isEnabled()) {mPhotoView.setEnabled(true);}
+                    setCrimePhotoDescription();
                 }
             }
         });
@@ -341,6 +342,9 @@ public class CrimeFragment extends Fragment {
         mTimeButton.setText(DateFormatter.getFormattedTime(date, getContext())) ;
     }
 
+    private void setCrimePhotoDescription() {
+        mPhotoView.setContentDescription(getString(R.string.crime_photo_image_description));}
+
     private void updatePhotoView(){
         Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called") ;
         if (mPhotoFile == null || !mPhotoFile.exists()) {
@@ -349,12 +353,14 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null)) ;
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists())) ;
             mPhotoView.setEnabled(false);
+            mPhotoView.setContentDescription(getString(R.string.crime_photo_no_image_description));
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity()) ;
             mPhotoView.setImageBitmap(bitmap);
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ") ;
             mPhotoView.setEnabled(true);
+            setCrimePhotoDescription();
         }
     }
 

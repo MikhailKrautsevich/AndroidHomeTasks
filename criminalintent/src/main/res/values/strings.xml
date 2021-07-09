@@ -43,7 +43,9 @@
     <string name="crimelist_is_empty">CrimeList is empty</string>
 
     <string name="smth_wrong" translatable="false">Something goes wrong</string>
-    <string name="image" translatable="false">image</string>
-    <string name="small_photo_preview" translatable="false">small photo preview</string>
-    <string name="camera_icon" translatable="false">camera_icon</string>
+    <string name="image" translatable="false">Big image of crime scene</string>
+    
+    <string name="crime_photo_button_description" translatable="false">Take photo a crime scene.</string>
+    <string name="crime_photo_no_image_description" translatable="false">Crime scene photo (not set)</string>
+    <string name="crime_photo_image_description" translatable="false">Crime scene photo (set)</string>
 </resources>
