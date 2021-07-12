@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
             materialTimePicker.addOnPositiveButtonClickListener {
                 val calendar: Calendar = Calendar.getInstance()
+                calendar.set(Calendar.MILLISECOND, 0)
+                calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MINUTE, materialTimePicker.minute)
                 calendar.set(Calendar.HOUR, materialTimePicker.hour)
 
@@ -48,13 +50,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun getAlarmInfoPendingIntent(): PendingIntent {
         val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun getAlarmActionPendingIntent() : PendingIntent {
         intent = Intent(this, AlarmActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         return PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 }
