@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SimpleAlarmClock</string>
+    <string name="set_alarm_signal">set alarm signal</string>
+    <string name="choose_time">Choose time to wake up.</string>
+</resources>
