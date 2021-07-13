@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -30,13 +31,30 @@ class MainActivity : AppCompatActivity() {
 
             materialTimePicker.addOnPositiveButtonClickListener {
                 val calendar: Calendar = Calendar.getInstance()
+                var time = calendar.time.toString()
+//                Log.d("ClockLog", ": calendar init time set - $time")
+//                Log.d("ClockLog",
+//                        "materialTimePicker time: "
+//                                + materialTimePicker.hour.toString()
+//                                + ":"
+//                                + materialTimePicker.minute.toString())
+
                 calendar.set(Calendar.MILLISECOND, 0)
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MINUTE, materialTimePicker.minute)
-                calendar.set(Calendar.HOUR, materialTimePicker.hour)
+                calendar.set(Calendar.HOUR_OF_DAY, materialTimePicker.hour)
+
+//                time = calendar.time.toString()
+//                Log.d("ClockLog", ": time set - $time")
+
+                if (Calendar.getInstance().after(calendar)) {
+                    calendar.add(Calendar.HOUR, 24)
+                    time = calendar.time.toString()
+                    Log.d("ClockLog", ": new time set - $time")
+                }
 
                 val alarmManger: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val info : AlarmManager.AlarmClockInfo = AlarmManager.AlarmClockInfo(calendar.timeInMillis,
+                val info: AlarmManager.AlarmClockInfo = AlarmManager.AlarmClockInfo(calendar.timeInMillis,
                         getAlarmInfoPendingIntent())
                 alarmManger.setAlarmClock(info, getAlarmActionPendingIntent())
                 val sdt = SimpleDateFormat("HH : mm", Locale.getDefault())
@@ -54,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         return PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun getAlarmActionPendingIntent() : PendingIntent {
+    private fun getAlarmActionPendingIntent(): PendingIntent {
         intent = Intent(this, AlarmActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         return PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
