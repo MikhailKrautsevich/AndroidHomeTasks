@@ -4,8 +4,11 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -19,6 +22,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.d("ClockLog", "Branch: Build.VERSION.SDK_INT >= Build.VERSION_CODES.M")
+            if (!Settings.canDrawOverlays(this)) {
+                Log.d("ClockLog", "Branch: !Settings.canDrawOverlays")
+                intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName"))
+                startActivity(intent)
+            }
+        }
+
         val setAlarmBtn = findViewById<Button>(R.id.setAlarmBtn)
         setAlarmBtn.setOnClickListener {
             val materialTimePicker = MaterialTimePicker
@@ -31,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
             materialTimePicker.addOnPositiveButtonClickListener {
                 val calendar: Calendar = Calendar.getInstance()
-                var time = calendar.time.toString()
+//                var time = calendar.time.toString()
 //                Log.d("ClockLog", ": calendar init time set - $time")
 //                Log.d("ClockLog",
 //                        "materialTimePicker time: "
@@ -49,8 +62,8 @@ class MainActivity : AppCompatActivity() {
 
                 if (Calendar.getInstance().after(calendar)) {
                     calendar.add(Calendar.HOUR, 24)
-                    time = calendar.time.toString()
-                    Log.d("ClockLog", ": new time set - $time")
+//                    time = calendar.time.toString()
+//                    Log.d("ClockLog", ": new time set - $time")
                 }
 
                 val alarmManger: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
