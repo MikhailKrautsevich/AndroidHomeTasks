@@ -198,6 +198,9 @@ public class CrimeFragment extends Fragment {
         boolean canTakePhoto = mPhotoFile != null &&
                 mCaptureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
+        if (!canTakePhoto) {
+            mPhotoButton.setContentDescription(getString(R.string.crime_photo_btn_is_disabled_description));
+        }
 
         ViewTreeObserver observer = mPhotoView.getViewTreeObserver();
         observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

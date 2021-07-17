@@ -46,6 +46,7 @@
     <string name="image" translatable="false">Big image of crime scene</string>
     
     <string name="crime_photo_button_description" translatable="false">Take photo a crime scene.</string>
+    <string name="crime_photo_btn_is_disabled_description" translatable="false">Take photo button is disabled.</string>
     <string name="crime_photo_no_image_description" translatable="false">Crime scene photo is not set.</string>
     <string name="crime_photo_image_description" translatable="false">Crime scene photo is set.</string>
     <string name="recyclerview_solved_description" translatable="false">This crime is solved.</string>
