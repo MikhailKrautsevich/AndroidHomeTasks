@@ -49,4 +49,11 @@
     <string name="crime_photo_no_image_description" translatable="false">Crime scene photo (not set)</string>
     <string name="crime_photo_image_description" translatable="false">Crime scene photo (set)</string>
     <string name="recyclerview_solved_description" translatable="false">This crime id solved.</string>
+    <string name="date_btn_description" translatable="false">Choose date of the crime</string>
+    <string name="time_btn_description" translatable="false">Choose time of the crime</string>
+    <string name="suspect_btn_description" translatable="false">Choose suspect</string>
+    <string name="send_crime_report_btn_description" translatable="false">Send crime Report</string>
+    <string name="date_btn_new_description" translatable="false">The Date of the Crime is\u0020</string>
+    <string name="solved_checkbox_description" translatable="false">This Crime is solved.</string>
+    <string name="unsolved_checkbox_description" translatable="false">This Crime is still unsolved.</string>
 </resources>

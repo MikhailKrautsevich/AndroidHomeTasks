@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,7 +39,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
-import static android.widget.CompoundButton.OnCheckedChangeListener;
 
 public class CrimeFragment extends Fragment {
 
@@ -136,6 +134,13 @@ public class CrimeFragment extends Fragment {
 
         mDateButton = view.findViewById(R.id.crime_date) ;
         updateDate(mCrime.getDate());
+//        if (!mDateButton.getContentDescription().equals(getString(R.string.date_btn_description))) {
+//            String newDescription = getString(R.string.date_btn_new_description)
+//                    + mDateButton.getContentDescription() ;
+//            mDateButton.setContentDescription(newDescription);
+//            Log.d(LOG, "CrimeFragment: onCreate set new mDateButton description: "
+//                    + newDescription) ;
+//        }
 
         mTimeButton = view.findViewById(R.id.crime_time) ;
         updateTime(new Date());
@@ -146,13 +151,12 @@ public class CrimeFragment extends Fragment {
 
         mSolvedCheckBox = view.findViewById(R.id.crime_solved) ;
         mSolvedCheckBox.setChecked(mCrime.getSolved());
-        mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mCrime.setSolved(isChecked);
-                Log.d(LOG, "mSolvedCheckBox: " + isChecked) ;
-                updateCrime();
-            }
+        setSolvedCheckBoxDescription();
+        mSolvedCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mCrime.setSolved(isChecked);
+            Log.d(LOG, "mSolvedCheckBox: " + isChecked) ;
+            updateCrime();
+            setSolvedCheckBoxDescription();
         });
 
         mToFirstButton = view.findViewById(R.id.btn_first) ;
@@ -343,7 +347,19 @@ public class CrimeFragment extends Fragment {
     }
 
     private void setCrimePhotoDescription() {
-        mPhotoView.setContentDescription(getString(R.string.crime_photo_image_description));}
+        mPhotoView.setContentDescription(getString(R.string.crime_photo_image_description));
+    }
+
+    private void setSolvedCheckBoxDescription() {
+        boolean solved = mSolvedCheckBox.isChecked() ;
+        if (solved) {
+            mSolvedCheckBox.setContentDescription(getString(R.string.solved_checkbox_description));
+            Log.d(LOG, "CrimeFragment: I set SOLVED checkbox description") ;
+        } else {
+            mSolvedCheckBox.setContentDescription(getString(R.string.unsolved_checkbox_description));
+            Log.d(LOG, "CrimeFragment: I set UNSOLVED checkbox description") ;
+        }
+    }
 
     private void updatePhotoView(){
         Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called") ;

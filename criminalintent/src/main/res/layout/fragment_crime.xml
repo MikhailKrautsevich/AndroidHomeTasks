@@ -83,7 +83,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@id/main_linear_layout"/>
+            app:layout_constraintTop_toBottomOf="@id/main_linear_layout"
+            android:contentDescription="@string/date_btn_description"/>
 
         <Button
             android:id="@+id/crime_time"
@@ -91,7 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@id/crime_date"
-            android:hint="@string/crime_time"/>
+            android:hint="@string/crime_time"
+            android:contentDescription="@string/time_btn_description"/>
 
         <CheckBox
             android:id="@+id/crime_solved"
@@ -107,14 +109,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/crime_solved"
-            android:text="@string/crime_suspect_text"/>
+            android:text="@string/crime_suspect_text"
+            android:contentDescription="@string/suspect_btn_description"/>
 
         <Button
             android:id="@+id/crime_report"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/crime_suspect"
-            android:text="@string/crime_report_text"/>
+            android:text="@string/crime_report_text"
+            android:contentDescription="@string/send_crime_report_btn_description"/>
 
         <Button
             android:id="@+id/call_suspect"
