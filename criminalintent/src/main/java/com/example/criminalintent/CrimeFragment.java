@@ -226,6 +226,11 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -261,7 +266,12 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode != RESULT_OK) return;
+        if (resultCode != RESULT_OK) {
+            if (requestCode == REQUEST_DATE) {
+                Log.d(LOG, "22") ;
+                updatePhotoView();
+            } else return;
+        }
         if (requestCode == REQUEST_DATE) {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
@@ -382,11 +392,21 @@ public class CrimeFragment extends Fragment {
         Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called");
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ");
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null));
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists()));
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ");
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null));
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists()));
             mPhotoView.setEnabled(false);
             mPhotoView.setContentDescription(getString(R.string.crime_photo_no_image_description));
+            if (isVisible()) {
+                Log.d(LOG, "CrimeFragment: updatePhotoView() : isVisible()") ;
+                mPhotoView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPhotoView.announceForAccessibility(getString(R.string.new_crime_image_is_not_set)) ;
+                        Log.d(LOG, "CrimeFragment: updatePhotoView() : postDelayed() (isn't set) finished") ;
+                    }
+                }, 2000) ;
+            }
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
@@ -394,6 +414,16 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ");
             mPhotoView.setEnabled(true);
             setCrimePhotoDescription();
+            if (isVisible()) {
+                Log.d(LOG, "CrimeFragment: updatePhotoView() : isVisible()") ;
+                mPhotoView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mPhotoView.announceForAccessibility(getString(R.string.new_crime_image_is_set)) ;
+                        Log.d(LOG, "CrimeFragment: updatePhotoView() : postDelayed() (is set) finished") ;
+                    }
+                }, 2000) ;
+            }
         }
     }
 

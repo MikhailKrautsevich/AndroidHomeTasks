@@ -61,4 +61,7 @@
     <string name="call_suspect_btn_description" translatable="false">Call %1$s.</string>
     <string name="go_to_the_first_btn_description" translatable="false">Go to the first crime in list.</string>
     <string name="go_to_the_last_btn_description" translatable="false">Go to the last crime in list.</string>
+
+    <string name="new_crime_image_is_set" translatable="false">New Crime image is set.</string>
+    <string name="new_crime_image_is_not_set" translatable="false">New Crime image is not set.</string>
 </resources>
