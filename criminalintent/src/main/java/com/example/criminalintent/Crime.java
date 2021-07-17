@@ -2,28 +2,43 @@ package com.example.criminalintent;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 import java.util.UUID;
 
 public class Crime {
 
-    private static final String LOG = "Crime_log" ;
+    private static final String LOG = "Crime_log";
 
-    private UUID mID ;
-    private String mTitle ;
-    private Date mDate ;
-    private String mSuspect ;
-    private boolean mSolved ;
-    
+    private UUID mID;
+    private String mTitle;
+    private Date mDate;
+    private String mSuspect;
+    private boolean mSolved;
+
     Crime() {
         this(UUID.randomUUID());
-        Log.d(LOG, " Crime()") ;
+        Log.d(LOG, " Crime()");
     }
 
     public Crime(UUID id) {
-        mID = id ;
+        mID = id;
         mDate = new Date();
-        Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString()) ;
+        Log.d(LOG, " Crime(UUID id) : mDate = " + mDate.toString());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("mID = ").append(mID).append(", ")
+                .append("mTitle = ");
+        if (mTitle == null) {
+            stringBuilder.append("null");
+        } else stringBuilder.append(mTitle) ;
+        stringBuilder.append(", mDate = ").append(mDate);
+        return stringBuilder.toString();
     }
 
     UUID getID() {
@@ -35,10 +50,13 @@ public class Crime {
     }
 
     Date getDate() {
+        Log.d(LOG, "Crime: mTitle " + mTitle + ", Date is " + mDate.toString());
         return mDate;
     }
 
-    String getSuspect() {return mSuspect; }
+    String getSuspect() {
+        return mSuspect;
+    }
 
     boolean getSolved() {
         return mSolved;
@@ -52,7 +70,9 @@ public class Crime {
         mDate = date;
     }
 
-    public void setSuspect(String suspect) {mSuspect = suspect; }
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
 
     public void setSolved(boolean solved) {
         mSolved = solved;

@@ -262,7 +262,7 @@ public class CrimeListFragment extends Fragment {
 //            Log.d(LOG, "CrimeHolder bind() : crime.getTitle() = " + crime.getTitle()) ;
 //            Log.d(LOG, "mTitleTextView == null:" + (mTitleTextView == null) ) ;
             mTitleTextView.setText(crime.getTitle());
-            mDateTextView.setText(DateFormatter.getFormattedDate(mCrime.getDate(), getContext()));
+            mDateTextView.setText(MyDateUtil.getFormattedDate(mCrime.getDate(), getContext()));
             mCrimeSolved.setVisibility(mCrime.getSolved()? View.VISIBLE:View.GONE);
             ViewGroup layout = itemView.findViewById(R.id.recItemLayout);
             StringBuilder description = new StringBuilder(mTitleTextView.getText().toString()) ;

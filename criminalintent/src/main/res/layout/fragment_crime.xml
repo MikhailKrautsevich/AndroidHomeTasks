@@ -133,7 +133,8 @@
             android:layout_height="wrap_content"
             android:text="@string/first"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/go_to_the_first_btn_description"/>
 
         <Button
             android:id="@+id/btn_last"
@@ -141,6 +142,7 @@
             android:layout_height="wrap_content"
             android:text="@string/last"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/title" />
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            android:contentDescription="@string/go_to_the_last_btn_description"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
