@@ -221,13 +221,19 @@ public class CrimeFragment extends Fragment {
         });
 
 //        updatePhotoView();
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(LOG, "CriminalFragment: onResume()");
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(LOG, "CriminalFragment: onPause()");
 
         CrimeLab.get(getActivity())
                 .updateCrime(mCrime);
@@ -261,42 +267,49 @@ public class CrimeFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode != RESULT_OK) return;
-        if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mCrime.setDate(date);
-            updateDate(date);
-            updateCrime();
+        if (resultCode != RESULT_OK) {
+            if (requestCode == REQUEST_PHOTO) {
+                Log.d(LOG, "CriminalFragment: onActivityResult(): (resultCode != RESULT_OK) branch");
+                announceForAccessibilityCrimeImageNotChanged();
+            } else return;
         }
-        if (requestCode == REQUEST_TIME) {
-            Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_FOR_TIME);
-            updateTime(date);
-        }
-        if (requestCode == REQUEST_CONTACT && data != null) {
-            Uri conUri = data.getData();
-            String[] queryString = new String[]{ContactsContract.Contacts.DISPLAY_NAME};
-            Cursor c = getActivity().getContentResolver()
-                    .query(conUri, queryString, null, null, null);
-            try {
-                if (c == null || c.getCount() == 0) {
-                    return;
-                }
-                c.moveToFirst();
-                String suspect = c.getString(0);
-                mCrime.setSuspect(suspect);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_DATE) {
+                Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+                mCrime.setDate(date);
+                updateDate(date);
                 updateCrime();
-                setSuspect(suspect);
-            } finally {
-                c.close();
             }
-        }
-        if (requestCode == REQUEST_PHOTO) {
-            Uri uri = FileProvider.getUriForFile(getActivity(),
-                    "com.example.criminalintent.fileprovider",
-                    mPhotoFile);
-            getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            updatePhotoView();
-            updateCrime();
+            if (requestCode == REQUEST_TIME) {
+                Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_FOR_TIME);
+                updateTime(date);
+            }
+            if (requestCode == REQUEST_CONTACT && data != null) {
+                Uri conUri = data.getData();
+                String[] queryString = new String[]{ContactsContract.Contacts.DISPLAY_NAME};
+                Cursor c = getActivity().getContentResolver()
+                        .query(conUri, queryString, null, null, null);
+                try {
+                    if (c == null || c.getCount() == 0) {
+                        return;
+                    }
+                    c.moveToFirst();
+                    String suspect = c.getString(0);
+                    mCrime.setSuspect(suspect);
+                    updateCrime();
+                    setSuspect(suspect);
+                } finally {
+                    c.close();
+                }
+            }
+            if (requestCode == REQUEST_PHOTO) {
+                Uri uri = FileProvider.getUriForFile(getActivity(),
+                        "com.example.criminalintent.fileprovider",
+                        mPhotoFile);
+                getActivity().revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                updatePhotoView();
+                updateCrime();
+            }
         }
     }
 
@@ -382,11 +395,12 @@ public class CrimeFragment extends Fragment {
         Log.d(LOG, "CrimeFragmentListener: updatePhotoView() called");
         if (mPhotoFile == null || !mPhotoFile.exists()) {
             mPhotoView.setImageDrawable(null);
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ");
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null));
-            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists()));
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : null branch ");
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile == null " + (mPhotoFile == null));
+//            Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : mPhotoFile.exists() " + (mPhotoFile.exists()));
             mPhotoView.setEnabled(false);
             mPhotoView.setContentDescription(getString(R.string.crime_photo_no_image_description));
+            announceForAccessibilityCrimeImageIsNotSet();
         } else {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
@@ -394,6 +408,40 @@ public class CrimeFragment extends Fragment {
             Log.d(LOG, "CrimeFragmentListener: updatePhotoView() : try to setImageBitmap ");
             mPhotoView.setEnabled(true);
             setCrimePhotoDescription();
+            announceForAccessibilityCrimeImageIsSet();
+        }
+    }
+
+    private void announceForAccessibilityCrimeImageNotChanged() {
+        Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotChanged() called");
+        if (isVisible()) {
+            Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotChanged() : isVisible()");
+            mPhotoView.postDelayed(() -> {
+                mPhotoView.announceForAccessibility(getString(R.string.crime_image_is_not_changed));
+                Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotChanged() : postDelayed() (is not changed) finished");
+            }, 2000);
+        }
+    }
+
+    private void announceForAccessibilityCrimeImageIsSet() {
+        Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageIsSet() called");
+        if (isVisible()) {
+            Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageIsSet() : isVisible()");
+            mPhotoView.postDelayed(() -> {
+                mPhotoView.announceForAccessibility(getString(R.string.new_crime_image_is_set));
+                Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageIsSet() : postDelayed() (is set) finished");
+            }, 2000);
+        }
+    }
+
+    private void announceForAccessibilityCrimeImageIsNotSet() {
+        Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotSet() called");
+        if (isVisible()) {
+            Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotSet() : isVisible()");
+            mPhotoView.postDelayed(() -> {
+                mPhotoView.announceForAccessibility(getString(R.string.new_crime_image_is_not_set));
+                Log.d(LOG, "CrimeFragment: announceForAccessibilityCrimeImageNotSet() : postDelayed() (isn't set) finished");
+            }, 2000);
         }
     }
 
