@@ -64,4 +64,5 @@
 
     <string name="new_crime_image_is_set" translatable="false">New Crime image is set.</string>
     <string name="new_crime_image_is_not_set" translatable="false">New Crime image is not set.</string>
+    <string name="crime_image_is_not_changed" translatable="false">Crime image is not changed.</string>
 </resources>
