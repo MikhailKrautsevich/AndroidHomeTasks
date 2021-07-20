@@ -11,6 +11,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/beatbox" />
             <option value="$PROJECT_DIR$/criminalintent" />
             <option value="$PROJECT_DIR$/example_network" />
             <option value="$PROJECT_DIR$/example_radbutton" />
