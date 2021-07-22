@@ -31,7 +31,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
             fragment = createFragment() ;
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, fragment)
-                    .commit() ;
+                    .commit();
             Log.d(LOG, "SingleFragmentActivity: if(fragment == null)-branch") ;
         }
     }
