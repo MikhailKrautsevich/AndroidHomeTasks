@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -22,9 +23,14 @@ public class BeatBoxFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState) {
         FragmentBeatBoxBinding binding = DataBindingUtil
-                .inflate(inflater, R.layout.fragment_beat_box, container, false);
+                .inflate(inflater,
+                        R.layout.fragment_beat_box,
+                        container,
+                        false);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter());
         return binding.getRoot();
@@ -39,8 +45,9 @@ public class BeatBoxFragment extends Fragment {
 
     private class SoundAdapter extends RecyclerView.Adapter<SoundHolder>{
 
+        @NonNull
         @Override
-        public SoundHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public SoundHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity()) ;
             ListItemSoundBinding binding = DataBindingUtil
                     .inflate(inflater, R.layout.list_item_sound, parent, false) ;
@@ -48,7 +55,7 @@ public class BeatBoxFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(SoundHolder holder, int position) {
+        public void onBindViewHolder(@NonNull SoundHolder holder, int position) {
         }
 
         @Override
