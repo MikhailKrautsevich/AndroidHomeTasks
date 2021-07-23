@@ -1,5 +1,7 @@
 package com.example.beatbox;
 
+import android.util.Log;
+
 public class Sound {
 
     private String mAssetPath ;
@@ -9,7 +11,8 @@ public class Sound {
         mAssetPath = assetPath;
         String[] components = mAssetPath.split("/") ;
         String filename  = components[components.length - 1] ;
-       mName = filename.replace(".wav", "") ;
+        Log.i("123456", filename) ;
+        mName = filename.replace(".wav", "") ;
     }
 
     public String getAssetPath() {
