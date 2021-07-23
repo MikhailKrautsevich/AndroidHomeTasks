@@ -16,5 +16,5 @@ public class SoundViewModel {
         mSound = sound;
     }
 
-    public String getTitle() {return mSound.getName() ;}
+    public String getTitle() {return mSound.getName();}
 }

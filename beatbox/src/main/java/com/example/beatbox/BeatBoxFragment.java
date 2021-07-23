@@ -41,7 +41,6 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mBeatBox = new BeatBox(getActivity()) ;
     }
 
@@ -64,6 +63,8 @@ public class BeatBoxFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull SoundHolder holder, int position) {
+            Sound sound = mSounds.get(position) ;
+            holder.bind(sound);
         }
 
         @Override
