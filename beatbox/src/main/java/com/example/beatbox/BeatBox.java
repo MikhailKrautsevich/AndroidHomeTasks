@@ -1,41 +1,66 @@
 package com.example.beatbox;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class BeatBox {
-    private static final String TAG = "BeatBox" ;
-    private static final  String SOUNDS_FOLDER = "sample_sounds" ;
+    private static final String TAG = "BeatBox";
+    private static final String SOUNDS_FOLDER = "sample_sounds";
+    private static final int MAX_SOUNDS = 5;
 
-    private AssetManager mAssetManager ;
-    private ArrayList mSounds = new ArrayList() ;
+    private AssetManager mAssetManager;
+    private ArrayList mSounds = new ArrayList();
+    private SoundPool mSoundPool;
 
-    public BeatBox(Context context){
-        mAssetManager = context.getAssets() ;
-        loadSounds() ;
+    public BeatBox(Context context) {
+        mAssetManager = context.getAssets();
+        mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        loadSounds();
     }
 
-    public ArrayList<Sound> getSounds(){return mSounds;}
+    public ArrayList<Sound> getSounds() {
+        return mSounds;
+    }
+
+    public void playSound(Sound sound) {
+        Integer id = sound.getSoundID() ;
+        if (id == null) {
+            return;
+        }
+        mSoundPool.play(id, 1.0f, 1.0f, 1, 0, 1.0f) ;
+    }
 
     private void loadSounds() {
-        String [] soundNames ;
+        String[] soundNames;
         try {
-            soundNames = mAssetManager.list(SOUNDS_FOLDER) ;
-            Log.i(TAG, "Found " + soundNames.length + " sounds.") ;
+            soundNames = mAssetManager.list(SOUNDS_FOLDER);
+            Log.i(TAG, "Found " + soundNames.length + " sounds.");
         } catch (IOException e) {
-            Log.i(TAG, "Could not list assets" + e) ;
-            soundNames = new String[0] ;
+            Log.i(TAG, "Could not list assets " + e);
+            return;
         }
-        if (soundNames != null) {
-            for (String s : soundNames) {
-                String path = SOUNDS_FOLDER + '/' + s ;
-                Sound sound = new Sound(path) ;
-                mSounds.add(sound) ;
+        for (String filename : soundNames) {
+            try {
+                String path = SOUNDS_FOLDER + '/' + filename;
+                Sound sound = new Sound(path);
+                loadSound(sound);
+                mSounds.add(sound);
+            } catch (IOException exception) {
+                Log.e(TAG, "Could not load sound " + filename, exception) ;
             }
         }
+    }
+
+    private void loadSound(Sound sound) throws IOException {
+        AssetFileDescriptor afd = mAssetManager.openFd(sound.getAssetPath());
+        int soundID = mSoundPool.load(afd, 1);
+        sound.setSoundID(soundID);
     }
 }

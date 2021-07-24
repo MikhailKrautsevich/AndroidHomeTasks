@@ -1,17 +1,15 @@
 package com.example.beatbox;
 
-import android.util.Log;
-
 public class Sound {
 
     private String mAssetPath ;
     private String mName ;
+    private Integer mSoundID ;
 
     public Sound(String assetPath) {
         mAssetPath = assetPath;
         String[] components = mAssetPath.split("/") ;
         String filename  = components[components.length - 1] ;
-        Log.i("123456", filename) ;
         mName = filename.replace(".wav", "") ;
     }
 
@@ -21,5 +19,13 @@ public class Sound {
 
     public String getName() {
         return mName;
+    }
+
+    public Integer getSoundID() {
+        return mSoundID;
+    }
+
+    public void setSoundID(Integer soundID) {
+        mSoundID = soundID;
     }
 }
