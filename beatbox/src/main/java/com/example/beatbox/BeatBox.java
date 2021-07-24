@@ -29,6 +29,14 @@ public class BeatBox {
         return mSounds;
     }
 
+    public void playSound(Sound sound) {
+        Integer id = sound.getSoundID() ;
+        if (id == null) {
+            return;
+        }
+        mSoundPool.play(id, 1.0f, 1.0f, 1, 0, 1.0f) ;
+    }
+
     private void loadSounds() {
         String[] soundNames;
         try {
