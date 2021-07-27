@@ -3,8 +3,10 @@ package com.example.beatbox;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -18,10 +20,23 @@ public class BeatBox {
     private AssetManager mAssetManager;
     private ArrayList mSounds = new ArrayList();
     private SoundPool mSoundPool;
+    private float mSpeedPlayback = 1.0f ;
 
     public BeatBox(Context context) {
         mAssetManager = context.getAssets();
-        mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            //noinspection deprecation
+            mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
+        } else {
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build() ;
+            mSoundPool = new SoundPool.Builder()
+                    .setAudioAttributes(attributes)
+                    .setMaxStreams(MAX_SOUNDS)
+                    .build();
+        }
         loadSounds();
     }
 
@@ -30,11 +45,11 @@ public class BeatBox {
     }
 
     public void playSound(Sound sound) {
-        Integer id = sound.getSoundID() ;
+        Integer id = sound.getSoundID();
         if (id == null) {
             return;
         }
-        mSoundPool.play(id, 1.0f, 1.0f, 1, 0, 1.0f) ;
+        mSoundPool.play(id, 1.0f, 1.0f, 1, 0, mSpeedPlayback);
     }
 
     private void loadSounds() {
@@ -53,7 +68,7 @@ public class BeatBox {
                 loadSound(sound);
                 mSounds.add(sound);
             } catch (IOException exception) {
-                Log.e(TAG, "Could not load sound " + filename, exception) ;
+                Log.e(TAG, "Could not load sound " + filename, exception);
             }
         }
     }
@@ -64,5 +79,15 @@ public class BeatBox {
         sound.setSoundID(soundID);
     }
 
-    public void release() {mSoundPool.release();}
+    public void setSpeedPlayback(float speed) {
+        mSpeedPlayback = speed ;
+    }
+
+    public float getSpeedPlayback() {
+        return mSpeedPlayback ;
+    }
+
+    public void release() {
+        mSoundPool.release();
+    }
 }
