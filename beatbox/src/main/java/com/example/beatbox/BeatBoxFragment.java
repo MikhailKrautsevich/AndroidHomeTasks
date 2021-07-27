@@ -19,7 +19,6 @@ import java.util.List;
 public class BeatBoxFragment extends Fragment {
 
     private BeatBox mBeatBox ;
-    private BeatBoxFragmentViewModel mModel ;
 
     public static BeatBoxFragment newInstance() {
         return new BeatBoxFragment();
@@ -34,10 +33,11 @@ public class BeatBoxFragment extends Fragment {
                         R.layout.fragment_beat_box,
                         container,
                         false);
+        binding.setViewModel(new BeatBoxFragmentViewModel(mBeatBox));
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
-        mModel = new BeatBoxFragmentViewModel(mBeatBox) ;
-        binding.setViewModel(mModel);
+        binding.seekBar.setMax(15);
+        binding.seekBar.setProgress((int) mBeatBox.getSpeedPlayback() * 5);
         return binding.getRoot();
     }
 

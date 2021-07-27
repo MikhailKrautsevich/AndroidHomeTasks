@@ -79,6 +79,14 @@ public class BeatBox {
         sound.setSoundID(soundID);
     }
 
+    public void setSpeedPlayback(float speed) {
+        mSpeedPlayback = speed ;
+    }
+
+    public float getSpeedPlayback() {
+        return mSpeedPlayback ;
+    }
+
     public void release() {
         mSoundPool.release();
     }
