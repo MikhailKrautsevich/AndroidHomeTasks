@@ -19,6 +19,7 @@ import java.util.List;
 public class BeatBoxFragment extends Fragment {
 
     private BeatBox mBeatBox ;
+    private BeatBoxFragmentViewModel mModel ;
 
     public static BeatBoxFragment newInstance() {
         return new BeatBoxFragment();
@@ -35,6 +36,8 @@ public class BeatBoxFragment extends Fragment {
                         false);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
+        mModel = new BeatBoxFragmentViewModel(mBeatBox) ;
+        binding.setViewModel(mModel);
         return binding.getRoot();
     }
 

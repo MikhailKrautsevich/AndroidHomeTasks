@@ -82,8 +82,4 @@ public class BeatBox {
     public void release() {
         mSoundPool.release();
     }
-
-    public void changeSpeedPlayback() {
-        Log.d("123456", "was changed") ;
-    }
 }
