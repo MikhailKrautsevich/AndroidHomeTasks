@@ -1,6 +1,5 @@
 package com.example.beatbox;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.SeekBar;
 
@@ -24,11 +23,11 @@ public class BeatBoxFragmentViewModel extends BaseObservable {
         notifyPropertyChanged(BR.speedString);
     }
 
-    @SuppressLint("StringFormatInvalid")
     @Bindable
     public String getSpeedString() {
-                String toFormat = mContext.getString(R.string.playbackSpeedText) ;
-        return String.format(toFormat, ( (int) (mBeatBox.getSpeedPlayback() * 100)));
+//                String toFormat = Resources.getSystem().getString(R.string.playbackSpeedText);
+                String f = mContext.getString(R.string.playbackSpeedText) ;
+        return String.format(f, ( (int) (mBeatBox.getSpeedPlayback() * 100)));
     }
 
     private float transformToFloat(int progress) {
