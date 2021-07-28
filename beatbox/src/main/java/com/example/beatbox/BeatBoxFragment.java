@@ -33,7 +33,7 @@ public class BeatBoxFragment extends Fragment {
                         R.layout.fragment_beat_box,
                         container,
                         false);
-        binding.setViewModel(new BeatBoxFragmentViewModel(mBeatBox));
+        binding.setViewModel(new BeatBoxFragmentViewModel(mBeatBox, getContext()));
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
         binding.seekBar.setProgress((int) mBeatBox.getSpeedPlayback() * 10);

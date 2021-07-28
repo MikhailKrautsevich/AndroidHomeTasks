@@ -33,7 +33,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@id/seekBar"
-            android:text="@{viewModel.string}"/>
+            android:text="@{viewModel.speedString}"/>
 
         <SeekBar
             android:id="@+id/seekBar"

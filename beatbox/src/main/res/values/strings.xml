@@ -4,4 +4,6 @@
     <string name="sound_name">Sound name</string>
     <string name="hintTextView">TextView Hint</string>
     <string name="playbackSpeed">Playback Speed:u0020</string>
+
+    <string name="playbackSpeedText">Playback speed 1%f /%</string>
 </resources>
