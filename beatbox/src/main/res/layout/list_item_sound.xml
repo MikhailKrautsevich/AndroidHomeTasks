@@ -20,6 +20,6 @@
             android:layout_gravity="center"
             android:onClick="@{() -> viewModel.onButtonClicked()}"
             android:text="@{viewModel.title}"
-            tools:text="@string/sound_name" />
+            tools:text="@string/sound_name"/>
     </FrameLayout>
 </layout>
