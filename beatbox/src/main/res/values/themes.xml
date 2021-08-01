@@ -12,12 +12,13 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/gray</item>
         <item name="materialButtonStyle">@style/BeatBoxButton</item>
     </style>
 
     <style name="BeatBoxButton" parent="android:style/Widget.Holo.Button">
         <item name="android:background">@drawable/button_beat_box</item>
+        <item name="android:shadowRadius">5.0</item>
+        <item name="android:shadowColor">@color/black</item>
     </style>
-
 </resources>
