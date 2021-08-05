@@ -4,10 +4,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -60,10 +62,12 @@ public class NerdLauncherFragment extends Fragment {
     private class ActivityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ResolveInfo mInfo ;
         private TextView mNameTextView ;
+        private ImageView mImageView ;
 
         public ActivityHolder(@NonNull View itemView) {
             super(itemView);
-            mNameTextView = (TextView) itemView ;
+            mNameTextView = itemView.findViewById(R.id.app_title_textview) ;
+            mImageView = itemView.findViewById(R.id.icon_image) ;
         }
 
         public void bindActivity(ResolveInfo info) {
@@ -71,7 +75,11 @@ public class NerdLauncherFragment extends Fragment {
             PackageManager pm = getActivity().getPackageManager() ;
             String name = info.loadLabel(pm).toString() ;
             mNameTextView.setText(name);
-            mNameTextView.setOnClickListener(this);
+            mNameTextView.getRootView().setOnClickListener(this);
+            Drawable icon = info.loadIcon(pm) ;
+            if (icon != null) {
+                mImageView.setImageDrawable(icon);
+            }
         }
 
         @Override
@@ -95,7 +103,8 @@ public class NerdLauncherFragment extends Fragment {
         @Override
         public ActivityHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity()) ;
-            View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false) ;
+ //           View view = inflater.inflate(android.R.layout.simple_list_item_1, parent, false) ;    //simple default layout
+            View view = inflater.inflate(R.layout.activity_element, parent, false) ;
             return new ActivityHolder(view);
         }
 
