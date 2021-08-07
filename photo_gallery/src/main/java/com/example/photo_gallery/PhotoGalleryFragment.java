@@ -1,5 +1,6 @@
 package com.example.photo_gallery;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
+
 public class PhotoGalleryFragment extends Fragment {
+    private static final String TAG = "PhotoGalleryFragment" ;
+
     private RecyclerView mPhotoRecyclerView ;
 
     public static PhotoGalleryFragment newInstance() {
@@ -29,5 +34,19 @@ public class PhotoGalleryFragment extends Fragment {
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
         return v;
+    }
+
+    private class FetchItemTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                String result = new FlickrFetchr()
+                        .getUrlString("https://www.bignerdranch.com") ;
+            } catch (IOException ioException) {
+
+            }
+            return null;
+        }
     }
 }
