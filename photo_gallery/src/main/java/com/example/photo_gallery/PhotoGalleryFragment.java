@@ -35,8 +35,15 @@ public class PhotoGalleryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mPhotoRecyclerView = v.findViewById(R.id.photo_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        setAdapter();
 
         return v;
+    }
+
+    private void setAdapter(){
+        if (isAdded()) {
+            mPhotoRecyclerView.setAdapter(new PhotoAdapter(null));
+        }
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder {
