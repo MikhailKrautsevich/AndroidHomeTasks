@@ -18,6 +18,7 @@ public class PhotoGalleryFragment extends Fragment {
     private static final String TAG = "PhotoGalleryFragment";
 
     private RecyclerView mPhotoRecyclerView;
+    private List<GalleryItem> mItems ;
 
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
@@ -42,7 +43,7 @@ public class PhotoGalleryFragment extends Fragment {
 
     private void setAdapter(){
         if (isAdded()) {
-            mPhotoRecyclerView.setAdapter(new PhotoAdapter(null));
+            mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
         }
     }
 
@@ -85,11 +86,16 @@ public class PhotoGalleryFragment extends Fragment {
         }
     }
 
-    private class FetchItemTask extends AsyncTask<Void, Void, Void> {
+    private class FetchItemTask extends AsyncTask<Void, Void, List<GalleryItem>> {
         @Override
-        protected Void doInBackground(Void... voids) {
-            new FlickrFetchr().fetchItems();
-            return null;
+        protected List<GalleryItem> doInBackground(Void... voids) {
+            return new FlickrFetchr().fetchItems();
+        }
+
+        @Override
+        protected void onPostExecute(List<GalleryItem> items) {
+            mItems = items ;
+            setAdapter();
         }
     }
 }
