@@ -17,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView noContacts;
     private static final int ADD_NEW_CONTACT = 900 ;
     private static final int EDIT_CONTACT = 901 ;
-    private static ArrayList<ContactClass> contacts = new ArrayList<>();
+    private LiveData<List<ContactClass>> contacts ;
     private NameListAdapter adapter1;
     private LinearLayoutManager linearLayoutManager ;
     private GridLayoutManager gridLayoutManager ;
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         dataBase = Room.databaseBuilder(this, ConDataBase.class, "database")
-                .allowMainThreadQueries().build() ;
+                .build() ;
         contactDao = dataBase.getConDao() ;
 
         noContacts = findViewById(R.id.noContacts) ;
@@ -71,16 +74,13 @@ public class MainActivity extends AppCompatActivity {
         gridLayoutManager = new GridLayoutManager(this, 2);}
 
         recyclerContacts = findViewById(R.id.recyclerContacts);
-        recyclerContacts.setAdapter(new NameListAdapter());
+        recyclerContacts.setAdapter(new NameListAdapter(new ArrayList<ContactClass>()));
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
         {recyclerContacts.setLayoutManager(linearLayoutManager);}
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
         {recyclerContacts.setLayoutManager(gridLayoutManager) ;}
         recyclerContacts.setVisibility(View.INVISIBLE);
-        if (adapter1==null) {
-            adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
-        }
 
         SearchView searchView = findViewById(R.id.search) ;
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -102,20 +102,23 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         noContacts.setVisibility(View.VISIBLE);
         recyclerContacts.setVisibility(View.INVISIBLE);
-        contacts = (ArrayList<ContactClass>) contactDao.getAllContacts();
-        if (adapter1 != null) {
-            adapter1.update();
-        }
-        if (adapter1 != null && !adapter1.isListOfContactsEmpty()) {
-            noContacts.setVisibility(View.GONE);
-            recyclerContacts.setVisibility(View.VISIBLE);
-        }
+        contacts = contactDao.getAllContacts();
+        contacts.observe(this, new Observer<List<ContactClass>>() {
+            @Override
+            public void onChanged(List<ContactClass> contactClasses) {
+                recyclerContacts.setAdapter(new NameListAdapter(contactClasses));
+                adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
+                if (adapter1 != null && !adapter1.isListOfContactsEmpty()) {
+                    noContacts.setVisibility(View.GONE);
+                    recyclerContacts.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        NameListAdapter adapter1 = (NameListAdapter) recyclerContacts.getAdapter();
         switch(requestCode) {
             case (ADD_NEW_CONTACT): {
                 boolean is = data.getBooleanExtra(EXTRAS.EXTRA_FOR_CONTACT_IS, false);
@@ -125,12 +128,17 @@ public class MainActivity extends AppCompatActivity {
                     String conInfo = data.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_INFO).trim();
 
                     if (!conInfo.isEmpty() && !conName.isEmpty()) {
-                    ContactClass newContact = new ContactClass(conName, conInfo, is);
-                    contactDao.addContact(ContactClass.createEntity(newContact));
+                    final ContactClass newContact = new ContactClass(conName, conInfo, is);
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            contactDao.addContact(ContactClass.createEntity(newContact));
+                        }
+                    }) ;
+                    thread.start();
 
                     if (!conInfo.isEmpty() && !conName.isEmpty()) {
-                        assert adapter1 != null;
-                        adapter1.update();
+
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.somethingwrongwithc, LENGTH_SHORT)
                                 .show();
@@ -139,10 +147,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case (EDIT_CONTACT): {
-                if (resultCode == RESULT_OK) {
-                    assert adapter1 != null;
-                    adapter1.update();
-                }
                 break;
             }
             default:
@@ -153,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         contactDao = null ;
         dataBase.close();
         dataBase = null ;
@@ -162,8 +167,10 @@ public class MainActivity extends AppCompatActivity {
 
         List<ContactClass> contactsFull ;
 
-        NameListAdapter() {
-            contactsFull = contactDao.getAllContacts();
+        @RequiresApi(api = Build.VERSION_CODES.N)
+        NameListAdapter(List<ContactClass> contactsFull) {
+            this.contactsFull = contactsFull;
+            this.contactsFull.sort(new ContactsComparator());
         }
 
         @NonNull
@@ -181,16 +188,6 @@ public class MainActivity extends AppCompatActivity {
 
         private boolean isListOfContactsEmpty(){
             return contactsFull.isEmpty();
-        }
-
-        private void update() {
-            contactsFull = contactDao.getAllContacts();
-//            notifyItemChanged(items.indexOf(name)); // for item
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                ContactsComparator comparator = new ContactsComparator() ;
-                contactsFull.sort(comparator);
-            }
-            notifyDataSetChanged(); // for all items
         }
 
         @Override

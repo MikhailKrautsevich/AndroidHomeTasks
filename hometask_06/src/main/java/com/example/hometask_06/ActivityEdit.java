@@ -3,6 +3,7 @@ package com.example.hometask_06;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -12,12 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.room.Room;
 
 import com.example.hometask_06.database.ConDataBase;
 import com.example.hometask_06.database.ContactDao;
 import com.example.hometask_06.database.ContactEntity;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ActivityEdit extends Activity {
 
@@ -38,7 +44,7 @@ public class ActivityEdit extends Activity {
         setContentView(R.layout.activity_edit);
 
         dataBase = Room.databaseBuilder(getApplication(), ConDataBase.class, "database")
-                .allowMainThreadQueries().build() ;
+                .build() ;
         contactDao = dataBase.getConDao() ;
 
         ImageButton backFromEdit = findViewById(R.id.backFromEdit);
@@ -54,10 +60,16 @@ public class ActivityEdit extends Activity {
         emailEdit = findViewById(R.id.emailEdit);
         phoneNumEdit = findViewById(R.id.phoneNumEdit);
 
-        String name = gettedIntend.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_NAME) ;
+        final String name = gettedIntend.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_NAME) ;
         final boolean isItEmail = gettedIntend.getBooleanExtra(EXTRAS.EXTRA_FOR_CONTACT_IS, false) ;
-        String text = gettedIntend.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_INFO) ;
-        entity = contactDao.getByNameAndText(name, text) ;
+        final String text = gettedIntend.getStringExtra(EXTRAS.EXTRA_FOR_CONTACT_INFO) ;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                entity = contactDao.getByNameAndText(name, text) ;
+            }
+        }) ;
+        thread.start();
 
         nameEdit.setText(name);
         if (isItEmail) {emailEdit.setText(text);
@@ -77,7 +89,13 @@ public class ActivityEdit extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         setResult(RESULT_OK, answerIntent);
-                        contactDao.deleteContact(entity);
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                contactDao.deleteContact(entity);
+                            }
+                        }) ;
+                        thread.start();
                         ActivityEdit.this.finish();
                     }
                 })
@@ -96,26 +114,37 @@ public class ActivityEdit extends Activity {
 
         Button editContact = findViewById(R.id.editButton);
         editContact.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-                String newName = nameEdit.getText().toString().trim() ;
-                String newNumber = phoneNumEdit.getText().toString().trim() ;
-                String newEmail = emailEdit.getText().toString().trim() ;
-                if (!newName.isEmpty()) {
-                    entity.setName(newName);
-                }
-                if (isItEmail) {
-                    if (!newEmail.isEmpty()) {
-                        entity.setNumberOrEmail(newEmail);
+                CompletableFuture.supplyAsync(new Supplier<ContactEntity>() {
+                    @Override
+                    public ContactEntity get() {
+                        String newName = nameEdit.getText().toString().trim() ;
+                        String newNumber = phoneNumEdit.getText().toString().trim() ;
+                        String newEmail = emailEdit.getText().toString().trim() ;
+                        if (!newName.isEmpty()) {
+                            entity.setName(newName);
+                        }
+                        if (isItEmail) {
+                            if (!newEmail.isEmpty()) {
+                                entity.setNumberOrEmail(newEmail);
+                            }
+                        }
+                        else if (!isItEmail) {
+                            if (!newNumber.isEmpty()) {
+                                entity.setNumberOrEmail(newNumber);
+                            }
+                        }
+                        return entity;
                     }
-                }
-                else if (!isItEmail) {
-                    if (!newNumber.isEmpty()) {
-                        entity.setNumberOrEmail(newNumber);
+                }).thenAcceptAsync(new Consumer<ContactEntity>() {
+                    @Override
+                    public void accept(ContactEntity contactEntity) {
+                        contactDao.updateContact(entity);
+                        Toast.makeText(ActivityEdit.this, "Contact was edited", Toast.LENGTH_SHORT).show();
                     }
-                }
-                contactDao.updateContact(entity);
-                Toast.makeText(ActivityEdit.this, "Contact was edited", Toast.LENGTH_SHORT).show();
+                }) ;
             }
         });
     }
@@ -127,6 +156,4 @@ public class ActivityEdit extends Activity {
         dataBase.close();
         dataBase = null ;
     }
-
-
 }
