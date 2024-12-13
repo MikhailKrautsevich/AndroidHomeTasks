@@ -3,14 +3,14 @@ package com.example.hometask_08_weather;
 class HourlyWeather {
 
     private String time ;
-    private String degreesCelcius ;
+    private String degreesCelsius;
     private String degreesFahrenheit ;
     private String description ;
     private String iconUrl ;
 
     HourlyWeather(String time, String degreesCelcius, String degreesFahrenheit, String description, String iconUrl) {
         this.time = time;
-        this.degreesCelcius = degreesCelcius;
+        this.degreesCelsius = degreesCelcius;
         this.degreesFahrenheit = degreesFahrenheit;
         this.description = description;
         this.iconUrl = iconUrl;
@@ -20,8 +20,8 @@ class HourlyWeather {
         return time;
     }
 
-    String getDegreesCelcius() {
-        return degreesCelcius;
+    String getDegreesCelsius() {
+        return degreesCelsius;
     }
 
     String getDegreesFahrenheit() {

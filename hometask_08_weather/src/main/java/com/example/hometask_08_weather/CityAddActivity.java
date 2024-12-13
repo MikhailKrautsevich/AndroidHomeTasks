@@ -57,6 +57,10 @@ public class CityAddActivity extends AppCompatActivity {
         cityToObserve = getIntent().getStringExtra("cityWanted") ;
         preferences = PreferenceManager.getDefaultSharedPreferences(this) ;
 
+        dataBase = CityDataBase.getDataBase(this);
+        cityDao = dataBase.getDao() ;
+        cityList = cityDao.getAllCityNames();
+
         ImageButton addCityBtn = findViewById(R.id.addNewCity2);
         addCityBtn.setOnClickListener(v -> {
             Log.d(LOG_TAG, "addCityBtn - was clicked");
@@ -123,10 +127,6 @@ public class CityAddActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
         cityRecycler.setLayoutManager(manager);
         cityRecycler.addItemDecoration(new DividerItemDecoration(getBaseContext(), DividerItemDecoration.VERTICAL));
-
-        dataBase = CityDataBase.getDataBase(this);
-        cityDao = dataBase.getDao() ;
-        cityList = cityDao.getAllCityNames();
     }
 
     @Override

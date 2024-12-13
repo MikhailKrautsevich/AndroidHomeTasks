@@ -77,11 +77,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
 
@@ -285,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
                 descrTextView.setText(weather.getDescription());
                 if (degreesType.equals(FAHRENHEIT)) {
                     tempTextView.setText(weather.getDegreesFahrenheit());
-                } else {tempTextView.setText(weather.getDegreesCelcius());}
+                } else {tempTextView.setText(weather.getDegreesCelsius());}
                 Picasso.with(MainActivity.this)
                         .load(weather.getIconUrl())
                         .placeholder(R.drawable.weather_icon)
